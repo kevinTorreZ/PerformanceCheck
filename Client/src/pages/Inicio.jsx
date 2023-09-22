@@ -1,29 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import {getAllUsers} from '../api/UserManagerAPI.js'
-import axios from 'axios';
-
+import { useNavigate,Link } from 'react-router-dom';
 export function Inicio() {
-    const [email, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-  
-    const handleSubmit = async event => {
-      event.preventDefault();
-  
-      const response = await axios.post('http://localhost:8000/api/login', {
-        email: email,
-        password: password
-      });
-  
-      const token = response.data.token;
-      // Guarda el token en algún lugar de tu aplicación
-    };
-  
-    return (
-      <form onSubmit={handleSubmit}>
-        <input type="email" value={email} onChange={e => setUsername(e.target.value)} />
-        <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
-        <button type="submit">Iniciar sesión</button>
-      </form>
-    );
-  }
+    const [token, setToken] = useState(null);
+    const navigate = useNavigate();
 
+    // Cuando se carga el componente, verifica si hay un token en el almacenamiento local
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        setToken(token);
+    }, []);
+
+    return (
+      <div>
+        {token ? <p>Estás logueado. <Link to={'/Logout'}>Salir</Link></p> : 
+        <p>No estás logueado. <Link to={'/Login'}>Login</Link> <Link to={'/Registro'}>Registrarse</Link></p>}
+
+        
+      </div>
+    );
+}
