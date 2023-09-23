@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import usuario, equipo, proyecto
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class ProyectoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,9 +41,29 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['idUsuario','Nombre', 'email', 'Cargo','Usuario','password','Fk_equipo_asignado_id','Fk_proyecto_asignado_id']
 
     def get_Fk_equipo_asignado_id(self, obj):
-        equipo_instance = equipo.objects.get(idEquipo=obj.Fk_equipo_asignado_id)
-        return EquipoSerializer(equipo_instance).data
+        try:
+            equipo_instance = equipo.objects.get(idEquipo=obj.Fk_equipo_asignado_id)
+        except equipo.DoesNotExist:
+            equipo_instance = None
+        return EquipoSerializer(equipo_instance).data if equipo_instance else None
+
 
     def get_Fk_proyecto_asignado_id(self, obj):
-        proyecto_instance = proyecto.objects.get(idProyecto=obj.Fk_proyecto_asignado_id)
-        return ProyectoSerializer(proyecto_instance).data
+        try:
+            proyecto_instance = proyecto.objects.get(idProyecto=obj.Fk_proyecto_asignado_id)
+        except proyecto.DoesNotExist:
+            proyecto_instance = None
+        return ProyectoSerializer(proyecto_instance).data if proyecto_instance else None
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """Personaliza el Serializador por defecto de JWT para agregar más información sobre el usuario"""
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['Nombre'] = user.Nombre
+        token['email'] = user.email
+        token['is_superuser'] = user.is_superuser
+        token['is_staff'] = user.is_staff
+        token['user_id'] = user.idUsuario  # Agrega el ID del usuario al token
+        return token

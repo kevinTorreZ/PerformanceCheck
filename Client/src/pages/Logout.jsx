@@ -7,6 +7,7 @@ export function Logout() {
 
     useEffect(() => {
         localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
         setTimeout(() => {
             setLoading(false);
             navigate('/Login');
