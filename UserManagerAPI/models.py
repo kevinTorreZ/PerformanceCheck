@@ -2,13 +2,13 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
 class proyecto(models.Model):
-    idProyecto = models.IntegerField(primary_key=True)
+    idProyecto = models.AutoField(primary_key=True, unique=True)
     Nombre = models.CharField(max_length=30, blank=None)
     Descripcion = models.TextField(blank=None)
     FechaLimite = models.DateTimeField()
 
 class equipo(models.Model):
-    idEquipo = models.IntegerField(primary_key=True)
+    idEquipo = models.AutoField(primary_key=True, unique=True)
     Nombre_equipo = models.CharField(max_length=30, blank=None)
     Lider = models.IntegerField(default=None, null=True)
     Fk_proyecto_asignado = models.ForeignKey(proyecto, on_delete=models.CASCADE)
@@ -29,7 +29,7 @@ class UsuarioManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
 class usuario(AbstractBaseUser, PermissionsMixin):
-    idUsuario = models.IntegerField(primary_key=True, unique=True)
+    idUsuario = models.AutoField(primary_key=True, unique=True)
     Nombre = models.CharField(max_length=30, blank=None)
     email = models.EmailField(max_length=80, unique=True)
     Cargo = models.CharField(max_length=50)
