@@ -40,30 +40,30 @@ export function Nav() {
         <div className="contDiv">
             <NavCont>
                 <div className="logo"></div>
-                <div className={`links ${clicked ? 'active' : ''}`}>
-
-                    <a href={'/'}>Inicio</a>
-                    <a href={'/Perfil'}>Perfil</a>
-                    {isLoggedIn && rol === 'Lider' && (
-                        <a href={'/SolicitudGrupal'} >Solicitud Grupal</a>
-                    )}
-                    {isLoggedIn && rol === 'Administrador' && (
-                        <a href={'/GestionUsuarios'}>Gestionar Usuarios</a>
-                    )}
-                    <a href={'/'}>Proyecto</a>
-                    {isLoggedIn ? (
-                        <a href={'/logout'} onClick={handleLogout}>Salir</a>
-                    ) : (
-                        <>
-                            <a href={'/login'}>Login</a>
-                            <a href={'/Registro'}>Registrarse</a>
-                        </>
-                    )}
-                </div>
-                <div className="LaBurger">
-                    <Amborgesa clicked={clicked} handleClick={handleClick} />
-                </div>
-                <BackDiv className={`initial ${clicked ? ' active' : ''}`}></BackDiv>
+                    <div className={`links ${clicked ? 'active' : ''}`}>
+                        
+                        <a href={'/'}>Inicio</a>
+                        <a href={'/Perfil'}>Perfil</a>
+                        {isLoggedIn && rol === 'Lider' && (
+                            <a href={'/SolicitudGrupal'} >Solicitud Grupal</a>
+                        )}
+                        {isLoggedIn && rol === 'Administrador' && (
+                            <a href={'/GestionUsuarios'}>Gestionar Usuarios</a>
+                        )}
+                        <a href={'/'}>Proyecto</a>
+                        {isLoggedIn ? (
+                            <a href={'/logout'} onClick={handleLogout}>Salir</a>
+                        ) : (
+                            <>
+                                <a href={'/login'}>Login</a>
+                                <a href={'/Registro'}>Registrarse</a>
+                            </>
+                        )}
+                    </div>
+                    <div className="LaBurger">
+                        <Amborgesa clicked={clicked} handleClick={handleClick} />
+                    </div>
+                    <BackDiv className={`initial ${clicked ? ' active' : ''}`}></BackDiv>
             </NavCont>
         </div>
     );
@@ -77,7 +77,7 @@ const NavCont = styled.nav`
     height: 60px;
     max-height: 60px;
     .logo{
-        background-image: url("https://res.cloudinary.com/dln364ilz/image/upload/v1695423691/Logo1_wjvqst.png");
+        background-image: url("https://logos-world.net/wp-content/uploads/2022/02/Dunder-Mifflin-Emblem.png");
         background-size: contain;
         background-repeat: no-repeat;
         width: 100%;
@@ -85,7 +85,7 @@ const NavCont = styled.nav`
       
     }
     padding: .4rem;
-    background-color: #0F1128;
+    background-color: transparent;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -93,7 +93,7 @@ const NavCont = styled.nav`
         color: white;
         text-decoration: none;
         margin-right: 1rem;
-        font-family: 'Lato', sans-serif;
+        font-family: 'Helvetica', 'Arial', sans-serif;
         
     }
     .links{
@@ -111,8 +111,9 @@ const NavCont = styled.nav`
             font-weight: bold;
             display: block;
             transition: .2s ease;
+            text-shadow:  1px 1px 0.1px black;
             &:hover{
-                color: #8D8D8D;
+                color: #272B25;
             }
         }
         @media(min-width: 768px){
