@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "jwt-decode": "^3.1.2",
     "vite": "^4.4.9",
     "vue": "^3.3.4"
   }
