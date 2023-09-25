@@ -57,7 +57,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    """Personaliza el Serializador por defecto de JWT para agregar más información sobre el usuario"""
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
@@ -65,5 +64,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['email'] = user.email
         token['is_superuser'] = user.is_superuser
         token['is_staff'] = user.is_staff
-        token['user_id'] = user.idUsuario  # Agrega el ID del usuario al token
+        token['user_id'] = user.idUsuario
+        token['user_rol'] = user.Cargo
         return token

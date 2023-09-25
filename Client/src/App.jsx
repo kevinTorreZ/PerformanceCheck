@@ -5,6 +5,7 @@ import { Login } from "./pages/Login";
 import { Nav } from "./components/Nav"
 import {AuthProvider} from "./components/verificador"
 import { Logout } from "./pages/Logout";
+import { GestionUsuarios } from "./pages/GestionUsuarios";
 import { Register } from "./pages/Registro";
 import { Perfil } from "./pages/Perfil"
 import { NotFoundPage }  from "./pages/NotFoundPage";
@@ -19,6 +20,7 @@ function App() {
           <Route path="Login/" element={<Login/>}/>
           <Route path="Logout/" element={<Logout/>}/>
           <Route path="Perfil/" element={<Perfil/>}/>
+          <Route path="GestionUsuarios/" element={<GestionUsuarios/>}/>
           <Route path="*" element={<NotFoundPage/>}/>
           
         </Routes>

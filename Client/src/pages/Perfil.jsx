@@ -16,7 +16,6 @@ export function Perfil() {
                     'Authorization': `Bearer ${token}`
                 }
             }).then(response => {
-                console.log(response.data)
                 setUser(response.data);
             }).catch(error => {
                 console.error(error);

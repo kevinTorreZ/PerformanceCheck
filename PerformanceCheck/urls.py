@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from UserManagerAPI.views import UserViewSet,user_detail,LoginView,RegisterView
+from UserManagerAPI.views import UserViewSet,user_detail,LoginView,RegisterView,ObtenerEquipos,obtenerProyecto
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -28,9 +28,10 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api/login', LoginView.as_view()),
     path('api/users/<int:user_id>/', user_detail),
+    path('api/proyectos/<int:id_equipo>/', obtenerProyecto),
     path('api/register', RegisterView.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
+    path('api/equipos/',ObtenerEquipos.as_view()),
 ]
 

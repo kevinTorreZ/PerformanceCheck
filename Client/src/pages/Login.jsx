@@ -20,7 +20,7 @@ export function Login() {
         try{
             const response = await axios.post('http://localhost:8000/api/token/', data);
             const tokens = response.data;
-            login(tokens.access);
+            login(tokens.access, tokens.refresh, tokens.user);
             localStorage.setItem('refreshToken', tokens.refresh);
             navigate('/');
         }catch(error){

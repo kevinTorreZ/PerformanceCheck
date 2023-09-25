@@ -10,7 +10,7 @@ class proyecto(models.Model):
 class equipo(models.Model):
     idEquipo = models.IntegerField(primary_key=True)
     Nombre_equipo = models.CharField(max_length=30, blank=None)
-    Lider = models.IntegerField()
+    Lider = models.IntegerField(default=None, null=True)
     Fk_proyecto_asignado = models.ForeignKey(proyecto, on_delete=models.CASCADE)
 
 
