@@ -42,29 +42,30 @@ export function Nav() {
     return (
         <div className="contDiv">
             <NavCont>
-                <a href='/'><img className="logo" src={logo}/></a>
-                    <div className={`links ${clicked ? 'active' : ''}`}>
-                        <a href={'/'}><FontAwesomeIcon icon={faHouse}/> Inicio</a>
-                        {isLoggedIn && (<a href={'/Perfil'}><FontAwesomeIcon icon={faUser}/> Perfil</a>)}
-                        {isLoggedIn && rol === 'Lider' && (
-                            <a href={'/SolicitudGrupal'} >Solicitud Grupal</a>
-                        )}
-                        {isLoggedIn && rol === 'Administrador' && (
-                            <a href={'/GestionUsuarios'}>Gestionar Usuarios</a>
-                        )}
-                        {isLoggedIn && rol === 'Lider' || rol === 'Miembro' &&(<a href={'/'}>Proyecto</a>)}
-                        {isLoggedIn ? (
-                            <a href={'/logout'} onClick={handleLogout}>Salir</a>
-                        ) : (
-                            <>
-                                <a href={'/login'}> <FontAwesomeIcon icon={faRightToBracket}/> Login</a>
-                            </>
-                        )}
-                    </div>
-                    <div className="LaBurger">
-                        <Amborgesa clicked={clicked} handleClick={handleClick} />
-                    </div>
-                    <BackDiv className={`initial ${clicked ? ' active' : ''}`}></BackDiv>
+                <a href='/'><img className="logo" src={logo} /></a>
+                <div className={`links ${clicked ? 'active' : ''}`}>
+                    {isLoggedIn ? (
+                        <a href={'/logout'} onClick={handleLogout}><FontAwesomeIcon icon={faRightToBracket} /> Salir</a>
+                    ) : (
+                        <>
+                            <a href={'/login'}> <FontAwesomeIcon icon={faRightToBracket} /> Login</a>
+                        </>
+                    )}
+                    {isLoggedIn && rol === 'Lider' && (
+                        <a href={'/SolicitudGrupal'} >Solicitud Grupal</a>
+                    )}
+                    {isLoggedIn && rol === 'Administrador' && (
+                        <a href={'/GestionUsuarios'}>Gestionar Usuarios</a>
+                    )}
+                    {isLoggedIn && rol === 'Lider' || rol === 'Miembro' && (<a href={'/'}>Proyecto</a>)}
+
+                    {isLoggedIn && (<a href={'/Perfil'}><FontAwesomeIcon icon={faUser} /> Perfil</a>)}
+                    <a href={'/'}><FontAwesomeIcon icon={faHouse} /> Inicio</a>
+                </div>
+                <div className="LaBurger">
+                    <Amborgesa clicked={clicked} handleClick={handleClick} />
+                </div>
+                <BackDiv className={`initial ${clicked ? ' active' : ''}`}></BackDiv>
             </NavCont>
         </div>
     );
@@ -82,7 +83,7 @@ const NavCont = styled.nav`
         background-repeat: no-repeat;
         width: 130px;
         height: 60px;
-        margin-right: 50rem;
+        float: left;
     }
     padding: .4rem;
     background-color: transparent;
@@ -113,6 +114,7 @@ const NavCont = styled.nav`
             display: block;
             transition: .2s ease;
             text-shadow:  1px 1px 0.1px black;
+            float: right;
             &:hover{
                 color: #272B25;
             }
