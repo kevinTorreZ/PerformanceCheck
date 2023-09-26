@@ -96,7 +96,7 @@ body {
 }
 
 .somosDiv p {
-    text-align: center;
+    text-align: justify;
     font-family: 'Cabin', sans-serif;
 }
 
@@ -193,7 +193,7 @@ body {
 
 .tecnologiaDiv p {
     font-family: 'Cabin', sans-serif;
-    text-align: lefts;
+    text-align: justify;
     font-size: 20px;
 }
 
