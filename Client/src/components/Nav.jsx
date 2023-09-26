@@ -42,7 +42,7 @@ export function Nav() {
     return (
         <div className="contDiv">
             <NavCont>
-                <a ><img className="logo" src={logo}/></a>
+                <a href='/'><img className="logo" src={logo}/></a>
                     <div className={`links ${clicked ? 'active' : ''}`}>
                         <a href={'/'}><FontAwesomeIcon icon={faHouse}/> Inicio</a>
                         <a href={'/Perfil'}><FontAwesomeIcon icon={faUser}/> Perfil</a>
