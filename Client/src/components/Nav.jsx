@@ -45,14 +45,14 @@ export function Nav() {
                 <a href='/'><img className="logo" src={logo}/></a>
                     <div className={`links ${clicked ? 'active' : ''}`}>
                         <a href={'/'}><FontAwesomeIcon icon={faHouse}/> Inicio</a>
-                        <a href={'/Perfil'}><FontAwesomeIcon icon={faUser}/> Perfil</a>
+                        {isLoggedIn && (<a href={'/Perfil'}><FontAwesomeIcon icon={faUser}/> Perfil</a>)}
                         {isLoggedIn && rol === 'Lider' && (
                             <a href={'/SolicitudGrupal'} >Solicitud Grupal</a>
                         )}
                         {isLoggedIn && rol === 'Administrador' && (
                             <a href={'/GestionUsuarios'}>Gestionar Usuarios</a>
                         )}
-                        <a href={'/'}>Proyecto</a>
+                        {isLoggedIn && rol === 'Lider' || rol === 'Miembro' &&(<a href={'/'}>Proyecto</a>)}
                         {isLoggedIn ? (
                             <a href={'/logout'} onClick={handleLogout}>Salir</a>
                         ) : (
