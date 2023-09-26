@@ -59,7 +59,7 @@ export function Inicio() {
           <div className='card'>
             <img src='https://res.cloudinary.com/dln364ilz/image/upload/v1695675274/Pam_lliknu.png' />
             <h1 id="cardName" >Pam Beesly</h1>
-            <p id="cardDesc" >Vendedora</p>
+            <p id="cardDesc" >Secretaria</p>
           </div>
           <div className='card'>
           <img onMouseOver={mausdentrodelduai} onMouseOut={mausfueradelduai} src={Dwight}/>
