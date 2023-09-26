@@ -58,7 +58,6 @@ export function Nav() {
                         ) : (
                             <>
                                 <a href={'/login'}> <FontAwesomeIcon icon={faRightToBracket}/> Login</a>
-                                <a href={'/Registro'}>Registrarse</a>
                             </>
                         )}
                     </div>
