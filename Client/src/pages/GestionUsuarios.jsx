@@ -20,7 +20,7 @@ export function GestionUsuarios() {
     const auth = useAuth();  // Usa el hook useAuth para obtener el estado de autenticación
 
     const tieneLider = (equipoId) => {
-        if(equipos[equipoId].Lider != null){
+        if(equipos[equipoId].Lider != undefined){
             return true
         }
         else{
@@ -62,7 +62,6 @@ export function GestionUsuarios() {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        console.log(equipo)
         if (token && equipo && equipo != "") {
             axios.get(`http://localhost:8000/api/proyectos/${equipos[equipo].Fk_proyecto_asignado_id}`, {
                 headers: {
@@ -99,7 +98,7 @@ export function GestionUsuarios() {
             <h1>Gestión de Usuarios</h1>
             <ul>
                 {usuarios.map(usuario => (
-                    <li key={usuario.idUsuario}>{usuario.Nombre}</li>
+                    <li key={usuario.idUsuario}>{usuario.email}</li>
                 ))}
             </ul>
             <h2>Crear Usuario</h2>
@@ -108,7 +107,7 @@ export function GestionUsuarios() {
             {error && <p>Formato de RUT inválido</p>}
             <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
             <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Contraseña" />
-            <select onChange={e => setEquipo(e.target.value)}>
+            <select onChange={e => setEquipo(e.target.value + 1)}>
                 <option defaultChecked value="">Seleccionar</option>
                 {equipos.map((equipo) => (
                     <option key={equipo.idEquipo} value={equipo.idEquipo}>{equipo.Nombre_equipo}</option>
