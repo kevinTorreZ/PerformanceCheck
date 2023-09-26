@@ -310,3 +310,72 @@ footer{
     background-repeat: no-repeat;
     margin-top: 1.5rem;
 }
+
+
+/* LOGIN */
+
+.loginDiv{
+    width: 100%;
+    height: auto;
+}
+
+.loginDiv form{
+    display: flex;
+    width: 450px;
+    height: 500px;
+    margin: 2rem auto;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 10px;
+    background-color: #272B25;
+    box-shadow: 0px 0px 5px 1px black;
+}
+
+.loginDiv form h1{
+    font-family: 'Cabin', sans-serif;
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.loginDiv form input[type="email"]{
+    font-family: 'Cabin', sans-serif;
+    width: 300px;
+    height: 30px;
+    margin-bottom: 2rem;
+    border: 2px solid #D8D8D8;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 1px black;
+}
+
+.loginDiv form input[type="password"]{
+    font-family: 'Cabin', sans-serif;
+    width: 300px;
+    height: 30px;
+    margin-bottom: 5rem;
+    border: 2px solid #D8D8D8;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 1px black;
+}
+
+.loginDiv form input[type="password"]:focus{
+    outline: none;
+}
+
+.loginDiv form input[type="email"]:focus{
+    outline: none;
+}
+
+
+.loginDiv form button{
+    width: 300px;
+    height: 35px;
+    background-color: #C1C1B7;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #272B25;
+    font-family: 'Cabin', sans-serif;
+    font-weight: bold;
+    box-shadow: 0px 0px 5px 1px black;
+}

@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import jwt_decode from 'jwt-decode';
 import { useAuth } from '../components/verificador';
 import Amborgesa from './Hambuger';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRightToBracket, faHouse, faUser } from '@fortawesome/free-solid-svg-icons';
 
 export function Nav() {
     const { isLoggedIn, logout } = useAuth();
@@ -41,9 +43,8 @@ export function Nav() {
             <NavCont>
                 <div className="logo"></div>
                     <div className={`links ${clicked ? 'active' : ''}`}>
-                        
-                        <a href={'/'}>Inicio</a>
-                        <a href={'/Perfil'}>Perfil</a>
+                        <a href={'/'}><FontAwesomeIcon icon={faHouse}/> Inicio</a>
+                        <a href={'/Perfil'}><FontAwesomeIcon icon={faUser}/> Perfil</a>
                         {isLoggedIn && rol === 'Lider' && (
                             <a href={'/SolicitudGrupal'} >Solicitud Grupal</a>
                         )}
@@ -55,7 +56,7 @@ export function Nav() {
                             <a href={'/logout'} onClick={handleLogout}>Salir</a>
                         ) : (
                             <>
-                                <a href={'/login'}>Login</a>
+                                <a href={'/login'}> <FontAwesomeIcon icon={faRightToBracket}/> Login</a>
                                 <a href={'/Registro'}>Registrarse</a>
                             </>
                         )}
@@ -82,7 +83,6 @@ const NavCont = styled.nav`
         background-repeat: no-repeat;
         width: 100%;
         height: 60px;
-      
     }
     padding: .4rem;
     background-color: transparent;
@@ -100,6 +100,7 @@ const NavCont = styled.nav`
         position: absolute;
         top: -100px;
         left: -2000px;
+        width: 1000px;
         right: 0;
         margin-left: auto;
         margin-right: auto;

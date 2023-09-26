@@ -29,15 +29,17 @@ export function Login() {
     };
 
     return (
-        <div>
-            <h1>Login</h1>
-            <form onSubmit={handleSubmit(onSubmit)} id='formularioLogin'>
-                <input type="email" {...register('email', { required: 'El correo es requerido' })} placeholder='Correo'/>
-                {errors.email?.message && <p>{errors.email.message}</p>}
-                <input type="password" {...register('password', { required: 'La contraseña es requerida' })} placeholder='Contraseña'/>
-                {errors.password?.message && <p>{errors.password.message}</p>}
-                <button type="submit">Login</button>
-            </form>
+        <div className='loginDiv'>
+        <script src="https://kit.fontawesome.com/c1366bcc7f.js" crossOrigin="anonymous"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+                <form onSubmit={handleSubmit(onSubmit)} id='formularioLogin'>
+                    <h1>Iniciar sesión</h1>
+                    <input type="email" {...register('email', { required: 'El correo es requerido' })} style={{fontFamily: '"Cabin", sans-serif, FontAwesome'}} placeholder='&#xF0e0; Correo'/>
+                    {errors.email?.message && <p>{errors.email.message}</p>}
+                    <input type="password" {...register('password', { required: 'La contraseña es requerida' })} style={{fontFamily: '"Cabin", sans-serif, FontAwesome'}} placeholder='&#xF023; Contraseña'/>
+                    {errors.password?.message && <p>{errors.password.message}</p>}
+                    <button type="submit">Iniciar sesión</button>
+                </form>
         </div>
     );
 }
