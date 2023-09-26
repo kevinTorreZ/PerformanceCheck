@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import dwightPeluca from '../img/dwightPeluca.gif'
+import Dwight from "../img/Dwight.png"
 
 export function Inicio() {
   const [token, setToken] = useState(null);
@@ -9,13 +11,13 @@ export function Inicio() {
 
   const mausdentrodelduai = (e) => {
     timeout = setTimeout(() => {
-      e.target.src = 'https://media.tenor.com/R8Ot9SBUktQAAAAd/dwight-schrute-the-office.gif';
+      e.target.src = dwightPeluca;
     }, 3000);
   }
 
   const mausfueradelduai = (e) => {
     clearTimeout(timeout);
-    e.target.src = 'https://res.cloudinary.com/dln364ilz/image/upload/v1695676998/Dwight_ozdb3c.png';
+    e.target.src = Dwight;
   }
 
   useEffect(() => {
@@ -60,7 +62,7 @@ export function Inicio() {
             <p id="cardDesc" >Vendedora</p>
           </div>
           <div className='card'>
-          <img onMouseOver={mausdentrodelduai} onMouseOut={mausfueradelduai} src='https://res.cloudinary.com/dln364ilz/image/upload/v1695676998/Dwight_ozdb3c.png'/>
+          <img onMouseOver={mausdentrodelduai} onMouseOut={mausfueradelduai} src={Dwight}/>
             <h1 id="cardName" >Dwight Schrute</h1>
             <p id="cardDesc" >Asistente del gerente regional</p>
           </div>
