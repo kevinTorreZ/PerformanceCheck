@@ -382,6 +382,12 @@ footer{
     box-shadow: 0px 0px 5px 1px black;
 }
 
+.containerToast{
+    width: 450px;
+    height: auto;
+    background-color: red;
+}
+
 
 /* ESTA PAGINA NO EXISTE */
 
