@@ -24,7 +24,7 @@ export function Login() {
             localStorage.setItem('refreshToken', tokens.refresh);
             navigate('/');
         }catch(error){
-            console.log("Contraseña equivocada.")
+            document.getElementById('ErrorLogin').innerHTML += '<p>Contraseña inválida!</p>'
         }
     };
 
@@ -34,11 +34,13 @@ export function Login() {
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
                 <form onSubmit={handleSubmit(onSubmit)} id='formularioLogin'>
                     <h1>Iniciar sesión</h1>
-                    <input type="email" {...register('email', { required: 'El correo es requerido' })} style={{fontFamily: '"Cabin", sans-serif, FontAwesome'}} placeholder='&#xF0e0; Correo'/>
+                    <input type="email" {...register('email', { required: 'El correo es requerido' })} style={{fontFamily: '"Cabin", sans-serif, FontAwesome'}} placeholder='&#xF0e0; Correo' onInput={() => document.getElementById('ErrorLogin').innerHTML = ''} />
                     {errors.email?.message && <p>{errors.email.message}</p>}
-                    <input type="password" {...register('password', { required: 'La contraseña es requerida' })} style={{fontFamily: '"Cabin", sans-serif, FontAwesome'}} placeholder='&#xF023; Contraseña'/>
+                    <input type="password" {...register('password', { required: 'La contraseña es requerida' })} style={{fontFamily: '"Cabin", sans-serif, FontAwesome'}} placeholder='&#xF023; Contraseña' onInput={() => document.getElementById('ErrorLogin').innerHTML = ''} />
                     {errors.password?.message && <p>{errors.password.message}</p>}
                     <button type="submit">Iniciar sesión</button>
+                    <div id='ErrorLogin'>
+                    </div>
                 </form>
         </div>
     );
