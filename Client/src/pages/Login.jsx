@@ -24,7 +24,7 @@ export function Login() {
             localStorage.setItem('refreshToken', tokens.refresh);
             navigate('/');
         }catch(error){
-            document.getElementById('ErrorLogin').innerHTML += '<p>Contraseña inválida!</p>'
+            document.getElementById('ErrorLogin').innerHTML = '<p>Contraseña inválida!</p>'
         }
     };
 

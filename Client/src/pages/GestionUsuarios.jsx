@@ -88,7 +88,7 @@ export function GestionUsuarios() {
         console.log(Cargo);  // Imprime el valor del input de nombre
         console.log(email);  // Imprime el valor del input de email
         console.log(password);  // Imprime el valor del input de password
-        console.log(equipo);  // Imprime el valor del select de equipo
+        console.log(equipo);  
         console.log(proyecto);
     };
 
