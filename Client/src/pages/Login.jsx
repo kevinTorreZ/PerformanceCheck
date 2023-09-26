@@ -9,7 +9,7 @@ export function Login() {
     const navigate = useNavigate();
     const { login } = useAuth();
 
-    useEffect(() => {
+    useEffect(() => {   
         const token = localStorage.getItem('token');
         if (token) {
             navigate('/');
@@ -24,7 +24,7 @@ export function Login() {
             localStorage.setItem('refreshToken', tokens.refresh);
             navigate('/');
         }catch(error){
-            console.log()
+            console.log("Contraseña equivocada.")
         }
     };
 
