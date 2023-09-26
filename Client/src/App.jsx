@@ -9,6 +9,7 @@ import { GestionUsuarios } from "./pages/GestionUsuarios";
 import { Register } from "./pages/Registro";
 import { Perfil } from "./pages/Perfil"
 import { NotFoundPage }  from "./pages/NotFoundPage";
+import Footer from "./components/Footer";
 function App() {
   return(
     <AuthProvider>
@@ -22,8 +23,8 @@ function App() {
           <Route path="Perfil/" element={<Perfil/>}/>
           <Route path="GestionUsuarios/" element={<GestionUsuarios/>}/>
           <Route path="*" element={<NotFoundPage/>}/>
-          
         </Routes>
+        <Footer/>
       </BrowserRouter>
     </AuthProvider>
 

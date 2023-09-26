@@ -72,8 +72,21 @@ export function Inicio() {
         </div>
       </div>
       <div className='madera'></div>
-
+      <div className='tecnologiaDiv'>
+        <h1>Tecnologia de nuestra empresa</h1>
+        <div id='tecnologiaImagen'></div>
+        <div id='tecnologiaTexto'>
+        <p>Nuestra empresa se enorgullece de su tecnología innovadora, PerformanceCheck, diseñada para optimizar la gestión del desempeño de los empleados y la eficiencia operativa. 
+          Esta tecnología integral permite a las empresas evaluar y documentar el rendimiento de sus empleados en proyectos. <br/><br/>Seguimiento detallado de proyectos: Esta característica permite a las empresas tener una visión clara del progreso de cada proyecto y entender cómo cada empleado contribuye a este progreso.
+          </p>
+        </div>
+      </div>
+      <div className='madera'></div>
+      <div className='uneteDiv'>
+        <h1>SI BUSCAS EMPLEO UNETE A NOSOTROS</h1>
+        <button>¡UNETE!</button>
+      </div>
+      <div className='madera'></div>
     </div>
-
   );
 }
