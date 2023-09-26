@@ -90,7 +90,6 @@ export function GestionUsuarios() {
         console.log(password);  // Imprime el valor del input de password
         console.log(equipo);  // Imprime el valor del select de equipo
         console.log(proyecto);
-        // Aquí va la lógica para crear un nuevo usuario
     };
 
     return (
