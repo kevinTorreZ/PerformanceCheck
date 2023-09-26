@@ -35,6 +35,8 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
         return Response(serializer.validated_data, status=200)
 
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 class RegisterView(generics.CreateAPIView):
     queryset = usuario.objects.all()
     serializer_class = UserRegister

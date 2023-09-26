@@ -82,14 +82,32 @@ export function GestionUsuarios() {
         }
     }, [equipo]);
 
-    const handleCrearUsuario = () => {
-        console.log(tieneLider(equipo))
-        console.log(nombre);  // Imprime el valor del input de nombre
-        console.log(Cargo);  // Imprime el valor del input de nombre
-        console.log(email);  // Imprime el valor del input de email
-        console.log(password);  // Imprime el valor del input de password
-        console.log(equipo);  
-        console.log(proyecto);
+    const handleCrearUsuario = async ()  => {
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            alert('La contraseña debe tener al menos 8 caracteres, incluyendo al menos una letra mayúscula y un número.');
+            return;
+        }
+        const userData = {
+            Rut: rut,
+            Nombre: nombre,
+            email: email,
+            password: password,
+            Cargo: Cargo,
+            Fk_proyecto_asignado_id: null,
+            Fk_equipo_asignado_id: null,
+        };
+        const token = localStorage.getItem('token');
+        try {
+            await axios.post('http://127.0.0.1:8000/api/register', userData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            document.getElementById('MensajeEstado').innerHTML = 'Se ha creado el usuario.'
+        } catch (error) {
+            document.getElementById('MensajeEstado').innerHTML = 'Se ha producido un error.'
+        }
     };
 
     return (
@@ -101,11 +119,11 @@ export function GestionUsuarios() {
                 ))}
             </ul>
             <h2>Crear Usuario</h2>
-            <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Nombre" />
-            <input type="text" value={rut} onChange={handleRutChange} onBlur={handleRutBlur} placeholder="RUT" />
+            <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Nombre" required/>
+            <input type="text" value={rut} onChange={handleRutChange} onBlur={handleRutBlur} placeholder="RUT"  required/>
             {error && <p>Formato de RUT inválido</p>}
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Contraseña" />
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required/>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Contraseña" required/>
             <select onChange={e => setEquipo(e.target.value + 1)}>
                 <option defaultChecked value="">Seleccionar</option>
                 {equipos.map((equipo) => (
@@ -126,6 +144,9 @@ export function GestionUsuarios() {
                 ))}
             </select>
             <button onClick={handleCrearUsuario}>Crear Usuario</button>
+            <div id='MensajeEstado'>
+
+            </div>
         </div>
     );
 }

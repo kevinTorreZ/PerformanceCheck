@@ -31,7 +31,7 @@ class UsuarioManager(BaseUserManager):
 class usuario(AbstractBaseUser, PermissionsMixin):
     idUsuario = models.AutoField(primary_key=True, unique=True)
     Nombre = models.CharField(max_length=30, blank=None)
-    Rut = models.CharField(max_length=8)
+    Rut = models.CharField(max_length=10)
     email = models.EmailField(max_length=80, unique=True)
     Cargo = models.CharField(max_length=50)
     Usuario = models.CharField(max_length=50)
