@@ -6,6 +6,7 @@ import { useAuth } from '../components/verificador';
 import Amborgesa from './Hambuger';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightToBracket, faHouse, faUser } from '@fortawesome/free-solid-svg-icons';
+import logo from "../img/Dunder-Mifflin.png"
 
 export function Nav() {
     const { isLoggedIn, logout } = useAuth();
@@ -41,7 +42,7 @@ export function Nav() {
     return (
         <div className="contDiv">
             <NavCont>
-                <div className="logo"></div>
+                <a ><img className="logo" src={logo}/></a>
                     <div className={`links ${clicked ? 'active' : ''}`}>
                         <a href={'/'}><FontAwesomeIcon icon={faHouse}/> Inicio</a>
                         <a href={'/Perfil'}><FontAwesomeIcon icon={faUser}/> Perfil</a>
@@ -78,11 +79,11 @@ const NavCont = styled.nav`
     height: 60px;
     max-height: 60px;
     .logo{
-        background-image: url("https://logos-world.net/wp-content/uploads/2022/02/Dunder-Mifflin-Emblem.png");
         background-size: contain;
         background-repeat: no-repeat;
-        width: 100%;
+        width: 130px;
         height: 60px;
+        margin-right: 40rem;
     }
     padding: .4rem;
     background-color: transparent;
