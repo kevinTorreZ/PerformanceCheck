@@ -24,7 +24,7 @@ export function Login() {
             localStorage.setItem('refreshToken', tokens.refresh);
             navigate('/');
         }catch(error){
-            console.log()
+            console.log("Contraseña equivocada.")
         }
     };
 
