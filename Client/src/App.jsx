@@ -6,7 +6,6 @@ import { Nav } from "./components/Nav"
 import {AuthProvider} from "./components/verificador"
 import { Logout } from "./pages/Logout";
 import { GestionUsuarios } from "./pages/GestionUsuarios";
-import { Register } from "./pages/Registro";
 import { Perfil } from "./pages/Perfil"
 import { NotFoundPage }  from "./pages/NotFoundPage";
 import Footer from "./components/Footer";
@@ -17,7 +16,6 @@ function App() {
         <Nav/>
         <Routes>
           <Route path="/" element={<Inicio/>}/>
-          <Route path="Registro/" element={<Register/>}/>
           <Route path="Login/" element={<Login/>}/>
           <Route path="Logout/" element={<Logout/>}/>
           <Route path="Perfil/" element={<Perfil/>}/>
