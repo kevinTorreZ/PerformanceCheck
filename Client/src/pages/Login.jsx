@@ -9,7 +9,7 @@ export function Login() {
     const navigate = useNavigate();
     const { login } = useAuth();
 
-    useEffect(() => {
+    useEffect(() => {   
         const token = localStorage.getItem('token');
         if (token) {
             navigate('/');
