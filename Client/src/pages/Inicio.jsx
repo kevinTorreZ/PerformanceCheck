@@ -20,6 +20,10 @@ export function Inicio() {
     e.target.src = Dwight;
   }
 
+  const rickroll = () => {
+    window.open('https://youtu.be/dQw4w9WgXcQ', '_blank');
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     setToken(token);
@@ -86,7 +90,7 @@ export function Inicio() {
       <div className='madera'></div>
       <div className='uneteDiv'>
         <h1>SI BUSCAS EMPLEO UNETE A NOSOTROS</h1>
-        <button>¡UNETE!</button>
+        <button onClick={rickroll}>¡UNETE!</button>
       </div>
       <div className='madera'></div>
     </div>

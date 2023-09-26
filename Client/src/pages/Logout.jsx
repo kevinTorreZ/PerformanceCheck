@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Homero from '../img/Homero.gif'
 
 export function Logout() {
     const [loading, setLoading] = useState(true);
@@ -15,8 +16,9 @@ export function Logout() {
     }, [navigate]);
 
     return (
-      <div>
-        {loading ? 'Estás cerrando la sesión...' : 'Redireccionando...'}
+      <div className='cerrandoSesion'>
+        <img src={Homero}/>
+        <p>{loading ? 'Cerrando sesión...' : 'Redireccionando...'}</p>
       </div>
     );
 }
