@@ -82,7 +82,7 @@ const NavCont = styled.nav`
         background-repeat: no-repeat;
         width: 130px;
         height: 60px;
-        margin-right: 40rem;
+        margin-right: 50rem;
     }
     padding: .4rem;
     background-color: transparent;
