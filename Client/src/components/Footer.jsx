@@ -1,12 +1,13 @@
 import React from 'react';
 import logo from "../img/Dunder-Mifflin.png"
+import Kevin from "../img/Kevin.gif"
 
 const Footer = () => {
     let timeout;
 
     const mausdentrodelduai = (e) => {
         timeout = setTimeout(() => {
-            e.target.src = 'https://media.tenor.com/5AVmfMmwdFkAAAAM/oh-yeah-smile.gif';
+            e.target.src = Kevin;
         }, 3000);
     }
 
