@@ -12,7 +12,7 @@ export function Inicio() {
   const mausdentrodelduai = (e) => {
     timeout = setTimeout(() => {
       e.target.src = dwightPeluca;
-    }, 3000);
+    }, 2000);
   }
 
   const mausfueradelduai = (e) => {

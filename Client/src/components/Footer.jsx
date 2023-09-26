@@ -8,7 +8,7 @@ const Footer = () => {
     const mausdentrodelduai = (e) => {
         timeout = setTimeout(() => {
             e.target.src = Kevin;
-        }, 3000);
+        }, 2000);
     }
 
     const mausfueradelduai = (e) => {
