@@ -33,9 +33,9 @@ export function Nav() {
             position: "top-center",
             autoClose: false,
             hideProgressBar: false,
-            closeOnClick: true,
+            closeOnClick: false,
             pauseOnHover: false,
-            draggable: true,
+            draggable: false,
             progress: undefined,
             transition: Slide,
         });
@@ -52,6 +52,26 @@ export function Nav() {
         setToastIds([]);
         setHasNotifications(false);
     };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (taOpen && !document.getElementsByClassName('dVAipI')[0].contains(event.target)) {
+                setTaOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [taOpen]);
+
+
+    useEffect(() => {
+        if (toastIds.length === 0) {
+            setTaOpen(false);
+        }
+    }, [toastIds]);
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -238,6 +258,7 @@ const NotificationCenter = styled.div`
     width: 350px;
     height: auto;
     top: 1.5rem;
+    color: #60544B;
     right: 0;
 `
 const BellIconContainer = styled.div`
