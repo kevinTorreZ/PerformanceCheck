@@ -95,7 +95,6 @@ export function GestionUsuarios() {
                 }
             }).then(response => {
                 if (response.data) {
-                    console.log(response.data)
                     setProyectosSelected([response.data]);
                 } else {
                     console.error('La API no devolvió un objeto');
@@ -116,14 +115,14 @@ export function GestionUsuarios() {
 
     const handleClickListaUsuario = (usuario) => {
         setUsuarioSelected(usuario);
-        setEquipoSelected(usuario.Fk_equipo_asignado_id.idEquipo)
-        cargarProyectos(usuario.Fk_equipo_asignado_id.idEquipo);
+        if (usuario.Fk_equipo_asignado_id !== null) {
+            setEquipoSelected(usuario.Fk_equipo_asignado_id.idEquipo)
+            cargarProyectos(usuario.Fk_equipo_asignado_id.idEquipo);
+        }
     }
 
     useEffect(() => {
         if (equipo) {
-            console.log(equipos)
-            console.log(equipo)
             const token = localStorage.getItem('token');
             axios.get(`http://localhost:8000/api/proyectos/${equipos[equipo - 1].Fk_proyecto_asignado_id}`, {
                 headers: {
@@ -145,10 +144,21 @@ export function GestionUsuarios() {
         }
     }, [equipo]);
 
-    const handleModificarUsuario = async () => {
+    const handleModificarUsuario = (event) => {
+        event.preventDefault();
+        const usuarioModificado = {
+            email: usuarioSelected.email,
+            nombre: usuarioSelected.Nombre,
+            rut: usuarioSelected.Rut,
+            equipo: equipoSelected,
+            cargo: document.getElementById('SelectorCargo').value,
+            proyecto: document.getElementById('SelectorProyecto').value
+        };
+
+    };
+    const handleEliminarUsuario = async () => {
         //Logica para modifcar usuario
     };
-
     const handleCrearUsuario = async () => {
         const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{8,}$/;
         if (!passwordRegex.test(password)) {
@@ -161,8 +171,8 @@ export function GestionUsuarios() {
             email: email,
             password: password,
             Cargo: Cargo,
-            Fk_proyecto_asignado_id: null,
-            Fk_equipo_asignado_id: null,
+            Fk_proyecto_asignado_id: proyecto,
+            Fk_equipo_asignado_id: equipo,
         };
         const token = localStorage.getItem('token');
         try {
@@ -183,47 +193,48 @@ export function GestionUsuarios() {
             <div className='ListaUsuarios'>
                 <ul>
                     {usuarios.map(usuario => (
-                        <li key={usuario.idUsuario} onClick={() => handleClickListaUsuario(usuario)}>{usuario.email}</li>
+                        <li key={usuario.idUsuario} onClick={() => handleClickListaUsuario(usuario)}>{usuario.email} </li>
+
                     ))}
                 </ul>
             </div>
             <div className='InfoUsuarios'>
-                {usuarioSelected && (<form>
+                {usuarioSelected && (<form onSubmit={handleModificarUsuario}>
                     <label>
                         Correo:
-                        <input type="text" value={usuarioSelected.email} readOnly />
+                        <input type="text" value={usuarioSelected.email} onChange={e => setUsuarioSelected({ ...usuarioSelected, email: e.target.value })} />
                     </label>
                     <label>
                         Nombre:
-                        <input type="text" value={usuarioSelected.Nombre} readOnly />
+                        <input type="text" value={usuarioSelected.Nombre} onChange={e => setUsuarioSelected({ ...usuarioSelected, Nombre: e.target.value })} />
                     </label>
                     <label>
                         Rut:
-                        <input type="text" value={usuarioSelected.Rut} readOnly />
+                        <input type="text" value={usuarioSelected.Rut} onChange={e => setUsuarioSelected({ ...usuarioSelected, Rut: e.target.value })} />
                     </label>
                     <select onChange={e => setEquipoSelected(Number(e.target.value))} >
                         <option key='Seleccionar' value='Seleccionar'>Seleccionar</option>
                         {equipos.map((equipo) => (
-                            <option key={equipo.idEquipo} value={equipo.idEquipo} selected={equipo.idEquipo === usuarioSelected.Fk_equipo_asignado_id.idEquipo}>{equipo.Nombre_equipo}</option>
+                            <option key={equipo.idEquipo} value={equipo.idEquipo} selected={equipo.idEquipo === usuarioSelected?.Fk_equipo_asignado_id?.idEquipo}>{equipo.Nombre_equipo}</option>
                         ))}
                     </select>
-                    <select onChange={e => setCargoSelected(e.target.value)}>
+                    <select onChange={e => setCargoSelected(e.target.value)} id='SelectorCargo'>
                         {equipoSelected && <option>Miembro</option>}
                         {equipoSelected !== undefined && tieneLider(equipoSelected) && <option>Lider</option>}
-                        {!equipoSelected && <option>Administrador</option>}
+                        {!equipoSelected && <option value='Administrador'>Administrador</option>}
                     </select>
-                    <select onChange={e => setProyectoSelected(e.target.value)}>
-                        <option value="">Seleccionar</option>
+                    <select onChange={e => setProyectoSelected(e.target.value)} id='SelectorProyecto'>
+                        <option value="Seleccionar">Seleccionar</option>
                         {
                             proyectosSelected && proyectosSelected.map((proyecto, index) => (
                                 <option key={index} value={proyecto.idProyecto}>{proyecto.Nombre}</option>
                             ))
                         }
                     </select>
-                    <button onClick={handleModificarUsuario}>Modificar</button>
+                    <button type="button">Eliminar</button>
+                    <button type="submit">Modificar</button>
                 </form>)}
             </div>
-
             <h2>Crear Usuario</h2>
             <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Nombre" required />
             <input type="text" value={rut} onChange={handleRutChange} onBlur={handleRutBlur} placeholder="RUT" required />

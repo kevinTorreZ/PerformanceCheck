@@ -15,7 +15,7 @@ export function Login() {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            navigate('/');
+            window.location.href = '/';
         }
     }, [navigate]);
 
