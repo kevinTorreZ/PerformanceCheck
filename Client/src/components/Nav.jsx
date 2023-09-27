@@ -134,10 +134,9 @@ export function Nav() {
                     {isLoggedIn && rol === 'Administrador' && (
                         <a href={'/GestionUsuarios'}>Gestionar Usuarios</a>
                     )}
-                    {isLoggedIn && rol === 'Lider' || rol === 'Miembro' && (<a href={'/'}>Proyecto</a>)}
-
+                    {isLoggedIn && (rol === 'Lider' || rol === 'Miembro') && (<a href={'/'}>Proyecto</a>)}
+                    {isLoggedIn && (rol === 'Lider' || rol === 'Miembro') && (<a href={'/LineaTiempo'}> Linea de Tiempo</a>)}
                     {isLoggedIn && (<a href={'/Perfil'}><FontAwesomeIcon icon={faUser} /> Perfil</a>)}
-                    {isLoggedIn && (<a href={'/LineaTiempo'}> Linea de Tiempo</a>)}
                     <a href={'/'}><FontAwesomeIcon icon={faHouse} /> Inicio</a>
                     <button onClick={addTostadita}>PRUEBA</button>
                 </div>
