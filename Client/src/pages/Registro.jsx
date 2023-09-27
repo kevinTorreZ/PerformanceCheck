@@ -12,7 +12,7 @@ export function Register() {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            navigate('/');
+            window.location.href = '/';
         }
     }, [navigate]);
 

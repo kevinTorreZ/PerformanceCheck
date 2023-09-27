@@ -20,6 +20,8 @@ export function Perfil() {
             }).catch(error => {
                 console.error(error);
             });
+        }else{
+            window.location.href = '/login'
         }
     }, []);
 

@@ -38,7 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = usuario
-        fields = ['idUsuario','Nombre', 'email', 'Cargo','Usuario','password','Fk_equipo_asignado_id','Fk_proyecto_asignado_id']
+        fields = ['idUsuario','Nombre', 'email', 'Cargo','Rut','Usuario','password','Fk_equipo_asignado_id','Fk_proyecto_asignado_id']
 
     def get_Fk_equipo_asignado_id(self, obj):
         try:

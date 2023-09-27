@@ -12,20 +12,13 @@ export function Login() {
     const navigate = useNavigate();
     const { login } = useAuth();
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            navigate('/');
-        }
-    }, [navigate]);
-
     const onSubmit = async data => {
         try {
             const response = await axios.post('http://localhost:8000/api/token/', data);
             const tokens = response.data;
             login(tokens.access, tokens.refresh, tokens.user);
             localStorage.setItem('refreshToken', tokens.refresh);
-            navigate('/');
+            window.location.href = '/';
         } catch (error) {
             toast.error('Contraseña o correo inválido!');
         }

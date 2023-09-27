@@ -4,16 +4,15 @@ import Homero from '../img/Homero.gif'
 
 export function Logout() {
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
 
     useEffect(() => {
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
         setTimeout(() => {
             setLoading(false);
-            navigate('/Login');
+            window.location.href = '/';;
         }, 2000);
-    }, [navigate]);
+    }, []);
 
     return (
       <div className='cerrandoSesion'>
