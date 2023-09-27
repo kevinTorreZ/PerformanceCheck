@@ -247,7 +247,7 @@ body {
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
 }
 
-.uneteDiv button{
+.uneteDiv button {
     width: 250px;
     height: 40px;
     border-radius: 5px;
@@ -263,7 +263,7 @@ body {
 
 /* FOOTERSITO */
 
-footer{
+footer {
     width: 100%;
     height: 150px;
     background-color: #272B25;
@@ -274,17 +274,17 @@ footer{
     justify-content: center;
 }
 
-#logoDunder img{
+#logoDunder img {
     width: 180px;
     overflow: hidden;
     float: left;
     background-repeat: no-repeat;
     background-size: contain;
     height: 100px;
-    
+
 }
 
-.contactoDunder{
+.contactoDunder {
     width: auto;
     height: 100px;
     margin-left: 5rem;
@@ -295,13 +295,13 @@ footer{
     flex-direction: column;
 }
 
-.contactoDunder a{
+.contactoDunder a {
     text-align: center;
     color: #C1C1B7;
     font-family: 'Helvetica', 'Arial', sans-serif;
 }
 
-#logoInacap{
+#logoInacap {
     width: 180px;
     height: 100px;
     float: left;
@@ -314,7 +314,7 @@ footer{
 
 /* LOGIN */
 
-.loginDiv{
+.loginDiv {
     width: 100%;
     min-height: calc(100vh - 60px - 150px);
     display: flex;
@@ -322,7 +322,7 @@ footer{
     align-items: center;
 }
 
-.loginDiv form{
+.loginDiv form {
     display: flex;
     width: 450px;
     height: 500px;
@@ -334,13 +334,13 @@ footer{
     box-shadow: 0px 0px 5px 1px black;
 }
 
-.loginDiv form h1{
+.loginDiv form h1 {
     font-family: 'Cabin', sans-serif;
     color: white;
     margin-bottom: 2rem;
 }
 
-.loginDiv form input[type="email"]{
+.loginDiv form input[type="email"] {
     font-family: 'Cabin', sans-serif;
     width: 300px;
     height: 30px;
@@ -349,7 +349,7 @@ footer{
     box-shadow: 0px 0px 5px 1px black;
 }
 
-.loginDiv form input[type="password"]{
+.loginDiv form input[type="password"] {
     font-family: 'Cabin', sans-serif;
     width: 300px;
     height: 30px;
@@ -359,16 +359,16 @@ footer{
     margin-top: 2rem;
 }
 
-.loginDiv form input[type="password"]:focus{
+.loginDiv form input[type="password"]:focus {
     outline: none;
 }
 
-.loginDiv form input[type="email"]:focus{
+.loginDiv form input[type="email"]:focus {
     outline: none;
 }
 
 
-.loginDiv form button{
+.loginDiv form button {
     width: 300px;
     height: 35px;
     background-color: #C1C1B7;
@@ -382,7 +382,7 @@ footer{
     box-shadow: 0px 0px 5px 1px black;
 }
 
-.loginDiv form p{
+.loginDiv form p {
     font-family: 'Cabin', sans-serif;
     color: rgb(255, 72, 72);
 }
@@ -390,12 +390,12 @@ footer{
 
 /* ESTA PAGINA NO EXISTE */
 
-.divMain404 h1{
+.divMain404 h1 {
     font-family: 'Cabin', sans-serif;
     font-size: 2.5rem;
 }
 
-.divMain404{
+.divMain404 {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -403,7 +403,7 @@ footer{
     min-height: calc(100vh - 60px - 150px);
 }
 
-#logoDunder404{
+#logoDunder404 {
     background-image: url("./img/dunder404.jpg");
     background-size: contain;
     width: 300px;
@@ -411,7 +411,7 @@ footer{
     background-repeat: no-repeat;
 }
 
-#stickMan{
+#stickMan {
     background-image: url("./img/stickman.png");
     background-size: contain;
     width: 300px;
@@ -419,17 +419,17 @@ footer{
     background-repeat: no-repeat;
 }
 
-.divMain404 h1{
+.divMain404 h1 {
     color: red;
 }
 
-.divMain404 h1 span{
+.divMain404 h1 span {
     color: green;
 }
 
 /* CERRANDO SESION */
 
-.cerrandoSesion{
+.cerrandoSesion {
     width: 100%;
     height: 600px;
     display: flex;
@@ -439,14 +439,80 @@ footer{
     min-height: calc(100vh - 60px - 150px);
 }
 
-.cerrandoSesion p{
+.cerrandoSesion p {
     text-align: center;
     font-weight: bold;
     font-size: 2rem;
     font-family: 'Cabin', sans-serif;
 }
 
-.cerrandoSesion img{
+.cerrandoSesion img {
     border-radius: 5px;
     box-shadow: 0px 0px 5px 1px black;
+}
+
+
+/* COSAS NUEVAS NAV */
+.fa-right-to-bracket {
+    filter: drop-shadow(1px 1px 1px black)
+}
+
+.fa-user {
+    filter: drop-shadow(1px 1px 1px black)
+}
+
+.fa-house {
+    filter: drop-shadow(1px 1px 1px black)
+}
+
+.fa-bell {
+    filter: drop-shadow(1px 1px 1px black)
+}
+
+#bellIcon {
+    cursor: pointer;
+}
+
+
+.Toastify__toast-container {
+    width: 300px;
+    height: auto;
+}
+
+.Toastify__toast {
+    height: 40px;
+}
+
+
+.bscspE {
+    overflow-y: scroll;
+}
+
+:root {
+    --toastify-toast-min-height: 60px;
+}
+
+.jKBNpq {
+    position: static !important;
+}
+
+.Toastify__toast-container--top-center {
+    transform: none;
+}
+
+
+.divNotificaciones {
+    margin-top: 1rem;
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    max-height: 350px;
+}
+
+.divNotificaciones p {
+    font-family: 'Cabin', sans-serif;
+    margin-bottom: 2rem;
+    font-weight: bold;
+    font-size: 1.2rem;
 }
