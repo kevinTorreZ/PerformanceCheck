@@ -344,7 +344,6 @@ footer{
     font-family: 'Cabin', sans-serif;
     width: 300px;
     height: 30px;
-    margin-bottom: 2rem;
     border: 2px solid #D8D8D8;
     border-radius: 5px;
     box-shadow: 0px 0px 5px 1px black;
@@ -354,10 +353,10 @@ footer{
     font-family: 'Cabin', sans-serif;
     width: 300px;
     height: 30px;
-    margin-bottom: 5rem;
     border: 2px solid #D8D8D8;
     border-radius: 5px;
     box-shadow: 0px 0px 5px 1px black;
+    margin-top: 2rem;
 }
 
 .loginDiv form input[type="password"]:focus{
@@ -376,16 +375,16 @@ footer{
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-top: 2rem;
     color: #272B25;
     font-family: 'Cabin', sans-serif;
     font-weight: bold;
     box-shadow: 0px 0px 5px 1px black;
 }
 
-.containerToast{
-    width: 450px;
-    height: auto;
-    background-color: red;
+.loginDiv form p{
+    font-family: 'Cabin', sans-serif;
+    color: rgb(255, 72, 72);
 }
 
 
