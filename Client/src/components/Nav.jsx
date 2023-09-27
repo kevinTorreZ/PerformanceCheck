@@ -2,18 +2,54 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import jwt_decode from 'jwt-decode';
-import { useAuth } from '../components/verificador';
+import { useAuth } from './verificador';
 import Amborgesa from './Hambuger';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRightToBracket, faHouse, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faRightToBracket, faHouse, faUser, faBell } from '@fortawesome/free-solid-svg-icons';
 import logo from "../img/Dunder-Mifflin.png"
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export function Nav() {
     const { isLoggedIn, logout } = useAuth();
     const [rol, setRol] = useState('');
+    const [taOpen, setTaOpen] = useState(false);
+    const types = ['info', 'success', 'error'];
+    const handleCampanovishClick = () => {
+        setTaOpen(!taOpen);
+    };
+
+
+    const [toastIds, setToastIds] = useState([]);
+
+    const addTostadita = () => {
+        const type = types[Math.floor(Math.random() * types.length)];
+        const toastId = Math.random();
+        toast("Lorem ipsum dolor sit amet, consectetur adipiscing elit", {
+            toastId: toastId,
+            type: type,
+            position: "top-center",
+            autoClose: false,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            transition: Slide,
+        });
+        setToastIds(prevToastIds => [...prevToastIds, toastId]);
+    }
 
     const handleLogout = () => {
         logout();
+    };
+
+    const [hasNotifications, setHasNotifications] = useState(false);
+
+    const removertoas = () => {
+        toastIds.forEach((toastId) => toast.dismiss(toastId));
+        setToastIds([]);
+        setHasNotifications(false);
     };
 
     useEffect(() => {
@@ -45,7 +81,27 @@ export function Nav() {
                 <a href='/'><img className="logo" src={logo} /></a>
                 <div className={`links ${clicked ? 'active' : ''}`}>
                     {isLoggedIn ? (
-                        <a href={'/logout'} onClick={handleLogout}><FontAwesomeIcon icon={faRightToBracket} /> Salir</a>
+                        <div><a href={'/logout'} onClick={handleLogout}><FontAwesomeIcon icon={faRightToBracket} /> Salir</a>
+                            <div>
+                                <a id="bellIcon" onClick={handleCampanovishClick}><FontAwesomeIcon icon={faBell} /></a>
+                                <BellIconContainer>
+                                    {taOpen && (
+                                        <NotificationCenter style={{ display: taOpen ? 'block' : 'none' }}>
+                                            <div className="divNotificaciones">
+                                                {toastIds.length > 0 ? (
+                                                    <div>
+                                                        <StyledToastContainer />
+                                                        <button onClick={removertoas}>Eliminar Todas</button>
+                                                    </div>
+                                                ) : (
+                                                    <p>No hay notificaciones</p>
+                                                )}
+                                            </div>
+                                        </NotificationCenter>
+                                    )}
+                                </BellIconContainer>
+                            </div>
+                        </div>
                     ) : (
                         <>
                             <a href={'/login'}> <FontAwesomeIcon icon={faRightToBracket} /> Login</a>
@@ -61,6 +117,7 @@ export function Nav() {
 
                     {isLoggedIn && (<a href={'/Perfil'}><FontAwesomeIcon icon={faUser} /> Perfil</a>)}
                     <a href={'/'}><FontAwesomeIcon icon={faHouse} /> Inicio</a>
+                    <button onClick={addTostadita}>PRUEBA</button>
                 </div>
                 <div className="LaBurger">
                     <Amborgesa clicked={clicked} handleClick={handleClick} />
@@ -172,5 +229,25 @@ const BackDiv = styled.div`
         height: 100%;
         z-index: -1;
     }
-    
 `
+
+const NotificationCenter = styled.div`
+    position: absolute;
+    background-color: #E9E9E9;
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px 1px gray;
+    width: 350px;
+    height: auto;
+    top: 1.5rem;
+    right: 0;
+`
+const BellIconContainer = styled.div`
+    position: relative;
+`
+
+const StyledToastContainer = styled(ToastContainer)`
+    position: absolute;
+    top: 0;
+    right: 0;
+    overflow: hidden;
+`;
