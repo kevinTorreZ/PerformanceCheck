@@ -12,7 +12,7 @@ export function Logout() {
             setLoading(false);
             window.location.href = '/';;
         }, 2000);
-    }, [navigate]);
+    }, []);
 
     return (
       <div className='cerrandoSesion'>

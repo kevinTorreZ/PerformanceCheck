@@ -5,6 +5,12 @@ import jwt_decode from 'jwt-decode';
 import { useAuth } from '../components/verificador'
 
 export function GestionUsuarios() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = '/login'
+    }
+
+    
     const [usuarios, setUsuarios] = useState([]);
     const [rut, setRut] = useState('');
     const [nombre, setNombre] = useState('');
@@ -23,7 +29,6 @@ export function GestionUsuarios() {
     const [cargoSelected, setCargoSelected] = useState(null);
     const navigate = useNavigate();
     const auth = useAuth();  // Usa el hook useAuth para obtener el estado de autenticación
-
     const tieneLider = (equipoId) => {
         if (equipos[equipoId] && equipos[equipoId].Lider !== undefined && equipos[equipoId].Lider !== null) {
             return true;
@@ -50,22 +55,6 @@ export function GestionUsuarios() {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (token && Cargo != 'Administrador') {
-            axios.get(`http://localhost:8000/api/equipos`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then(response => {
-                setEquipos(response.data);
-            }).catch(error => {
-                navigate("/logout");
-                console.error(error);
-            });
-        }
-    }, []);
-
-    useEffect(() => {
-        const token = localStorage.getItem('token');
         if (token) {
             axios.get(`http://localhost:8000/users/`, {
                 headers: {
@@ -74,6 +63,25 @@ export function GestionUsuarios() {
             }).then(response => {
                 setUsuarios(response.data);
             }).catch(error => {
+                console.error(error);
+            });
+        }else{
+            window.location.href = '/login'
+        }
+    }, []);
+
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token && Cargo != 'Administrador') {
+            axios.get(`http://localhost:8000/api/equipos`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => {
+                setEquipos(response.data);
+            }).catch(error => {
+                window.location.href = '/logout'
                 console.error(error);
             });
         }
@@ -189,6 +197,7 @@ export function GestionUsuarios() {
 
     return (
         <div>
+            
             <h1>Gestión de Usuarios</h1>
             <div className='ListaUsuarios'>
                 <ul>
