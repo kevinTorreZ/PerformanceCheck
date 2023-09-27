@@ -18,12 +18,15 @@ export function Nav() {
 
     const handleCampanovishClick = () => {
         setTaOpen(!taOpen);
+        setHasNotifications(false);
     };
 
     const [toastIds, setToastIds] = useState([]);
     const [hasToast, setHasToast] = useState(false);
 
     const [hasNotifications, setHasNotifications] = useState(false);
+
+    
     const addTostadita = () => {
         const type = types[Math.floor(Math.random() * types.length)];
         const toastId = Math.random();
@@ -41,6 +44,7 @@ export function Nav() {
         });
         setToastIds(prevToastIds => [...prevToastIds, toastId]);
         setHasToast(true);
+        setHasNotifications(true);
     }
 
     const handleLogout = () => {
@@ -99,7 +103,10 @@ export function Nav() {
                     {isLoggedIn ? (
                         <div><a href={'/logout'} onClick={handleLogout}><FontAwesomeIcon icon={faRightToBracket} /> Salir</a>
                             <div>
-                                <a id="bellIcon" onClick={handleCampanovishClick}><FontAwesomeIcon icon={faBell} /></a>
+                                <a id="bellIcon" onClick={handleCampanovishClick}>
+                                <FontAwesomeIcon icon={faBell} />
+                                {hasNotifications && <span className='notipuntito'></span>}
+                                </a>
                                 <BellIconContainer className='contCampanovish'>
                                     <NotificationCenter className='scrollbar contNoti' id="scrollbar1" style={{ display: taOpen ? 'block' : 'none' }}>
                                         <div className="divNotificaciones">
