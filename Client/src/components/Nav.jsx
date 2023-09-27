@@ -53,6 +53,7 @@ export function Nav() {
         setHasNotifications(false);
     };
 
+    
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (taOpen && !document.getElementsByClassName('contNoti')[0].contains(event.target)) {
@@ -99,12 +100,12 @@ export function Nav() {
                         <div><a href={'/logout'} onClick={handleLogout}><FontAwesomeIcon icon={faRightToBracket} /> Salir</a>
                             <div>
                                 <a id="bellIcon" onClick={handleCampanovishClick}><FontAwesomeIcon icon={faBell} /></a>
-                                <BellIconContainer >
+                                <BellIconContainer className='contCampanovish'>
                                     <NotificationCenter className='scrollbar contNoti' id="scrollbar1" style={{ display: taOpen ? 'block' : 'none' }}>
                                         <div className="divNotificaciones">
                                             {toastIds.length > 0 ? (
                                                 <div>
-                                                    <button id="btnEliminar" onClick={removertoas}><FontAwesomeIcon icon={faTrash}/> Borrar todo</button>
+                                                    <button id="btnEliminar" onClick={removertoas}><FontAwesomeIcon icon={faTrash}/> Borrar notificaciones</button>
                                                     <StyledToastContainer />
                                                 </div>
                                             ) : (

@@ -489,6 +489,9 @@ footer {
     overflow-y: scroll;
 }
 
+.contCampanovish{
+    transition: opacity 0.5s ease-out;
+}
 
 :root {
     --toastify-toast-min-height: 60px;
@@ -537,6 +540,7 @@ footer {
     color: #60544B;
     box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
     font-family: 'Cabin', sans-serif;
+    user-select: none;
 }
 
 .scrollbar {
@@ -545,6 +549,8 @@ footer {
     overflow: auto;
     padding: 0 10px;
 }
+
+
 /*       ScrollBar 1        */
 
 #scrollbar1::-webkit-scrollbar {
