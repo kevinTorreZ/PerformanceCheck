@@ -51,7 +51,7 @@ export function GestionUsuarios() {
             }).then(response => {
                 setEquipos(response.data);
             }).catch(error => {
-                Navigate('/logout')
+                console.log("Deslogeando.....")
                 console.error(error);
             });
         }

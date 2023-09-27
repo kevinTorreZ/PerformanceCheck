@@ -4,13 +4,13 @@ import Homero from '../img/Homero.gif'
 
 export function Logout() {
     const [loading, setLoading] = useState(true);
-
+    const Navigate = useNavigate()
     useEffect(() => {
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
         setTimeout(() => {
             setLoading(false);
-            window.location.href = '/';;
+            Navigate('/');
         }, 2000);
     }, []);
 
