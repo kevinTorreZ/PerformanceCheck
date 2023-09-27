@@ -15,13 +15,15 @@ export function Nav() {
     const [rol, setRol] = useState('');
     const [taOpen, setTaOpen] = useState(false);
     const types = ['info', 'success', 'error'];
+
     const handleCampanovishClick = () => {
         setTaOpen(!taOpen);
     };
 
-
     const [toastIds, setToastIds] = useState([]);
+    const [hasToast, setHasToast] = useState(false);
 
+    const [hasNotifications, setHasNotifications] = useState(false);
     const addTostadita = () => {
         const type = types[Math.floor(Math.random() * types.length)];
         const toastId = Math.random();
@@ -38,13 +40,12 @@ export function Nav() {
             transition: Slide,
         });
         setToastIds(prevToastIds => [...prevToastIds, toastId]);
+        setHasToast(true);
     }
 
     const handleLogout = () => {
         logout();
     };
-
-    const [hasNotifications, setHasNotifications] = useState(false);
 
     const removertoas = () => {
         toastIds.forEach((toastId) => toast.dismiss(toastId));
@@ -85,20 +86,18 @@ export function Nav() {
                             <div>
                                 <a id="bellIcon" onClick={handleCampanovishClick}><FontAwesomeIcon icon={faBell} /></a>
                                 <BellIconContainer>
-                                    {taOpen && (
-                                        <NotificationCenter style={{ display: taOpen ? 'block' : 'none' }}>
-                                            <div className="divNotificaciones">
-                                                {toastIds.length > 0 ? (
-                                                    <div>
-                                                        <StyledToastContainer />
-                                                        <button onClick={removertoas}>Eliminar Todas</button>
-                                                    </div>
-                                                ) : (
-                                                    <p>No hay notificaciones</p>
-                                                )}
-                                            </div>
-                                        </NotificationCenter>
-                                    )}
+                                    <NotificationCenter style={{ display: taOpen ? 'block' : 'none' }}>
+                                        <div className="divNotificaciones">
+                                            {toastIds.length > 0 ? (
+                                                <div>
+                                                    <StyledToastContainer />
+                                                    <button onClick={removertoas}>Eliminar Todas</button>
+                                                </div>
+                                            ) : (
+                                                <p>No hay notificaciones</p>
+                                            )}
+                                        </div>
+                                    </NotificationCenter>
                                 </BellIconContainer>
                             </div>
                         </div>
