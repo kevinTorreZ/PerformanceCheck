@@ -4,7 +4,7 @@ import jwt_decode from 'jwt-decode';
 
 export function LineaTiempo() {
     const [user, setUser] = useState(null);
-    
+        
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -31,7 +31,7 @@ export function LineaTiempo() {
                 <p>Nombre Proyecto: {user.Fk_proyecto_asignado_id.Nombre}</p>
                 <p>Nombre del Equipo: {user.Fk_equipo_asignado_id.Nombre_equipo}</p>
                 <p>Descripcion del proyecto: {user.Fk_proyecto_asignado_id.Descripcion}</p>
-                <p>Fecha Limite: {user.Fk_proyecto_asignado_id.FechaLimite}</p>
+                <p>Fecha Limite: {new Date(user.Fk_proyecto_asignado_id.FechaLimite).toLocaleDateString('es-ES')}</p>
             </div>
         )}
       </div>
