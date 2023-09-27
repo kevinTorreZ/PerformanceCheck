@@ -5,12 +5,15 @@ import { Login } from "./pages/Login";
 import { Nav } from "./components/Nav"
 import {AuthProvider,useAuth} from "./components/verificador"
 import { Logout } from "./pages/Logout";
+import { withAuth } from './components/verificador';
 import { GestionUsuarios } from "./pages/GestionUsuarios";
 import { Perfil } from "./pages/Perfil"
 import { LineaTiempo } from './pages/LineaTiempo';
 import { NotFoundPage }  from "./pages/NotFoundPage";
 import Footer from "./components/Footer";
 function App() {
+  const AuthenticatedGestionUsuarios = withAuth(GestionUsuarios);
+
   return(
     <AuthProvider>
       <BrowserRouter>
@@ -21,7 +24,7 @@ function App() {
           <Route path="Logout/" element={<Logout/>}/>
           <Route path="Perfil/" element={<Perfil/>}/>
           <Route path="LineaTiempo/" element={<LineaTiempo/>}/>
-          <Route path="GestionUsuarios/" element={<GestionUsuarios/>}/>
+          <Route path="GestionUsuarios/" element={<AuthenticatedGestionUsuarios/>}/>
           <Route path="*" element={<NotFoundPage/>}/>
         </Routes>
         <Footer/>

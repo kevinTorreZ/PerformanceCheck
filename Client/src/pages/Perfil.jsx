@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 
 export function Perfil() {
     const [user, setUser] = useState(null);
+    let navigate = useNavigate();
     
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -21,9 +23,9 @@ export function Perfil() {
                 console.error(error);
             });
         }else{
-            window.location.href = '/login'
+            navigate('/login');
         }
-    }, []);
+    }, [navigate]);
 
     return (
       <div>

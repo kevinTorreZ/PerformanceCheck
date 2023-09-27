@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Crear un Contexto de Autenticación
 const AuthContext = createContext();
@@ -43,4 +44,19 @@ export function AuthProvider({ children }) {
 // Aquí es donde exportamos la función useAuth
 export function useAuth() {
     return useContext(AuthContext);
+}
+
+export function withAuth(Component) {
+    return function AuthenticatedComponent(props) {
+        const navigate = useNavigate();
+        const token = localStorage.getItem('token');
+
+        useEffect(() => {
+            if (!token) {
+                navigate('/login');
+            }
+        }, [navigate, token]);
+
+        return token ? <Component {...props} /> : null;
+    };
 }
