@@ -90,8 +90,8 @@ export function Nav() {
                                         <div className="divNotificaciones">
                                             {toastIds.length > 0 ? (
                                                 <div>
-                                                    <StyledToastContainer />
                                                     <button onClick={removertoas}>Eliminar Todas</button>
+                                                    <StyledToastContainer />
                                                 </div>
                                             ) : (
                                                 <p>No hay notificaciones</p>
