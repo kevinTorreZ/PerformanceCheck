@@ -5,7 +5,7 @@ import jwt_decode from 'jwt-decode';
 import { useAuth } from './verificador';
 import Amborgesa from './Hambuger';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRightToBracket, faHouse, faUser, faBell } from '@fortawesome/free-solid-svg-icons';
+import { faRightToBracket, faHouse, faUser, faBell, faTrash } from '@fortawesome/free-solid-svg-icons';
 import logo from "../img/Dunder-Mifflin.png"
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -55,7 +55,7 @@ export function Nav() {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (taOpen && !document.getElementsByClassName('dVAipI')[0].contains(event.target)) {
+            if (taOpen && !document.getElementsByClassName('contNoti')[0].contains(event.target)) {
                 setTaOpen(false);
             }
         };
@@ -66,12 +66,6 @@ export function Nav() {
         };
     }, [taOpen]);
 
-
-    useEffect(() => {
-        if (toastIds.length === 0) {
-            setTaOpen(false);
-        }
-    }, [toastIds]);
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -105,12 +99,12 @@ export function Nav() {
                         <div><a href={'/logout'} onClick={handleLogout}><FontAwesomeIcon icon={faRightToBracket} /> Salir</a>
                             <div>
                                 <a id="bellIcon" onClick={handleCampanovishClick}><FontAwesomeIcon icon={faBell} /></a>
-                                <BellIconContainer>
-                                    <NotificationCenter style={{ display: taOpen ? 'block' : 'none' }}>
+                                <BellIconContainer >
+                                    <NotificationCenter className='scrollbar contNoti' id="scrollbar1" style={{ display: taOpen ? 'block' : 'none' }}>
                                         <div className="divNotificaciones">
                                             {toastIds.length > 0 ? (
                                                 <div>
-                                                    <button onClick={removertoas}>Eliminar Todas</button>
+                                                    <button id="btnEliminar" onClick={removertoas}><FontAwesomeIcon icon={faTrash}/> Borrar todo</button>
                                                     <StyledToastContainer />
                                                 </div>
                                             ) : (
@@ -183,6 +177,7 @@ const NavCont = styled.nav`
         margin-left: auto;
         margin-right: auto;
         text-align: center;
+        
         transition: all .5s ease;
         a{
             color: white;
@@ -192,6 +187,7 @@ const NavCont = styled.nav`
             transition: .2s ease;
             text-shadow:  1px 1px 0.1px black;
             float: right;
+            user-select: none;
             &:hover{
                 color: #272B25;
             }
@@ -258,7 +254,7 @@ const NotificationCenter = styled.div`
     box-shadow: 0px 0px 5px 1px gray;
     width: 350px;
     height: auto;
-    top: 1.5rem;
+    top: 2rem;
     color: #60544B;
     right: 0;
 `
