@@ -5,7 +5,7 @@ import jwt_decode from 'jwt-decode';
 import { useAuth } from './verificador';
 import Amborgesa from './Hambuger';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRightToBracket, faHouse, faUser, faBell } from '@fortawesome/free-solid-svg-icons';
+import { faRightToBracket, faHouse, faUser, faBell, faTrash } from '@fortawesome/free-solid-svg-icons';
 import logo from "../img/Dunder-Mifflin.png"
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,13 +15,15 @@ export function Nav() {
     const [rol, setRol] = useState('');
     const [taOpen, setTaOpen] = useState(false);
     const types = ['info', 'success', 'error'];
+
     const handleCampanovishClick = () => {
         setTaOpen(!taOpen);
     };
 
-
     const [toastIds, setToastIds] = useState([]);
+    const [hasToast, setHasToast] = useState(false);
 
+    const [hasNotifications, setHasNotifications] = useState(false);
     const addTostadita = () => {
         const type = types[Math.floor(Math.random() * types.length)];
         const toastId = Math.random();
@@ -31,26 +33,40 @@ export function Nav() {
             position: "top-center",
             autoClose: false,
             hideProgressBar: false,
-            closeOnClick: true,
+            closeOnClick: false,
             pauseOnHover: false,
-            draggable: true,
+            draggable: false,
             progress: undefined,
             transition: Slide,
         });
         setToastIds(prevToastIds => [...prevToastIds, toastId]);
+        setHasToast(true);
     }
 
     const handleLogout = () => {
         logout();
     };
 
-    const [hasNotifications, setHasNotifications] = useState(false);
-
     const removertoas = () => {
         toastIds.forEach((toastId) => toast.dismiss(toastId));
         setToastIds([]);
         setHasNotifications(false);
     };
+
+    
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (taOpen && !document.getElementsByClassName('contNoti')[0].contains(event.target)) {
+                setTaOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [taOpen]);
+
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -84,21 +100,19 @@ export function Nav() {
                         <div><a href={'/logout'} onClick={handleLogout}><FontAwesomeIcon icon={faRightToBracket} /> Salir</a>
                             <div>
                                 <a id="bellIcon" onClick={handleCampanovishClick}><FontAwesomeIcon icon={faBell} /></a>
-                                <BellIconContainer>
-                                    {taOpen && (
-                                        <NotificationCenter style={{ display: taOpen ? 'block' : 'none' }}>
-                                            <div className="divNotificaciones">
-                                                {toastIds.length > 0 ? (
-                                                    <div>
-                                                        <StyledToastContainer />
-                                                        <button onClick={removertoas}>Eliminar Todas</button>
-                                                    </div>
-                                                ) : (
-                                                    <p>No hay notificaciones</p>
-                                                )}
-                                            </div>
-                                        </NotificationCenter>
-                                    )}
+                                <BellIconContainer className='contCampanovish'>
+                                    <NotificationCenter className='scrollbar contNoti' id="scrollbar1" style={{ display: taOpen ? 'block' : 'none' }}>
+                                        <div className="divNotificaciones">
+                                            {toastIds.length > 0 ? (
+                                                <div>
+                                                    <button id="btnEliminar" onClick={removertoas}><FontAwesomeIcon icon={faTrash}/> Borrar notificaciones</button>
+                                                    <StyledToastContainer />
+                                                </div>
+                                            ) : (
+                                                <p>No hay notificaciones</p>
+                                            )}
+                                        </div>
+                                    </NotificationCenter>
                                 </BellIconContainer>
                             </div>
                         </div>
@@ -116,6 +130,7 @@ export function Nav() {
                     {isLoggedIn && rol === 'Lider' || rol === 'Miembro' && (<a href={'/'}>Proyecto</a>)}
 
                     {isLoggedIn && (<a href={'/Perfil'}><FontAwesomeIcon icon={faUser} /> Perfil</a>)}
+                    {isLoggedIn && (<a href={'/LineaTiempo'}> Linea de Tiempo</a>)}
                     <a href={'/'}><FontAwesomeIcon icon={faHouse} /> Inicio</a>
                     <button onClick={addTostadita}>PRUEBA</button>
                 </div>
@@ -163,6 +178,7 @@ const NavCont = styled.nav`
         margin-left: auto;
         margin-right: auto;
         text-align: center;
+        
         transition: all .5s ease;
         a{
             color: white;
@@ -172,6 +188,7 @@ const NavCont = styled.nav`
             transition: .2s ease;
             text-shadow:  1px 1px 0.1px black;
             float: right;
+            user-select: none;
             &:hover{
                 color: #272B25;
             }
@@ -238,7 +255,8 @@ const NotificationCenter = styled.div`
     box-shadow: 0px 0px 5px 1px gray;
     width: 350px;
     height: auto;
-    top: 1.5rem;
+    top: 2rem;
+    color: #60544B;
     right: 0;
 `
 const BellIconContainer = styled.div`
