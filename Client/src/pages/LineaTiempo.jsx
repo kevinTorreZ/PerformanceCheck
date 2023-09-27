@@ -34,7 +34,7 @@ export function LineaTiempo() {
                 <p>Fecha Limite: {user.Fk_proyecto_asignado_id ? new Date(user.Fk_proyecto_asignado_id.FechaLimite).toLocaleDateString('es-ES') : 'No disponible'}</p>
             </div>
         ) : (
-            <p>No se encontró información de usuario.</p>
+            <p>No se encontraron proyectos.</p>
         )}
       </div>
     );
