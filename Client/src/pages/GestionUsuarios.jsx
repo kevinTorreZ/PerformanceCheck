@@ -5,8 +5,8 @@ import jwt_decode from 'jwt-decode';
 import { useAuth } from '../components/verificador'
 
 export function GestionUsuarios() {
-    const token = localStorage.getItem('token');
-    if (!token) {
+    const {isLoggedIn} = useAuth();
+    if (!isLoggedIn) {
         window.location.href = '/login'
     }
 
@@ -197,7 +197,6 @@ export function GestionUsuarios() {
 
     return (
         <div>
-            
             <h1>Gestión de Usuarios</h1>
             <div className='ListaUsuarios'>
                 <ul>
