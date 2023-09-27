@@ -29,9 +29,6 @@ export function Inicio() {
     setToken(token);
     const refreshToken = localStorage.getItem('refreshToken');
     setRefreshToken(refreshToken);
-    if (!token || !refreshToken) {
-      navigate('/login');
-    }
   }, [navigate]);
 
   return (
