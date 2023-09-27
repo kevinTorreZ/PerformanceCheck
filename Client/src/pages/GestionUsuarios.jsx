@@ -2,15 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
-import { useAuth } from '../components/verificador'
 
 export function GestionUsuarios() {
-    const {isLoggedIn} = useAuth();
-    if (!isLoggedIn) {
-        window.location.href = '/login'
-    }
-
-    
     const [usuarios, setUsuarios] = useState([]);
     const [rut, setRut] = useState('');
     const [nombre, setNombre] = useState('');
@@ -27,8 +20,44 @@ export function GestionUsuarios() {
     const [proyectoSelected, setProyectoSelected] = useState(null);
     const [proyectosSelected, setProyectosSelected] = useState(null);
     const [cargoSelected, setCargoSelected] = useState(null);
-    const navigate = useNavigate();
-    const auth = useAuth();  // Usa el hook useAuth para obtener el estado de autenticación
+
+    const Navigate = useNavigate()
+    
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            axios.get(`http://localhost:8000/users/`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => {
+                setUsuarios(response.data);
+            }).catch(error => {
+                console.error(error);
+            });
+        }else{
+            Navigate('/login');
+        }
+    }, [Navigate]);
+
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token && Cargo != 'Administrador') {
+            axios.get(`http://localhost:8000/api/equipos`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => {
+                setEquipos(response.data);
+            }).catch(error => {
+                Navigate('/logout')
+                console.error(error);
+            });
+        }
+    }, [Navigate]);
+
+
     const tieneLider = (equipoId) => {
         if (equipos[equipoId] && equipos[equipoId].Lider !== undefined && equipos[equipoId].Lider !== null) {
             return true;
@@ -52,40 +81,6 @@ export function GestionUsuarios() {
             setError(false);
         }
     };
-
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            axios.get(`http://localhost:8000/users/`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then(response => {
-                setUsuarios(response.data);
-            }).catch(error => {
-                console.error(error);
-            });
-        }else{
-            window.location.href = '/login'
-        }
-    }, []);
-
-
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token && Cargo != 'Administrador') {
-            axios.get(`http://localhost:8000/api/equipos`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then(response => {
-                setEquipos(response.data);
-            }).catch(error => {
-                window.location.href = '/logout'
-                console.error(error);
-            });
-        }
-    }, []);
 
     useEffect(() => {
         if (usuarioSelected && usuarioSelected.Fk_proyecto_asignado_id) {
