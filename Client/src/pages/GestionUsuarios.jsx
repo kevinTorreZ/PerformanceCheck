@@ -16,19 +16,23 @@ export function GestionUsuarios() {
     const [proyecto, setProyecto] = useState('');
     const [equipos, setEquipos] = useState([]);
     const [proyectos, setProyectos] = useState([]);
+    const [usuarioSelected, setUsuarioSelected] = useState(null);
+    const [equipoSelected, setEquipoSelected] = useState(null);
+    const [proyectoSelected, setProyectoSelected] = useState(null);
+    const [proyectosSelected, setProyectosSelected] = useState(null);
+    const [cargoSelected, setCargoSelected] = useState(null);
     const navigate = useNavigate();
     const auth = useAuth();  // Usa el hook useAuth para obtener el estado de autenticación
 
     const tieneLider = (equipoId) => {
-        if(equipos[equipoId].Lider != undefined){
-            return true
+        if (equipos[equipoId] && equipos[equipoId].Lider !== undefined && equipos[equipoId].Lider !== null) {
+            return true;
         }
-        else{
-            return false
+        else {
+            return false;
         }
     };
 
-    
     const handleRutChange = (event) => {
         setRut(event.target.value);
     };
@@ -62,13 +66,72 @@ export function GestionUsuarios() {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (token && equipo && equipo != "") {
-            axios.get(`http://localhost:8000/api/proyectos/${equipos[equipo].Fk_proyecto_asignado_id}`, {
+        if (token) {
+            axios.get(`http://localhost:8000/users/`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => {
+                setUsuarios(response.data);
+            }).catch(error => {
+                console.error(error);
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        if (usuarioSelected && usuarioSelected.Fk_proyecto_asignado_id) {
+            setProyectoSelected(usuarioSelected.Fk_proyecto_asignado_id.idProyecto);
+        }
+    }, [usuarioSelected]);
+
+
+    const cargarProyectos = (equipoId) => {
+        if (equipoId && equipos.find(e => e.idEquipo === equipoId).Fk_proyecto_asignado_id) {
+            const token = localStorage.getItem('token');
+            axios.get(`http://localhost:8000/api/proyectos/${equipos.find(e => e.idEquipo === equipoId).Fk_proyecto_asignado_id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             }).then(response => {
                 if (response.data) {
+                    console.log(response.data)
+                    setProyectosSelected([response.data]);
+                } else {
+                    console.error('La API no devolvió un objeto');
+                }
+            }).catch(error => {
+                console.error(error);
+            });
+        }
+        else {
+            setProyectosSelected([])
+        }
+    }
+
+    useEffect(() => {
+        cargarProyectos(equipoSelected);
+    }, [equipoSelected]);
+
+
+    const handleClickListaUsuario = (usuario) => {
+        setUsuarioSelected(usuario);
+        setEquipoSelected(usuario.Fk_equipo_asignado_id.idEquipo)
+        cargarProyectos(usuario.Fk_equipo_asignado_id.idEquipo);
+    }
+
+    useEffect(() => {
+        if (equipo) {
+            console.log(equipos)
+            console.log(equipo)
+            const token = localStorage.getItem('token');
+            axios.get(`http://localhost:8000/api/proyectos/${equipos[equipo - 1].Fk_proyecto_asignado_id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => {
+                if (response.data) {
+                    console.log(response.data)
                     setProyectos([response.data]);
                 } else {
                     console.error('La API no devolvió un objeto');
@@ -77,15 +140,19 @@ export function GestionUsuarios() {
                 console.error(error);
             });
         }
-        else{
+        else {
             setProyectos([])
         }
     }, [equipo]);
 
-    const handleCrearUsuario = async ()  => {
+    const handleModificarUsuario = async () => {
+        //Logica para modifcar usuario
+    };
+
+    const handleCrearUsuario = async () => {
         const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{8,}$/;
         if (!passwordRegex.test(password)) {
-            alert('La contraseña debe tener al menos 8 caracteres, incluyendo al menos una letra mayúscula y un número.');
+            alert('La contraseña debe tener al menos 8 caracteres, incluyendo al menos una letra mayúscula y un número.')
             return;
         }
         const userData = {
@@ -113,18 +180,57 @@ export function GestionUsuarios() {
     return (
         <div>
             <h1>Gestión de Usuarios</h1>
-            <ul>
-                {usuarios.map(usuario => (
-                    <li key={usuario.idUsuario}>{usuario.email}</li>
-                ))}
-            </ul>
+            <div className='ListaUsuarios'>
+                <ul>
+                    {usuarios.map(usuario => (
+                        <li key={usuario.idUsuario} onClick={() => handleClickListaUsuario(usuario)}>{usuario.email}</li>
+                    ))}
+                </ul>
+            </div>
+            <div className='InfoUsuarios'>
+                {usuarioSelected && (<form>
+                    <label>
+                        Correo:
+                        <input type="text" value={usuarioSelected.email} readOnly />
+                    </label>
+                    <label>
+                        Nombre:
+                        <input type="text" value={usuarioSelected.Nombre} readOnly />
+                    </label>
+                    <label>
+                        Rut:
+                        <input type="text" value={usuarioSelected.Rut} readOnly />
+                    </label>
+                    <select onChange={e => setEquipoSelected(Number(e.target.value))} >
+                        <option key='Seleccionar' value='Seleccionar'>Seleccionar</option>
+                        {equipos.map((equipo) => (
+                            <option key={equipo.idEquipo} value={equipo.idEquipo} selected={equipo.idEquipo === usuarioSelected.Fk_equipo_asignado_id.idEquipo}>{equipo.Nombre_equipo}</option>
+                        ))}
+                    </select>
+                    <select onChange={e => setCargoSelected(e.target.value)}>
+                        {equipoSelected && <option>Miembro</option>}
+                        {equipoSelected !== undefined && tieneLider(equipoSelected) && <option>Lider</option>}
+                        {!equipoSelected && <option>Administrador</option>}
+                    </select>
+                    <select onChange={e => setProyectoSelected(e.target.value)}>
+                        <option value="">Seleccionar</option>
+                        {
+                            proyectosSelected && proyectosSelected.map((proyecto, index) => (
+                                <option key={index} value={proyecto.idProyecto}>{proyecto.Nombre}</option>
+                            ))
+                        }
+                    </select>
+                    <button onClick={handleModificarUsuario}>Modificar</button>
+                </form>)}
+            </div>
+
             <h2>Crear Usuario</h2>
-            <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Nombre" required/>
-            <input type="text" value={rut} onChange={handleRutChange} onBlur={handleRutBlur} placeholder="RUT"  required/>
+            <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Nombre" required />
+            <input type="text" value={rut} onChange={handleRutChange} onBlur={handleRutBlur} placeholder="RUT" required />
             {error && <p>Formato de RUT inválido</p>}
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required/>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Contraseña" required/>
-            <select onChange={e => setEquipo(e.target.value + 1)}>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required />
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Contraseña" required />
+            <select onChange={e => setEquipo(e.target.value)}>
                 <option defaultChecked value="">Seleccionar</option>
                 {equipos.map((equipo) => (
                     <option key={equipo.idEquipo} value={equipo.idEquipo}>{equipo.Nombre_equipo}</option>
@@ -137,9 +243,9 @@ export function GestionUsuarios() {
                 {!equipo && <option>Administrador</option>}
             </select>
 
-            <select value={proyecto} onChange={e => setProyecto(e.target.value)}>
-                <option defaultChecked value=''>Seleccionar</option>
-                {proyectos.map((proyecto, index) => (
+            <select onChange={e => setProyecto(e.target.value)}>
+                <option selected value=''>Seleccionar</option>
+                {proyectos && Array.isArray(proyectos) && proyectos.map((proyecto, index) => (
                     <option key={index} value={proyecto.idProyecto}>{proyecto.Nombre}</option>
                 ))}
             </select>
