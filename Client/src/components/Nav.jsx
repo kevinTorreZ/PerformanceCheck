@@ -9,13 +9,14 @@ import { faRightToBracket, faHouse, faUser, faBell, faTrash } from '@fortawesome
 import logo from "../img/Dunder-Mifflin.png"
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 export function Nav() {
     const { isLoggedIn, logout } = useAuth();
     const [rol, setRol] = useState('');
     const [taOpen, setTaOpen] = useState(false);
     const types = ['info', 'success', 'error'];
-
+    const Navigate = useNavigate();
     const handleCampanovishClick = () => {
         setTaOpen(!taOpen);
         setHasNotifications(false);
@@ -48,7 +49,7 @@ export function Nav() {
     }
 
     const handleLogout = () => {
-        logout();
+        Navigate('/Logout');
     };
 
     const removertoas = () => {
@@ -85,12 +86,25 @@ export function Nav() {
             }).then(response => {
                 setRol(response.data.Cargo)
             }).catch(error => {
-                console.error(error);
+                if (error.response.status === 401) { 
+                    Navigate('/Logout'); 
+                }
             });
         } else {
             setRol('');
         }
     }, [isLoggedIn]);
+    useEffect(() => {
+        const intervalo = setInterval(() => {
+            const token = localStorage.getItem('token');
+            const decodedToken = jwt_decode(token);
+            const dateNow = new Date();
+            if (decodedToken.exp < dateNow.getTime() / 1000) {
+                Navigate('/Logout')
+              }
+        }, 1000);
+        return () => clearInterval(intervalo);
+      }, []);
     const [clicked, setClicked] = useState(false)
     const handleClick = () => {
         setClicked(!clicked)

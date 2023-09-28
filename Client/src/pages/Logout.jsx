@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Homero from '../img/Homero.gif'
+import Homero from '../img/Homero.gif';
+import { useAuth } from '../components/verificador';
 
 export function Logout() {
     const [loading, setLoading] = useState(true);
     const Navigate = useNavigate()
+    const {logout} = useAuth()
     useEffect(() => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
+        logout()
         setTimeout(() => {
             setLoading(false);
             Navigate('/');

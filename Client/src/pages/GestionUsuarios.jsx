@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import { useAuth } from '../components/verificador';
 
 export function GestionUsuarios() {
     const [usuarios, setUsuarios] = useState([]);
@@ -20,9 +21,10 @@ export function GestionUsuarios() {
     const [proyectoSelected, setProyectoSelected] = useState(null);
     const [proyectosSelected, setProyectosSelected] = useState(null);
     const [cargoSelected, setCargoSelected] = useState(null);
+    
 
     const Navigate = useNavigate()
-    
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -35,7 +37,7 @@ export function GestionUsuarios() {
             }).catch(error => {
                 console.error(error);
             });
-        }else{
+        } else {
             Navigate('/login');
         }
     }, [Navigate]);
@@ -51,8 +53,6 @@ export function GestionUsuarios() {
             }).then(response => {
                 setEquipos(response.data);
             }).catch(error => {
-                console.log("Deslogeando.....")
-                console.error(error);
             });
         }
     }, [Navigate]);
@@ -118,6 +118,7 @@ export function GestionUsuarios() {
 
     const handleClickListaUsuario = (usuario) => {
         setUsuarioSelected(usuario);
+        window.location.href = '/logout'
         if (usuario.Fk_equipo_asignado_id !== null) {
             setEquipoSelected(usuario.Fk_equipo_asignado_id.idEquipo)
             cargarProyectos(usuario.Fk_equipo_asignado_id.idEquipo);
@@ -216,10 +217,10 @@ export function GestionUsuarios() {
                         Rut:
                         <input type="text" value={usuarioSelected.Rut} onChange={e => setUsuarioSelected({ ...usuarioSelected, Rut: e.target.value })} />
                     </label>
-                    <select onChange={e => setEquipoSelected(Number(e.target.value))} >
+                    <select value={usuarioSelected?.Fk_equipo_asignado_id?.idEquipo} onChange={e => setEquipoSelected(Number(e.target.value))}>
                         <option key='Seleccionar' value='Seleccionar'>Seleccionar</option>
                         {equipos.map((equipo) => (
-                            <option key={equipo.idEquipo} value={equipo.idEquipo} selected={equipo.idEquipo === usuarioSelected?.Fk_equipo_asignado_id?.idEquipo}>{equipo.Nombre_equipo}</option>
+                            <option key={equipo.idEquipo} value={equipo.idEquipo}>{equipo.Nombre_equipo}</option>
                         ))}
                     </select>
                     <select onChange={e => setCargoSelected(e.target.value)} id='SelectorCargo'>
@@ -228,7 +229,7 @@ export function GestionUsuarios() {
                         {!equipoSelected && <option value='Administrador'>Administrador</option>}
                     </select>
                     <select onChange={e => setProyectoSelected(e.target.value)} id='SelectorProyecto'>
-                        {!equipoSelected && <option value="Seleccionar">Seleccionar</option> }
+                        {!equipoSelected && <option value="Seleccionar">Seleccionar</option>}
                         {
                             proyectosSelected && proyectosSelected.map((proyecto, index) => (
                                 <option key={index} value={proyecto.idProyecto}>{proyecto.Nombre}</option>
