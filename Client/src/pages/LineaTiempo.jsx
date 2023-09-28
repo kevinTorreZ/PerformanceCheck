@@ -26,13 +26,15 @@ export function LineaTiempo() {
     return (
       <div>
         <p>Historial de Proyectos</p>
-        {user && (
+        {user ? (
             <div>
-                <p>Nombre Proyecto: {user.Fk_proyecto_asignado_id.Nombre}</p>
-                <p>Nombre del Equipo: {user.Fk_equipo_asignado_id.Nombre_equipo}</p>
-                <p>Descripcion del proyecto: {user.Fk_proyecto_asignado_id.Descripcion}</p>
-                <p>Fecha Limite: {new Date(user.Fk_proyecto_asignado_id.FechaLimite).toLocaleDateString('es-ES')}</p>
+                <p>Nombre Proyecto: {user.Fk_proyecto_asignado_id ? user.Fk_proyecto_asignado_id.Nombre : 'No disponible'}</p>
+                <p>Nombre del Equipo: {user.Fk_equipo_asignado_id ? user.Fk_equipo_asignado_id.Nombre_equipo : 'No disponible'}</p>
+                <p>Descripcion del proyecto: {user.Fk_proyecto_asignado_id ? user.Fk_proyecto_asignado_id.Descripcion : 'No disponible'}</p>
+                <p>Fecha Limite: {user.Fk_proyecto_asignado_id ? new Date(user.Fk_proyecto_asignado_id.FechaLimite).toLocaleDateString('es-ES') : 'No disponible'}</p>
             </div>
+        ) : (
+            <p>No se encontraron proyectos.</p>
         )}
       </div>
     );

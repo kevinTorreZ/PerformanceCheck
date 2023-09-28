@@ -157,6 +157,7 @@ export function GestionUsuarios() {
             cargo: document.getElementById('SelectorCargo').value,
             proyecto: document.getElementById('SelectorProyecto').value
         };
+        console.log(usuarioModificado)
 
     };
     const handleEliminarUsuario = async () => {
@@ -227,7 +228,7 @@ export function GestionUsuarios() {
                         {!equipoSelected && <option value='Administrador'>Administrador</option>}
                     </select>
                     <select onChange={e => setProyectoSelected(e.target.value)} id='SelectorProyecto'>
-                        <option value="Seleccionar">Seleccionar</option>
+                        {!equipoSelected && <option value="Seleccionar">Seleccionar</option> }
                         {
                             proyectosSelected && proyectosSelected.map((proyecto, index) => (
                                 <option key={index} value={proyecto.idProyecto}>{proyecto.Nombre}</option>
