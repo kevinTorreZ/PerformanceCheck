@@ -16,12 +16,13 @@ export function GestionUsuarios() {
     const [proyecto, setProyecto] = useState('');
     const [equipos, setEquipos] = useState([]);
     const [proyectos, setProyectos] = useState([]);
-    const [usuarioSelected, setUsuarioSelected] = useState(null);
+    const [ErrorModiUser,setErrorModiUser] = useState('')
+    const [usuarioSelected, setUsuarioSelected] = useState({ Rut: '' });
     const [equipoSelected, setEquipoSelected] = useState(null);
     const [proyectoSelected, setProyectoSelected] = useState(null);
     const [proyectosSelected, setProyectosSelected] = useState(null);
     const [cargoSelected, setCargoSelected] = useState(null);
-    
+
 
     const Navigate = useNavigate()
 
@@ -118,7 +119,6 @@ export function GestionUsuarios() {
 
     const handleClickListaUsuario = (usuario) => {
         setUsuarioSelected(usuario);
-        window.location.href = '/logout'
         if (usuario.Fk_equipo_asignado_id !== null) {
             setEquipoSelected(usuario.Fk_equipo_asignado_id.idEquipo)
             cargarProyectos(usuario.Fk_equipo_asignado_id.idEquipo);
@@ -148,18 +148,49 @@ export function GestionUsuarios() {
         }
     }, [equipo]);
 
-    const handleModificarUsuario = (event) => {
+    const handleModificarUsuario = async (event) => {
+        const rutRegex = /^[0-9]+-[0-9kK]{1}$/;
         event.preventDefault();
         const usuarioModificado = {
+            idUsuario: usuarioSelected.idUsuario,
             email: usuarioSelected.email,
+            password: usuarioSelected.password,
             nombre: usuarioSelected.Nombre,
             rut: usuarioSelected.Rut,
             equipo: equipoSelected,
             cargo: document.getElementById('SelectorCargo').value,
-            proyecto: document.getElementById('SelectorProyecto').value
+            proyecto: Number(document.getElementById('SelectorProyecto').value)
         };
-        console.log(usuarioModificado)
+        if (!rutRegex.test(usuarioModificado.rut)) {
+            return setErrorModiUser('El rut ingresado es inválido.')
+        }else{
+            if(usuarios.filter(user => user.Rut === usuarioModificado.rut).length > 0){
+                return setErrorModiUser('El rut ingresado ya existe.')
+            }else{
+                if(isNaN(usuarioModificado.equipo)){
+                    usuarioModificado.equipo = null;
+                    usuarioModificado.proyecto = null;
+                }
+                if(usuarios.filter(user => user.email === usuarioModificado.email).length > 0){
+                    return setErrorModiUser('El usuario ingresado ya existe!')
+                }
+            }
+        }
+        setErrorModiUser()
 
+
+
+
+        // Asegúrate de reemplazar 'url_del_servidor' con la URL de tu servidor
+        // y 'id_del_usuario' con el ID del usuario que deseas modificar
+        // const url = `url_del_servidor/usuarios/id_del_usuario/`;
+
+        // try {
+        //     const response = await axios.put(url, usuarioModificado);
+        //     console.log(response.data);
+        // } catch (error) {
+        //     console.error(error);
+        // }
     };
     const handleEliminarUsuario = async () => {
         //Logica para modifcar usuario
@@ -191,7 +222,22 @@ export function GestionUsuarios() {
             document.getElementById('MensajeEstado').innerHTML = 'Se ha producido un error.'
         }
     };
+    const manejarCambio = (evento) => {
+        let valorEntrada = evento.target.value;
 
+        // Elimina cualquier carácter no numérico y el guion
+        valorEntrada = valorEntrada.replace(/\D|-/g, '');
+
+        // Limita la longitud a 9 dígitos
+        valorEntrada = valorEntrada.substring(0, 9);
+
+        // Inserta un guion después del octavo dígito si hay al menos 8 dígitos
+        if (valorEntrada.length >= 8 && valorEntrada[valorEntrada.length - 1] !== '-') {
+            valorEntrada = valorEntrada.substring(0, 8) + '-' + valorEntrada.substring(8);
+        }
+
+        setUsuarioSelected({ ...usuarioSelected, Rut: valorEntrada });
+    };
     return (
         <div>
             <h1>Gestión de Usuarios</h1>
@@ -215,7 +261,7 @@ export function GestionUsuarios() {
                     </label>
                     <label>
                         Rut:
-                        <input type="text" value={usuarioSelected.Rut} onChange={e => setUsuarioSelected({ ...usuarioSelected, Rut: e.target.value })} />
+                        <input type="text" value={usuarioSelected.Rut} onChange={manejarCambio} placeholder="RUT" />
                     </label>
                     <select value={usuarioSelected?.Fk_equipo_asignado_id?.idEquipo} onChange={e => setEquipoSelected(Number(e.target.value))}>
                         <option key='Seleccionar' value='Seleccionar'>Seleccionar</option>
@@ -229,13 +275,14 @@ export function GestionUsuarios() {
                         {!equipoSelected && <option value='Administrador'>Administrador</option>}
                     </select>
                     <select onChange={e => setProyectoSelected(e.target.value)} id='SelectorProyecto'>
-                        {!equipoSelected && <option value="Seleccionar">Seleccionar</option>}
+                        {!equipoSelected && <option value='Seleccionar'>Seleccionar</option>}
                         {
                             proyectosSelected && proyectosSelected.map((proyecto, index) => (
                                 <option key={index} value={proyecto.idProyecto}>{proyecto.Nombre}</option>
                             ))
                         }
                     </select>
+                    {ErrorModiUser && <p>{ErrorModiUser}</p>}
                     <button type="button">Eliminar</button>
                     <button type="submit">Modificar</button>
                 </form>)}
