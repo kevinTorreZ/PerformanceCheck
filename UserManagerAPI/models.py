@@ -40,3 +40,9 @@ class usuario(AbstractBaseUser, PermissionsMixin):
     Fk_equipo_asignado = models.ForeignKey(equipo, on_delete=models.CASCADE, null=True)
     objects = UsuarioManager()
     USERNAME_FIELD = 'email'
+    def validate_unique(self, exclude=None):
+        if self.pk is not None:  # Si el usuario ya existe (es decir, estás actualizando, no creando)
+            if 'email' in exclude:  # Si 'email' está en la lista de campos excluidos
+                exclude.remove('email')  # Elimina 'email' de la lista de campos excluidos
+
+        super().validate_unique(exclude=exclude)

@@ -96,12 +96,14 @@ export function Nav() {
     }, [isLoggedIn]);
     useEffect(() => {
         const intervalo = setInterval(() => {
-            const token = localStorage.getItem('token');
-            const decodedToken = jwt_decode(token);
-            const dateNow = new Date();
-            if (decodedToken.exp < dateNow.getTime() / 1000) {
-                Navigate('/Logout')
-              }
+            if(localStorage.getItem('token')){
+                const token = localStorage.getItem('token');
+                const decodedToken = jwt_decode(token);
+                const dateNow = new Date();
+                if (decodedToken.exp < dateNow.getTime() / 1000) {
+                    Navigate('/Logout')
+                  }
+            }
         }, 1000);
         return () => clearInterval(intervalo);
       }, []);

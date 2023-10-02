@@ -33,8 +33,8 @@ class UserRegister(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    Fk_equipo_asignado_id = serializers.SerializerMethodField()  
-    Fk_proyecto_asignado_id = serializers.SerializerMethodField()
+    Fk_equipo_asignado_id = serializers.PrimaryKeyRelatedField(queryset=equipo.objects.all(), allow_null=True)
+    Fk_proyecto_asignado_id = serializers.PrimaryKeyRelatedField(queryset=proyecto.objects.all(), allow_null=True)
 
     class Meta:
         model = usuario
@@ -54,6 +54,12 @@ class UserSerializer(serializers.ModelSerializer):
         except proyecto.DoesNotExist:
             proyecto_instance = None
         return ProyectoSerializer(proyecto_instance).data if proyecto_instance else None
+
+    def update(self, instance, validated_data):
+        if 'email' in validated_data and validated_data['email'] == instance.email:
+            validated_data.pop('email')
+        instance.Fk_proyecto_asignado_id = validated_data.get('Fk_proyecto_asignado_id', instance.Fk_proyecto_asignado_id)
+        return super().update(instance, validated_data)
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

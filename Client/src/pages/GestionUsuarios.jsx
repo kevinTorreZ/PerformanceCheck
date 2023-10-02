@@ -13,11 +13,12 @@ export function GestionUsuarios() {
     const [password, setPassword] = useState('');
     const [Cargo, setCargo] = useState('');
     const [equipo, setEquipo] = useState(null);
+    const [UserModi, setUserModi] = useState('')
     const [proyecto, setProyecto] = useState('');
     const [equipos, setEquipos] = useState([]);
     const [proyectos, setProyectos] = useState([]);
-    const [ErrorModiUser,setErrorModiUser] = useState('')
-    const [usuarioSelected, setUsuarioSelected] = useState({ Rut: '' });
+    const [ErrorModiUser, setErrorModiUser] = useState('')
+    const [usuarioSelected, setUsuarioSelected] = useState(null);
     const [equipoSelected, setEquipoSelected] = useState(null);
     const [proyectoSelected, setProyectoSelected] = useState(null);
     const [proyectosSelected, setProyectosSelected] = useState(null);
@@ -26,7 +27,7 @@ export function GestionUsuarios() {
 
     const Navigate = useNavigate()
 
-    useEffect(() => {
+    const BuscarUsuarios = () => {
         const token = localStorage.getItem('token');
         if (token) {
             axios.get(`http://localhost:8000/users/`, {
@@ -41,7 +42,9 @@ export function GestionUsuarios() {
         } else {
             Navigate('/login');
         }
-    }, [Navigate]);
+        console.log(usuarios)
+    };
+    useEffect(BuscarUsuarios, [Navigate])
 
 
     useEffect(() => {
@@ -84,8 +87,10 @@ export function GestionUsuarios() {
     };
 
     useEffect(() => {
-        if (usuarioSelected && usuarioSelected.Fk_proyecto_asignado_id) {
-            setProyectoSelected(usuarioSelected.Fk_proyecto_asignado_id.idProyecto);
+        if (usuarioSelected && usuarioSelected.Fk_equipo_asignado_id) {
+            setProyectoSelected(usuarioSelected.Fk_proyecto_asignado_id);
+            setEquipoSelected(usuarioSelected.Fk_equipo_asignado_id)
+            console.log(equipoSelected)
         }
     }, [usuarioSelected]);
 
@@ -118,11 +123,10 @@ export function GestionUsuarios() {
 
 
     const handleClickListaUsuario = (usuario) => {
+        setUserModi(usuario);
+        setEquipoSelected(usuario.Fk_equipo_asignado_id)
         setUsuarioSelected(usuario);
-        if (usuario.Fk_equipo_asignado_id !== null) {
-            setEquipoSelected(usuario.Fk_equipo_asignado_id.idEquipo)
-            cargarProyectos(usuario.Fk_equipo_asignado_id.idEquipo);
-        }
+        console.log(equipoSelected)
     }
 
     useEffect(() => {
@@ -150,47 +154,50 @@ export function GestionUsuarios() {
 
     const handleModificarUsuario = async (event) => {
         const rutRegex = /^[0-9]+-[0-9kK]{1}$/;
+        const token = localStorage.getItem('token');
         event.preventDefault();
         const usuarioModificado = {
             idUsuario: usuarioSelected.idUsuario,
             email: usuarioSelected.email,
+            Nombre: usuarioSelected.Nombre,
             password: usuarioSelected.password,
-            nombre: usuarioSelected.Nombre,
-            rut: usuarioSelected.Rut,
-            equipo: equipoSelected,
-            cargo: document.getElementById('SelectorCargo').value,
-            proyecto: Number(document.getElementById('SelectorProyecto').value)
+            Rut: usuarioSelected.Rut,
+            Fk_equipo_asignado_id: Number(equipoSelected),
+            Usuario: usuarioSelected.email,
+            Cargo: document.getElementById('SelectorCargo').value,
+            Fk_proyecto_asignado_id: Number(document.getElementById('SelectorProyecto').value)
         };
-        if (!rutRegex.test(usuarioModificado.rut)) {
+        if (!rutRegex.test(usuarioModificado.Rut)) {
             return setErrorModiUser('El rut ingresado es inválido.')
-        }else{
-            if(usuarios.filter(user => user.Rut === usuarioModificado.rut).length > 0){
+        } else {
+            if (usuarios.filter(user => user.Rut === usuarioModificado.Rut && user.Rut != UserModi.Rut).length > 0) {
                 return setErrorModiUser('El rut ingresado ya existe.')
-            }else{
-                if(isNaN(usuarioModificado.equipo)){
-                    usuarioModificado.equipo = null;
-                    usuarioModificado.proyecto = null;
+            } else {
+                if (isNaN(usuarioModificado.Fk_equipo_asignado_id) || isNaN(usuarioModificado.Fk_proyecto_asignado_id)) {
+                    usuarioModificado.Fk_equipo_asignado_id = null;
+                    usuarioModificado.Fk_proyecto_asignado_id = null;
                 }
-                if(usuarios.filter(user => user.email === usuarioModificado.email).length > 0){
+                if (usuarios.filter(user => user.email === usuarioModificado.email && user.email != UserModi.email && user.email != UserModi.email).length > 0) {
                     return setErrorModiUser('El usuario ingresado ya existe!')
                 }
             }
         }
+        console.log(usuarioModificado.Fk_equipo_asignado_id)
         setErrorModiUser()
-
-
-
-
-        // Asegúrate de reemplazar 'url_del_servidor' con la URL de tu servidor
-        // y 'id_del_usuario' con el ID del usuario que deseas modificar
-        // const url = `url_del_servidor/usuarios/id_del_usuario/`;
-
-        // try {
-        //     const response = await axios.put(url, usuarioModificado);
-        //     console.log(response.data);
-        // } catch (error) {
-        //     console.error(error);
-        // }
+        if (token) {
+            axios.put(`http://localhost:8000/api/users/${usuarioSelected.idUsuario}/`, usuarioModificado, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(response => {
+                console.log('El usuario se ha modificado correctamente!.');
+                BuscarUsuarios();
+                setUsuarioSelected();
+                setEquipoSelected();
+            }).catch(error => {
+                console.error(error);
+            });
+        }
     };
     const handleEliminarUsuario = async () => {
         //Logica para modifcar usuario
@@ -224,14 +231,8 @@ export function GestionUsuarios() {
     };
     const manejarCambio = (evento) => {
         let valorEntrada = evento.target.value;
-
-        // Elimina cualquier carácter no numérico y el guion
         valorEntrada = valorEntrada.replace(/\D|-/g, '');
-
-        // Limita la longitud a 9 dígitos
         valorEntrada = valorEntrada.substring(0, 9);
-
-        // Inserta un guion después del octavo dígito si hay al menos 8 dígitos
         if (valorEntrada.length >= 8 && valorEntrada[valorEntrada.length - 1] !== '-') {
             valorEntrada = valorEntrada.substring(0, 8) + '-' + valorEntrada.substring(8);
         }
@@ -250,6 +251,7 @@ export function GestionUsuarios() {
                 </ul>
             </div>
             <div className='InfoUsuarios'>
+                {UserModi.Cargo}
                 {usuarioSelected && (<form onSubmit={handleModificarUsuario}>
                     <label>
                         Correo:
@@ -263,15 +265,15 @@ export function GestionUsuarios() {
                         Rut:
                         <input type="text" value={usuarioSelected.Rut} onChange={manejarCambio} placeholder="RUT" />
                     </label>
-                    <select value={usuarioSelected?.Fk_equipo_asignado_id?.idEquipo} onChange={e => setEquipoSelected(Number(e.target.value))}>
-                        <option key='Seleccionar' value='Seleccionar'>Seleccionar</option>
+                    <select value={equipoSelected} onChange={e => setEquipoSelected(Number(e.target.value))} id='selectEquipo'>
+                        <option value={'0'} key={'0'} selected={equipoSelected === null}>Seleccionar</option>
                         {equipos.map((equipo) => (
                             <option key={equipo.idEquipo} value={equipo.idEquipo}>{equipo.Nombre_equipo}</option>
                         ))}
                     </select>
-                    <select onChange={e => setCargoSelected(e.target.value)} id='SelectorCargo'>
+                    <select value={cargoSelected} onChange={e => setCargoSelected(e.target.value)} id='SelectorCargo'>
                         {equipoSelected && <option>Miembro</option>}
-                        {equipoSelected !== undefined && tieneLider(equipoSelected) && <option>Lider</option>}
+                        {(usuarioSelected.Cargo === 'Lider' || (equipoSelected && !tieneLider(equipoSelected))) && <option>Lider</option>}
                         {!equipoSelected && <option value='Administrador'>Administrador</option>}
                     </select>
                     <select onChange={e => setProyectoSelected(e.target.value)} id='SelectorProyecto'>
