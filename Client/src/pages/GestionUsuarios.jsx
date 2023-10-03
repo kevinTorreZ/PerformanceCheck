@@ -42,7 +42,6 @@ export function GestionUsuarios() {
         } else {
             Navigate('/login');
         }
-        console.log(usuarios)
     };
     useEffect(BuscarUsuarios, [Navigate])
 
@@ -71,26 +70,20 @@ export function GestionUsuarios() {
         }
     };
 
-    const handleRutChange = (event) => {
-        setRut(event.target.value);
-    };
-
-    const handleRutBlur = () => {
-        const rutRegex = /^[0-9]+-[0-9kK]{1}$/;  // Expresión regular para validar el formato del RUT
-
-        if (!rutRegex.test(rut)) {
-            setError(true);
-            console.log('Formato de RUT inválido. Ingrese el rut sin punto y con guion');
-        } else {
-            setError(false);
+    const handleRutChange = (evento) => {
+        let valorEntrada = evento.target.value;
+        valorEntrada = valorEntrada.replace(/\D|-/g, '');
+        valorEntrada = valorEntrada.substring(0, 9);
+        if (valorEntrada.length >= 8 && valorEntrada[valorEntrada.length - 1] !== '-') {
+            valorEntrada = valorEntrada.substring(0, 8) + '-' + valorEntrada.substring(8);
         }
+        setRut(valorEntrada)
     };
 
     useEffect(() => {
         if (usuarioSelected && usuarioSelected.Fk_equipo_asignado_id) {
             setProyectoSelected(usuarioSelected.Fk_proyecto_asignado_id);
             setEquipoSelected(usuarioSelected.Fk_equipo_asignado_id)
-            console.log(equipoSelected)
         }
     }, [usuarioSelected]);
 
@@ -126,7 +119,6 @@ export function GestionUsuarios() {
         setUserModi(usuario);
         setEquipoSelected(usuario.Fk_equipo_asignado_id)
         setUsuarioSelected(usuario);
-        console.log(equipoSelected)
     }
 
     useEffect(() => {
@@ -138,7 +130,6 @@ export function GestionUsuarios() {
                 }
             }).then(response => {
                 if (response.data) {
-                    console.log(response.data)
                     setProyectos([response.data]);
                 } else {
                     console.error('La API no devolvió un objeto');
@@ -182,7 +173,6 @@ export function GestionUsuarios() {
                 }
             }
         }
-        console.log(usuarioModificado.Fk_equipo_asignado_id)
         setErrorModiUser()
         if (token) {
             axios.put(`http://localhost:8000/api/users/${usuarioSelected.idUsuario}/`, usuarioModificado, {
@@ -200,13 +190,44 @@ export function GestionUsuarios() {
         }
     };
     const handleEliminarUsuario = async () => {
-        //Logica para modifcar usuario
+        const token = localStorage.getItem('token');
+        if(confirm("¿Estas seguro de eliminar el usuario?")){
+            if (token) {
+                axios.delete(`http://localhost:8000/api/users/${usuarioSelected.idUsuario}/`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }).then(response => {
+                    BuscarUsuarios();
+                    setUsuarioSelected();
+                    console.log("Se ha eliminado el usuario correctamente.")
+                }).catch(error => {
+                    console.error(error);
+                });
+            }
+        }
     };
     const handleCrearUsuario = async () => {
+        setError();
+        const rutRegex = /^[0-9]+-[0-9kK]{1}$/;
         const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+        if(!rutRegex.test(rut)||usuarios.filter(user => user.Rut === rut).length > 0){
+            setError('El rut ingresado ya existe o es inválido!')
+            return console.error(error);
+        }
         if (!passwordRegex.test(password)) {
-            alert('La contraseña debe tener al menos 8 caracteres, incluyendo al menos una letra mayúscula y un número.')
-            return;
+            return alert('La contraseña debe tener al menos 8 caracteres, incluyendo al menos una letra mayúscula y un número.')
+            
+        }
+        if(usuarios.filter(user => user.email === email).length > 0){
+            setError('El email ingresado ya existe')
+            return console.error(error)
+            
+        }
+        if(Cargo == ''){
+            setError('Debe escoger un Cargo')
+            return console.error(error)
+            
         }
         const userData = {
             Rut: rut,
@@ -218,14 +239,20 @@ export function GestionUsuarios() {
             Fk_equipo_asignado_id: equipo,
         };
         const token = localStorage.getItem('token');
+        const formulario = document.getElementById("formularioCrearUsuario");
         try {
             await axios.post('http://127.0.0.1:8000/api/register', userData, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            formulario.submit();
+            BuscarUsuarios();
             document.getElementById('MensajeEstado').innerHTML = 'Se ha creado el usuario.'
+            
         } catch (error) {
+            console.log(error)
+            setError(error)
             document.getElementById('MensajeEstado').innerHTML = 'Se ha producido un error.'
         }
     };
@@ -242,6 +269,7 @@ export function GestionUsuarios() {
     return (
         <div>
             <h1>Gestión de Usuarios</h1>
+            <h2>Modificar o eliminar Usuario</h2>
             <div className='ListaUsuarios'>
                 <ul>
                     {usuarios.map(usuario => (
@@ -265,56 +293,87 @@ export function GestionUsuarios() {
                         Rut:
                         <input type="text" value={usuarioSelected.Rut} onChange={manejarCambio} placeholder="RUT" />
                     </label>
-                    <select value={equipoSelected} onChange={e => setEquipoSelected(Number(e.target.value))} id='selectEquipo'>
-                        <option value={'0'} key={'0'} selected={equipoSelected === null}>Seleccionar</option>
-                        {equipos.map((equipo) => (
-                            <option key={equipo.idEquipo} value={equipo.idEquipo}>{equipo.Nombre_equipo}</option>
-                        ))}
-                    </select>
-                    <select value={cargoSelected} onChange={e => setCargoSelected(e.target.value)} id='SelectorCargo'>
-                        {equipoSelected && <option>Miembro</option>}
-                        {(usuarioSelected.Cargo === 'Lider' || (equipoSelected && !tieneLider(equipoSelected))) && <option>Lider</option>}
-                        {!equipoSelected && <option value='Administrador'>Administrador</option>}
-                    </select>
-                    <select onChange={e => setProyectoSelected(e.target.value)} id='SelectorProyecto'>
-                        {!equipoSelected && <option value='Seleccionar'>Seleccionar</option>}
-                        {
-                            proyectosSelected && proyectosSelected.map((proyecto, index) => (
-                                <option key={index} value={proyecto.idProyecto}>{proyecto.Nombre}</option>
-                            ))
-                        }
-                    </select>
+                    <label>
+                        Equipo:
+                        <select value={equipoSelected} onChange={e => setEquipoSelected(Number(e.target.value))} id='selectEquipo'>
+                            <option value={'0'} key={'0'} selected={equipoSelected === null}>Seleccionar</option>
+                            {equipos.map((equipo) => (
+                                <option key={equipo.idEquipo} value={equipo.idEquipo}>{equipo.Nombre_equipo}</option>
+                            ))}
+                        </select>
+                    </label>
+                    <label>
+                        Cargo:
+                        <select value={cargoSelected} onChange={e => setCargoSelected(e.target.value)} id='SelectorCargo'>
+                            {equipoSelected && <option>Miembro</option>}
+                            {(usuarioSelected.Cargo === 'Lider' || (equipoSelected && !tieneLider(equipoSelected))) && <option>Lider</option>}
+                            {!equipoSelected && <option value='Administrador'>Administrador</option>}
+                        </select>
+                    </label>
+                    <label>
+                        Proyecto:
+                        <select onChange={e => setProyectoSelected(e.target.value)} id='SelectorProyecto'>
+                            {!equipoSelected && <option value='Seleccionar'>Seleccionar</option>}
+                            {
+                                proyectosSelected && proyectosSelected.map((proyecto, index) => (
+                                    <option key={index} value={proyecto.idProyecto}>{proyecto.Nombre}</option>
+                                ))
+                            }
+                        </select>
+                    </label>
                     {ErrorModiUser && <p>{ErrorModiUser}</p>}
-                    <button type="button">Eliminar</button>
+                    <button type="button" onClick={handleEliminarUsuario}>Eliminar</button>
                     <button type="submit">Modificar</button>
                 </form>)}
             </div>
             <h2>Crear Usuario</h2>
-            <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Nombre" required />
-            <input type="text" value={rut} onChange={handleRutChange} onBlur={handleRutBlur} placeholder="RUT" required />
-            {error && <p>Formato de RUT inválido</p>}
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required />
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Contraseña" required />
-            <select onChange={e => setEquipo(e.target.value)}>
-                <option defaultChecked value="">Seleccionar</option>
-                {equipos.map((equipo) => (
-                    <option key={equipo.idEquipo} value={equipo.idEquipo}>{equipo.Nombre_equipo}</option>
-                ))}
-            </select>
-            <select onChange={e => setCargo(e.target.value)}>
-                <option defaultChecked value="">Seleccionar</option>
-                {equipo && <option>Miembro</option>}
-                {equipo && !tieneLider(equipo) && <option>Lider</option>}
-                {!equipo && <option>Administrador</option>}
-            </select>
-
-            <select onChange={e => setProyecto(e.target.value)}>
-                <option selected value=''>Seleccionar</option>
-                {proyectos && Array.isArray(proyectos) && proyectos.map((proyecto, index) => (
-                    <option key={index} value={proyecto.idProyecto}>{proyecto.Nombre}</option>
-                ))}
-            </select>
-            <button onClick={handleCrearUsuario}>Crear Usuario</button>
+            <form id='formularioCrearUsuario'>
+                <label>
+                    Nombre:
+                    <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Nombre" required />
+                </label>
+                <label>
+                    Rut:
+                    <input type="text" value={rut} onChange={handleRutChange} placeholder="RUT" required />
+                </label>
+                <label>
+                    Email:
+                    <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required />
+                </label>
+                <label>
+                    Contraseña:
+                    <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Contraseña" required />
+                </label>
+                <label>
+                    Equipo:
+                    <select onChange={e => setEquipo(e.target.value)}>
+                        <option defaultChecked value="">Seleccionar</option>
+                        {equipos.map((equipo) => (
+                            <option key={equipo.idEquipo} value={equipo.idEquipo}>{equipo.Nombre_equipo}</option>
+                        ))}
+                    </select>
+                </label>
+                <label>
+                    Cargo:
+                    <select onChange={e => setCargo(e.target.value)}>
+                        <option defaultChecked value="">Seleccionar</option>
+                        {equipo && <option>Miembro</option>}
+                        {equipo && !tieneLider(equipo) && <option>Lider</option>}
+                        {!equipo && <option>Administrador</option>}
+                    </select>
+                </label>
+                <label>
+                    Proyecto:
+                    <select onChange={e => setProyecto(e.target.value)}>
+                        <option selected value=''>Seleccionar</option>
+                        {proyectos && Array.isArray(proyectos) && proyectos.map((proyecto, index) => (
+                            <option key={index} value={proyecto.idProyecto}>{proyecto.Nombre}</option>
+                        ))}
+                    </select>
+                </label>
+                {error && <p>{error}</p>}
+                <button onClick={handleCrearUsuario} type='button'>Crear Usuario</button>
+            </form>
             <div id='MensajeEstado'>
 
             </div>
