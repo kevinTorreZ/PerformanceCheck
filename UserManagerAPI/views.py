@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework import viewsets,status
-from .serializers import UserSerializer, UserRegister,EquipoSerializer,ProyectoSerializer
+from .serializers import UserSerializer, UserRegister,EquipoSerializer,ProyectoSerializer,CustomTokenObtainPairSerializer
 from .models import usuario, equipo,proyecto
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -45,7 +45,7 @@ def user_detail(request, user_id):
 
 class LoginView(APIView):
     def post(self, request):
-        serializer = TokenObtainPairSerializer(data=request.data)
+        serializer = CustomTokenObtainPairSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.validated_data, status=200)
 

@@ -5,6 +5,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../components/verificador'
 import { ToastContainer, toast } from 'react-toastify';
 import { Slide } from 'react-toastify';
+import { BuscarUsuarioForId } from '../api/UserManagerAPI';
+
 import 'react-toastify/dist/ReactToastify.css';
 
 export function Login() {
@@ -16,9 +18,16 @@ export function Login() {
         try {
             const response = await axios.post('http://localhost:8000/api/token/', data);
             const tokens = response.data;
+            console.log(tokens.user)
+            const userData = {
+                Nombre:response.data.Nombre,
+                Cargo:response.data.Cargo
+            }
             login(tokens.access, tokens.refresh, tokens.user);
+            console.log(await BuscarUsuarioForId())
             localStorage.setItem('refreshToken', tokens.refresh);
-            window.location.href = '/';
+            localStorage.setItem('UserData',userData)
+            // window.location.href = '/';
         } catch (error) {
             toast.error('Contraseña o correo inválido!');
         }

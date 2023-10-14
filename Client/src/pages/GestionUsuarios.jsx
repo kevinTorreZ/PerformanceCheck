@@ -279,7 +279,6 @@ export function GestionUsuarios() {
                 </ul>
             </div>
             <div className='InfoUsuarios'>
-                {UserModi.Cargo}
                 {usuarioSelected && (<form onSubmit={handleModificarUsuario}>
                     <label>
                         Correo:
