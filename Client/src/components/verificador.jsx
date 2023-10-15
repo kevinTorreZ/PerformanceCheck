@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import jwt_decode from 'jwt-decode';
+import {BuscarUsuarioForId} from '../api/UserManagerAPI'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { faL } from '@fortawesome/free-solid-svg-icons';
 
 // Crear un Contexto de Autenticación
 const AuthContext = createContext();
@@ -50,27 +52,23 @@ export function withAuth(Component) {
     return function AuthenticatedComponent(props) {
         const navigate = useNavigate();
         const token = localStorage.getItem('token');
-        const asda = localStorage.getItem('userData');
+        const userCargo = localStorage.getItem('UserData')
         const decodedToken = jwt_decode(token);
-        const user_id = decodedToken;
-        console.log(asda)
+        const [isLoading, setIsLoading] = useState(true);
+
         useEffect(() => {
-            const verificarAdmin = async () => {
-                const esAdmin = await VerifyAdm();
-
-                // Si el usuario no es administrador, redirige
-                if (!esAdmin) {
-                    navigate('/', { replace: true });
-                }
-            };
-
             // Comprueba si el usuario está autenticado
-            if (token) {
-                // Verifica si el usuario es administrador
-                verificarAdmin();
+            if (token && userCargo != 'Administrador') {
+                navigate('/')
+                
             }
+            setIsLoading(false)
         }, [navigate, token]);
-
-        return token ? <Component {...props} /> : null;
+        if (isLoading) {
+            return <div>Cargando...</div>;
+        }else{
+            return token ? <Component {...props} /> : null;
+        }
+        
     };
 }

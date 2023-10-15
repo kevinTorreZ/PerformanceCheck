@@ -12,17 +12,17 @@ export const BuscarUsuarioForId = async () => {
     const decodedToken = jwt_decode(token);
     const user_id = decodedToken.user_id;
     if (token) {
-        await axios.get(`http://localhost:8000/users/`+user_id, {
+        return axios.get(`http://localhost:8000/users/`+user_id, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         }).then(response => {
-            return response.data
-            
+            return response.data;
         }).catch(error => {
-            return console.error(error);
+            console.error(error);
+            return error;
         });
     } else {
         Navigate('/login');
     }
-};
+}

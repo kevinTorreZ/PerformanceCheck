@@ -94,19 +94,41 @@ export function Nav() {
             setRol('');
         }
     }, [isLoggedIn]);
-    useEffect(() => {
-        const intervalo = setInterval(() => {
-            if(localStorage.getItem('token')){
-                const token = localStorage.getItem('token');
+useEffect(() => {
+    const intervalo = setInterval(async () => {
+        const token = localStorage.getItem('token');
+        const refreshToken = localStorage.getItem('refreshToken');
+        if(token){
+            try {
                 const decodedToken = jwt_decode(token);
                 const dateNow = new Date();
-                if (decodedToken.exp < dateNow.getTime() / 1000) {
-                    Navigate('/Logout')
-                  }
+                if (decodedToken.exp < dateNow.getTime() / 2000 || dateNow.getTime() - decodedToken.iat > 86400) {
+                    try {
+                        const response = await fetch('http://127.0.0.1:8000/api/token/refresh/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({refresh: refreshToken}),
+                        });
+                        if(response.ok) {
+                            const data = await response.json();
+                            localStorage.setItem('token', data.access);
+                        } else {
+                            console.error('Error al refrescar el token');
+                        }
+                    } catch (error) {
+                        console.error('Error al refrescar el token', error);
+                    }
+                }
+            } catch (error) {
+                console.error('Error al decodificar el token', error);
             }
-        }, 1000);
-        return () => clearInterval(intervalo);
-      }, []);
+        }
+    }, 1000);
+    return () => clearInterval(intervalo);
+}, []);
+  
     const [clicked, setClicked] = useState(false)
     const handleClick = () => {
         setClicked(!clicked)
@@ -147,11 +169,15 @@ export function Nav() {
                     {isLoggedIn && rol === 'Lider' && (
                         <a href={'/SolicitudGrupal'} >Solicitud Grupal</a>
                     )}
-                    {isLoggedIn && rol === 'Administrador' && (
+                    {isLoggedIn && rol === 'Administrador' && (<>
                         <a href={'/GestionUsuarios'}>Gestionar Usuarios</a>
+                        <a href={'/GestionProyectos'}>Gestionar Proyectos</a>
+                    </>
                     )}
-                    {isLoggedIn && (rol === 'Lider' || rol === 'Miembro') && (<a href={'/'}>Proyecto</a>)}
-                    {isLoggedIn && (rol === 'Lider' || rol === 'Miembro') && (<a href={'/LineaTiempo'}> Linea de Tiempo</a>)}
+                    {isLoggedIn && (rol === 'Lider' || rol === 'Miembro') && (<>
+                        <a href={'/'}>Proyecto</a>
+                        <a href={'/LineaTiempo'}> Linea de Tiempo</a>
+                    </>)}
                     {isLoggedIn && (<a href={'/Perfil'}><FontAwesomeIcon icon={faUser} /> Perfil</a>)}
                     <a href={'/'}><FontAwesomeIcon icon={faHouse} /> Inicio</a>
                     <button onClick={addTostadita}>PRUEBA</button>

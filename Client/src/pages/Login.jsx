@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
@@ -13,25 +13,37 @@ export function Login() {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const navigate = useNavigate();
     const { login } = useAuth();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if(localStorage.getItem('token') != null){
+            navigate('/');
+        }
+        setIsLoading(false);
+    }, [navigate]);
+
+    if (isLoading) {
+        return <div>Cargando...</div>;
+    }
 
     const onSubmit = async data => {
         try {
             const response = await axios.post('http://localhost:8000/api/token/', data);
             const tokens = response.data;
-            console.log(tokens.user)
-            const userData = {
-                Nombre:response.data.Nombre,
-                Cargo:response.data.Cargo
-            }
             login(tokens.access, tokens.refresh, tokens.user);
-            console.log(await BuscarUsuarioForId())
-            localStorage.setItem('refreshToken', tokens.refresh);
-            localStorage.setItem('UserData',userData)
-            // window.location.href = '/';
+            const userObjt = await BuscarUsuarioForId();
+            if (userObjt && userObjt.Cargo) {
+                localStorage.setItem('refreshToken', tokens.refresh);
+                localStorage.setItem('UserData', userObjt.Cargo);
+                window.location.href = '/';
+            } else {
+                throw new Error('No se pudo obtener el cargo del usuario');
+            }
         } catch (error) {
             toast.error('Contraseña o correo inválido!');
         }
     };
+    
 
     return (
         <div className='loginDiv'>
