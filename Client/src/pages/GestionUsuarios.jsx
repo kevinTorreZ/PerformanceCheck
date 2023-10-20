@@ -91,7 +91,7 @@ export function GestionUsuarios() {
     const cargarProyectos = (equipoId) => {
         if (equipoId && equipos.find(e => e.idEquipo === equipoId).Fk_proyecto_asignado_id) {
             const token = localStorage.getItem('token');
-            axios.get(`http://localhost:8000/api/proyectos/${equipos.find(e => e.idEquipo === equipoId).Fk_proyecto_asignado_id}`, {
+            axios.get(`http://localhost:8000/api/proyecto/${equipos.find(e => e.idEquipo === equipoId).Fk_proyecto_asignado_id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

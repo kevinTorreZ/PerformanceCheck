@@ -5,7 +5,8 @@ class proyecto(models.Model):
     idProyecto = models.AutoField(primary_key=True, unique=True)
     Nombre = models.CharField(max_length=30, blank=None)
     Descripcion = models.TextField(blank=None)
-    FechaLimite = models.DateTimeField()
+    FechaInicio = models.DateTimeField()
+    FechaTermino = models.DateTimeField()
 
 class equipo(models.Model):
     idEquipo = models.AutoField(primary_key=True, unique=True)

@@ -6,7 +6,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 class ProyectoSerializer(serializers.ModelSerializer):
     class Meta:
         model = proyecto
-        fields = ['idProyecto','Nombre','Descripcion','FechaLimite']  # Añade aquí los campos que necesites
+        fields = '__all__'  # Añade aquí los campos que necesites
 
 class EquipoSerializer(serializers.ModelSerializer):
     class Meta:

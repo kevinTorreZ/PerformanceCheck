@@ -55,21 +55,90 @@ class RegisterView(generics.CreateAPIView):
     queryset = usuario.objects.all()
     serializer_class = UserRegister
 
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])
 class ObtenerEquipos(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, format=None):
         queryset = equipo.objects.all()
         serializer = EquipoSerializer(queryset, many=True)
-
         return Response(serializer.data)
-@api_view(['GET'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])
-def obtenerProyecto(request, id_equipo):
-    try:
-        Proyecto = proyecto.objects.get(pk=id_equipo)
-    except usuario.DoesNotExist:
-        return Response(status=404)
-    serializer = ProyectoSerializer(Proyecto)
-    return Response(serializer.data)
+
+class ObtenerEquipo(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id_equipo):
+        try:
+            equipo_obj = equipo.objects.get(pk=id_equipo)
+        except equipo.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = EquipoSerializer(equipo_obj)
+        return Response(serializer.data)
+
+    def put(self, request, id_equipo):
+        try:
+            equipo_obj = equipo.objects.get(pk=id_equipo)
+        except equipo.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = EquipoSerializer(equipo_obj, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id_equipo):
+        try:
+            equipo_obj = equipo.objects.get(pk=id_equipo)
+        except equipo.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        equipo_obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        
+
+class obtenerProyecto(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id_proyecto):
+        try:
+            Proyecto = proyecto.objects.get(pk=id_proyecto)
+        except proyecto.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = ProyectoSerializer(Proyecto)
+        return Response(serializer.data)
+
+    def put(self, request, id_proyecto):
+        try:
+            Proyecto = proyecto.objects.get(pk=id_proyecto)
+        except proyecto.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = ProyectoSerializer(Proyecto, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id_proyecto):
+        try:
+            Proyecto = proyecto.objects.get(pk=id_proyecto)
+        except proyecto.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        Proyecto.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class obtenerTodosLosProyectos(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        Proyectos = proyecto.objects.all()
+        serializer = ProyectoSerializer(Proyectos, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = ProyectoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

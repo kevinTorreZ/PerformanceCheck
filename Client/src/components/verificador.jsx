@@ -53,7 +53,6 @@ export function withAuth(Component) {
         const navigate = useNavigate();
         const token = localStorage.getItem('token');
         const userCargo = localStorage.getItem('UserData')
-        const decodedToken = jwt_decode(token);
         const [isLoading, setIsLoading] = useState(true);
 
         useEffect(() => {
@@ -61,6 +60,9 @@ export function withAuth(Component) {
             if (token && userCargo != 'Administrador') {
                 navigate('/')
                 
+            }
+            if(!token){
+                navigate('/login')
             }
             setIsLoading(false)
         }, [navigate, token]);
