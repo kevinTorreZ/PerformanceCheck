@@ -135,7 +135,7 @@ useEffect(() => {
     }
     return (
         <div className="contDiv">
-            <NavCont>
+            <NavCont className='dark'>
                 <a href='/'><img className="logo" src={logo} /></a>
                 <div className={`links ${clicked ? 'active' : ''}`}>
                     {isLoggedIn ? (
