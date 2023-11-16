@@ -30,7 +30,6 @@ function App() {
           <Route path="GestionUsuarios/" element={<AuthenticatedGestionUsuarios/>}/>
           <Route path="*" element={<NotFoundPage/>}/>
         </Routes>
-        <Footer/>
       </BrowserRouter>
     </AuthProvider>
 
