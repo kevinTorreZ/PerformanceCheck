@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Homero from '../img/Homero.gif';
 import { useAuth } from '../components/verificador';
 
 export function Logout() {
@@ -17,7 +16,6 @@ export function Logout() {
 
     return (
       <div className='cerrandoSesion'>
-        <img src={Homero}/>
         <p>{loading ? 'Cerrando sesión...' : 'Redireccionando...'}</p>
       </div>
     );

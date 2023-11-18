@@ -3,6 +3,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { useAuth } from "./verificador";
 import { useNavigate } from "react-router-dom";
+import Logo from "../img/Logo.png"
 import {
   Navbar,
   NavbarBrand,
@@ -104,7 +105,6 @@ export function Nav() {
       <Navbar
         className="bg-inherit"
         position="static"
-        isBordered
         shouldHideOnScroll
         isMenuOpen={isMenuOpen}
         onMenuOpenChange={setIsMenuOpen}
@@ -123,8 +123,8 @@ export function Nav() {
         <NavbarContent className="hidden sm:flex gap-4" justify="end">
           <NavbarBrand>
             <Image
-              width={100}
-              src="https://res.cloudinary.com/dln364ilz/image/upload/v1699383316/logopag_wcp2hb.webp"
+              width={40}
+              src={Logo}
             />
           </NavbarBrand>
           {isLoggedIn && rol === "Lider" && (

@@ -20,7 +20,7 @@ module.exports = {
       light: {
         layout: {}, 
         colors: {
-          background: "#F6F6F6", 
+          background: "#FFFFFF", 
           foreground: "#11181C",
           primary: {
             foreground: "#FFFFFF",
@@ -31,7 +31,7 @@ module.exports = {
       dark: {
         layout: {}, 
         colors: {
-          background: "#131313", 
+          background: "#000000", 
           foreground: "#ECEDEE",
           primary: {
             foreground: "#FFFFFF",

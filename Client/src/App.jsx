@@ -11,7 +11,7 @@ import { GestionProyectos } from "./pages/GestionProyectos";
 import { Perfil } from "./pages/Perfil"
 import { LineaTiempo } from './pages/LineaTiempo';
 import { NotFoundPage }  from "./pages/NotFoundPage";
-import Footer from "./components/Footer";
+
 function App() {
   const AuthenticatedGestionUsuarios = withAuth(GestionUsuarios);
   const AuthenticatedGestionProyectos = withAuth(GestionProyectos);

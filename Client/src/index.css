@@ -4,195 +4,24 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    font-family: 'Poppins', sans-serif;
+@font-face{
+    font-family:'Gilroy';
+    font-family: 'Gilroy-bold';
+    src: local('Gilroy'), url("./fonts/Gilroy-Regular.ttf") format("truetype");
+    src: local('Gilroy-bold'), url("./fonts/Gilroy-Bold.ttf") format("truetype");
 }
 
-footer {
+.heroSection{
+    max-width: 1280px;
     width: 100%;
-    height: 150px;
-    background-color: #272B25;
-    overflow: hidden;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    margin: 0 auto;
 }
 
-#logoDunder img {
-    width: 180px;
-    overflow: hidden;
-    float: left;
-    background-repeat: no-repeat;
-    background-size: contain;
-    height: 100px;
-
-}
-
-.contactoDunder {
-    width: auto;
-    height: 100px;
-    margin-left: 5rem;
-    margin-right: 5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-.contactoDunder a {
-    text-align: center;
-    color: #C1C1B7;
-    font-family: 'Helvetica', 'Arial', sans-serif;
-}
-
-#logoInacap {
-    width: 180px;
-    height: 100px;
-    float: left;
-    background-image: url("https://static.vgroup.cl/2022/02/WEB-VGROUP/IMG/logo-inacap-3.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    margin-top: 1.5rem;
+.textsHero p{
+    color: #ccc;
 }
 
 
-/* LOGIN */
-
-.loginDiv {
-    width: 100%;
-    min-height: calc(100vh - 60px - 150px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.heroDiv h1{
+    font-family: 'Gilroy-bold', sans-serif;
 }
-
-.loginDiv form {
-    display: flex;
-    width: 450px;
-    height: 500px;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    border-radius: 10px;
-    background-color: #272B25;
-    box-shadow: 0px 0px 5px 1px black;
-}
-
-.loginDiv form h1 {
-    font-family: 'Cabin', sans-serif;
-    color: white;
-    margin-bottom: 2rem;
-}
-
-.loginDiv form input[type="email"] {
-    font-family: 'Cabin', sans-serif;
-    width: 300px;
-    height: 30px;
-    border: 2px solid #D8D8D8;
-    border-radius: 5px;
-    box-shadow: 0px 0px 5px 1px black;
-}
-
-.loginDiv form input[type="password"] {
-    font-family: 'Cabin', sans-serif;
-    width: 300px;
-    height: 30px;
-    border: 2px solid #D8D8D8;
-    border-radius: 5px;
-    box-shadow: 0px 0px 5px 1px black;
-    margin-top: 2rem;
-}
-
-.loginDiv form input[type="password"]:focus {
-    outline: none;
-}
-
-.loginDiv form input[type="email"]:focus {
-    outline: none;
-}
-
-
-.loginDiv form button {
-    width: 300px;
-    height: 35px;
-    background-color: #C1C1B7;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 2rem;
-    color: #272B25;
-    font-family: 'Cabin', sans-serif;
-    font-weight: bold;
-    box-shadow: 0px 0px 5px 1px black;
-}
-
-.loginDiv form p {
-    font-family: 'Cabin', sans-serif;
-    color: rgb(255, 72, 72);
-}
-
-
-/* ESTA PAGINA NO EXISTE */
-
-.divMain404 h1 {
-    font-family: 'Cabin', sans-serif;
-    font-size: 2.5rem;
-}
-
-.divMain404 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    min-height: calc(100vh - 60px - 150px);
-}
-
-#logoDunder404 {
-    background-image: url("./img/dunder404.jpg");
-    background-size: contain;
-    width: 300px;
-    height: 180px;
-    background-repeat: no-repeat;
-}
-
-#stickMan {
-    background-image: url("./img/stickman.png");
-    background-size: contain;
-    width: 300px;
-    height: 300px;
-    background-repeat: no-repeat;
-}
-
-.divMain404 h1 {
-    color: red;
-}
-
-.divMain404 h1 span {
-    color: green;
-}
-
-/* CERRANDO SESION */
-
-.cerrandoSesion {
-    width: 100%;
-    height: 600px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    min-height: calc(100vh - 60px - 150px);
-}
-
-.cerrandoSesion p {
-    text-align: center;
-    font-weight: bold;
-    font-size: 2rem;
-    font-family: 'Cabin', sans-serif;
-}
-
-.cerrandoSesion img {
-    border-radius: 5px;
-    box-shadow: 0px 0px 5px 1px black;
-}
-
