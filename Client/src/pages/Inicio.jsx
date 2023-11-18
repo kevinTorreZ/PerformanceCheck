@@ -3,13 +3,20 @@ import { useNavigate, Link } from "react-router-dom";
 import bubbleMorado from "../img/bubbles-morado.png";
 import docsRight from "../img/docs-right.png";
 import bluePurple from "../img/blue-purple-1.svg";
-import { Card, CardHeader, CardBody, CardFooter, Image, Button, } from "@nextui-org/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Image,
+  Button,
+} from "@nextui-org/react";
 import Statscards from "../components/Stats";
 import Oval1 from "../img/oval1.png";
 import Rocket from "../img/rocket.png";
 import bubbles800 from "../img/bubbles800.png";
 import Greendots from "../img/greenl.png";
-import Feedback from "../components/Feedback"
+import Feedback from "../components/Feedback";
 
 export function Inicio() {
   const [token, setToken] = useState(null);
@@ -26,22 +33,22 @@ export function Inicio() {
 
   return (
     <div>
-      <div className="fixed hidden dark:md:block  -z-10">
-        <img src={bubbleMorado} />
-      </div>
-      <div className="fixed hidden dark:md:block dark:opacity-70 -top-[80%] -right-[60%] 2xl:-top-[60%] 2xl:-right-[45%] -z-10 rotate-12">
+      <div className="fixed hidden 3xl:-top-[30%] 3xl:-right-[40%] dark:md:block dark:opacity-100 -top-[80%] -right-[60%] 2xl:-top-[60%] 2xl:-right-[45%] -z-10 rotate-12">
         <img src={docsRight} />
       </div>
-      <div className="fixed hidden dark:md:block dark:opacity-70 -bottom-[40%] -left-[20%] -z-10">
+      <div className="fixed hidden 3xl:-bottom-[20%] 3xl:-left-[20%] dark:md:block dark:opacity-100 -bottom-[40%] -left-[20%] -z-10">
         <img src={bluePurple} />
       </div>
-      <div className="fixed hidden dark:md:block dark:opacity-40 -bottom-[20%] left-[20%] -z-10">
+      <div className="fixed hidden dark:3xl:block 3xl:opacity-100 dark:md:block dark:lg:block dark:xs:block dark:opacity-40 -bottom-[20%] left-[20%] -z-10">
         <img src={Greendots} />
       </div>
       <div className="fixed hidden dark:md:block dark:opacity-40 -bottom-[20%] left-[20%] -z-10">
         <img src={bubbles800} />
       </div>
-      <section className="heroSection">
+      <section className="heroSection relative">
+        <div className="absolute shadow-black/5 opacity-100 shadow-none transition-transform-opacity rounded-large  -z-10">
+          <img src={bubbleMorado} />
+        </div>
         <div className="flex mt-5 flex-row justify-center align-middle flex-wrap  max-w-[1280px] heroDiv ">
           <div className="max-w-[640px] w-[100%] textsHero flex flex-col justify-center align-middle">
             <h1 className="font-bold text-6xl text-white">Performance Check</h1>
@@ -66,14 +73,17 @@ export function Inicio() {
         </div>
       </section>
       <section className="globalDiv ">
-        <div className=" mt-64 flex flex-row py-4 px-2 gap-5 justify-center items-center flex-wrap">
+        <div className=" relative mt-64 flex flex-row py-4 px-2 gap-5 justify-center items-center flex-wrap">
+          <div className="absolute lg:opacity-40 shadow-none -z-10 sm:opacity-80">
+            <img src={Greendots} />
+          </div>
           <Statscards h1="70%" p="Desempeño laboral" duration={500} />
           <Statscards h1="65%" p="Rendimiento de empleados" duration={500} />
           <Statscards h1="70%" p="Satisfacción de empleados" duration={530} />
           <Statscards h1="80%" p="Motivación de empleados" duration={580} />
         </div>
       </section>
-      <Feedback/>
+      <Feedback />
       {/* {token && refreshToken ? <p>Estás logueado.</p> : 
         <p>No estás logueado.</p>}
         */}
