@@ -1,5 +1,6 @@
 // tailwind.config.js
 const {nextui} = require("@nextui-org/react");
+const defaultTheme = require('tailwindcss/defaultTheme')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -9,6 +10,10 @@ module.exports = {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    screens:{
+      'xs': '475px',
+      ...defaultTheme.screens,
+    },
   },
   darkMode: "class",
   plugins: [require('tailwindcss-animated'),
@@ -17,6 +22,7 @@ module.exports = {
     addCommonColors: true, 
     layout: {}, 
     themes: {
+      
       light: {
         layout: {}, 
         colors: {

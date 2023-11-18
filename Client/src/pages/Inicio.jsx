@@ -3,14 +3,13 @@ import { useNavigate, Link } from "react-router-dom";
 import bubbleMorado from "../img/bubbles-morado.png";
 import docsRight from "../img/docs-right.png";
 import bluePurple from "../img/blue-purple-1.svg";
-import { Button, Image, Card, CardBody } from "@nextui-org/react";
-import  Statscards  from "../components/Stats";
-import Oval from "../img/oval.png";
+import { Card, CardHeader, CardBody, CardFooter, Image, Button, } from "@nextui-org/react";
+import Statscards from "../components/Stats";
 import Oval1 from "../img/oval1.png";
 import Rocket from "../img/rocket.png";
-import { useInView } from "react-intersection-observer";
 import bubbles800 from "../img/bubbles800.png";
-import Greendots from "../img/greenl.png"
+import Greendots from "../img/greenl.png";
+import Feedback from "../components/Feedback"
 
 export function Inicio() {
   const [token, setToken] = useState(null);
@@ -64,15 +63,17 @@ export function Inicio() {
               <Image src={Rocket} width={550} />
             </div>
           </div>
-          <section className="max-w-[1280px] w-[100%] h-[170px] mt-72 mb-[2rem] flex flex-row py-4 px-2 gap-5 justify-center items-center flex-wrap">
-            <Statscards h1="70%" p="Desempeño laboral" duration={500} />
-            <Statscards h1="65%" p="Rendimiento de empleados" duration={500} />
-            <Statscards h1="70%" p="Satisfacción de empleados" duration={530} />
-            <Statscards h1="80%" p="Motivación de empleados" duration={580} />
-          </section>
         </div>
       </section>
-
+      <section className="globalDiv ">
+        <div className=" mt-64 flex flex-row py-4 px-2 gap-5 justify-center items-center flex-wrap">
+          <Statscards h1="70%" p="Desempeño laboral" duration={500} />
+          <Statscards h1="65%" p="Rendimiento de empleados" duration={500} />
+          <Statscards h1="70%" p="Satisfacción de empleados" duration={530} />
+          <Statscards h1="80%" p="Motivación de empleados" duration={580} />
+        </div>
+      </section>
+      <Feedback/>
       {/* {token && refreshToken ? <p>Estás logueado.</p> : 
         <p>No estás logueado.</p>}
         */}
