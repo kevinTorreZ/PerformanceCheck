@@ -161,6 +161,11 @@ export function Nav() {
               <Link href={"/LineaTiempo"}>Linea de tiempo</Link>
             </NavbarItem>
           )}
+          {isLoggedIn && (rol === "Lider" || rol === "Miembro") && (
+            <NavbarItem>
+              <Link href={"/Perfil"}>Perfil</Link>
+            </NavbarItem>
+          )}
           <NavbarItem>
             <Link color="foreground" href={"/"}>
               Inicio
