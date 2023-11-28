@@ -16,6 +16,7 @@ import Oval1 from "../img/oval1.png";
 import Rocket from "../img/rocket.png";
 import bubbles800 from "../img/bubbles800.png";
 import Greendots from "../img/greenl.png";
+import Snapshots from "../components/Snapshots";
 import Feedback from "../components/Feedback";
 
 export function Inicio() {
@@ -83,6 +84,16 @@ export function Inicio() {
           <Statscards h1="80%" p="Motivación de empleados" duration={580} />
         </div>
       </section>
+      <section className="perfText">
+        <h1 className="max-w-[45rem] lg:text-7xl md:text-6xl sm:text-6xl xs:text-5xl text-5xl font-bold text-center">
+          Funcionamiento de{" "}
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#5594d6] to-[#d21b9a]">
+            Performance Check
+          </span>
+        </h1>
+      </section>
+
+      <Snapshots />
       <Feedback />
       {/* {token && refreshToken ? <p>Estás logueado.</p> : 
         <p>No estás logueado.</p>}

@@ -5,7 +5,7 @@ import { Card, CardBody } from '@nextui-org/react';
 const AnimatedCard = ({ h1, p, duration }) => {
     const { ref, inView } = useInView({
         threshold: 0.7,
-        triggerOnce: false, // Asegúrate de que el observer se active cada vez que el elemento entre/salga de la vista
+        triggerOnce: false,
     });
 
     return (

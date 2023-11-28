@@ -21,6 +21,11 @@
     color: #ccc;
 }
 
+.perfText{
+    max-width: 800px;
+    height: auto;
+    margin: 0 auto;
+}
 
 .heroDiv h1{
     font-family: 'Gilroy-bold', sans-serif;
