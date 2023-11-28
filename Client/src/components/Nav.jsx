@@ -146,6 +146,13 @@ export function Nav() {
               </Link>
             </NavbarItem>
           )}
+          {isLoggedIn && rol === "Administrador" && (
+            <NavbarItem>
+              <Link color="foreground" href={"/GestionUsuarios"}>
+                Perfil
+              </Link>
+            </NavbarItem>
+          )}
           {isLoggedIn && (rol === "Lider" || rol === "Miembro") && (
             <NavbarItem>
               <Link href={"/"}>Proyecto</Link>
