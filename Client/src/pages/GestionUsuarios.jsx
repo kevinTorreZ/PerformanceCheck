@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
-import { useAuth } from '../components/verificador';
 
 export function GestionUsuarios() {
     const [usuarios, setUsuarios] = useState([]);
@@ -109,7 +107,7 @@ export function GestionUsuarios() {
             setProyectosSelected([])
         }
     }
-
+ 
     useEffect(() => {
         cargarProyectos(equipoSelected);
     }, [equipoSelected]);

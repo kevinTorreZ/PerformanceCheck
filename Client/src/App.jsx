@@ -8,6 +8,7 @@ import { Logout } from "./pages/Logout";
 import { withAuth } from './components/verificador';
 import { GestionUsuarios } from "./pages/GestionUsuarios";
 import { GestionProyectos } from "./pages/GestionProyectos";
+import { Snapshosts } from "./pages/Snpashots";
 import { Perfil } from "./pages/Perfil"
 import { LineaTiempo } from './pages/LineaTiempo';
 import { NotFoundPage }  from "./pages/NotFoundPage";
@@ -15,6 +16,7 @@ import { NotFoundPage }  from "./pages/NotFoundPage";
 function App() {
   const AuthenticatedGestionUsuarios = withAuth(GestionUsuarios);
   const AuthenticatedGestionProyectos = withAuth(GestionProyectos);
+  const AuthenticatedSnapshosts = withAuth(Snapshosts);
 
   return(
     <AuthProvider>
@@ -28,7 +30,9 @@ function App() {
           <Route path="LineaTiempo/" element={<LineaTiempo/>}/>
           <Route path="GestionProyectos/" element={<AuthenticatedGestionProyectos/>}/>
           <Route path="GestionUsuarios/" element={<AuthenticatedGestionUsuarios/>}/>
+          <Route path="Snapshots/" element={<AuthenticatedSnapshosts/>}/>
           <Route path="*" element={<NotFoundPage/>}/>
+
         </Routes>
       </BrowserRouter>
     </AuthProvider>
