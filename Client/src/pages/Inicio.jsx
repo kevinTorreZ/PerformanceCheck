@@ -85,7 +85,7 @@ export function Inicio() {
         </div>
       </section>
       <section className="perfText">
-        <h1 className="max-w-[45rem] lg:text-7xl md:text-6xl sm:text-6xl xs:text-5xl text-5xl font-bold text-center">
+        <h1 className="max-w-[45rem] lg:text-7xl md:text-6xl sm:text-6xl xs:text-5xl text-5xl font-bold text-center mt-80">
           Funcionamiento de{" "}
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#5594d6] to-[#d21b9a]">
             Performance Check
