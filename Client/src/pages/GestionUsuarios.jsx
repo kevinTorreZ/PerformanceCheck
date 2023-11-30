@@ -4,12 +4,6 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { useAuth } from "../components/verificador";
 import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableColumn,
-  TableRow,
-  TableCell,
   Select,
   SelectItem,
   Card,
@@ -179,14 +173,11 @@ export function GestionUsuarios() {
     if (equipos) {
       const token = localStorage.getItem("token");
       axios
-        .get(
-          `http://localhost:8000/api/proyectos`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
+        .get(`http://localhost:8000/api/proyectos`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
           if (response.data) {
             setProyectos(response.data);
@@ -201,7 +192,6 @@ export function GestionUsuarios() {
       setProyectos([]);
     }
   }, [equipo]);
-  
 
   const handleModificarUsuario = async (event) => {
     const rutRegex = /^[0-9]+-[0-9kK]{1}$/;
@@ -387,7 +377,7 @@ export function GestionUsuarios() {
   }, [usuarios]);
   const handleChange = (event) => {
     setCargo(event.target.value);
-  }
+  };
 
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
@@ -402,12 +392,14 @@ export function GestionUsuarios() {
       <div className="fixed hidden 3xl:block 3xl:opacity-100 md:block lg:block xs:block dark:opacity-40 -bottom-[20%] left-[20%] -z-10">
         <img src={Greendots} />
       </div>
-      <Card className="mb-4 mt-4 dark:bg-default-100/30 bg-background/100">
-        <CardBody>
-            <h1 className="text-center text-2xl">Gestionar usuarios</h1>
-        </CardBody>
-      </Card>
-     
+
+      <h1 className="text-center text-4xl mt-12">
+        Gestionador de{" "}
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#5594d6] to-[#d21b9a]">
+          Usuarios
+        </span>
+      </h1>
+
       {/* LISTA DE USUARIOS TOTAL */}
       <div className="ListaUsuarios">
         <Select
@@ -616,23 +608,20 @@ export function GestionUsuarios() {
                 className="mt-2"
                 isRequired={true}
                 endContent={
-                    <button
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={toggleVisibility}
-                    >
-                      {isVisible ? (
-                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                      ) : (
-                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                      )}
-                    </button>
-                  }
+                  <button
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={toggleVisibility}
+                  >
+                    {isVisible ? (
+                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                    ) : (
+                      <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                    )}
+                  </button>
+                }
                 type={isVisible ? "text" : "password"}
-                
-              >
-              
-              </Input>
+              ></Input>
               <Select
                 onChange={(e) => setEquipo(e.target.value)}
                 isRequired
@@ -659,20 +648,22 @@ export function GestionUsuarios() {
                   ))}
                 </select>
               </label> */}
-                <Select
+              <Select
                 onChange={handleChange}
                 value={Cargo}
                 isRequired
                 label="Cargo"
                 placeholder="Selecciona el cargo"
                 className="max-w-xs mt-2"
-                >
+              >
                 {equipo && <SelectItem key="Miembro">Miembro</SelectItem>}
                 {equipo && !tieneLider(equipo) && (
-                    <SelectItem key="Lider">Lider</SelectItem>
+                  <SelectItem key="Lider">Lider</SelectItem>
                 )}
-                {!equipo && <SelectItem key="Administrador">Administrador</SelectItem>}
-                </Select>
+                {!equipo && (
+                  <SelectItem key="Administrador">Administrador</SelectItem>
+                )}
+              </Select>
 
               {/* <label>
                 Cargo:
@@ -712,8 +703,6 @@ export function GestionUsuarios() {
             </form>
           </CardBody>
         </Card>
-
-        <div id="MensajeEstado"></div>
       </div>
     </div>
   );
