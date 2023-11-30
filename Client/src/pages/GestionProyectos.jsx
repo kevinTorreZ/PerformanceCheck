@@ -124,6 +124,73 @@ export function GestionProyectos() {
       [event.target.name]: event.target.value
     });
   }
+
+// APARTIR DE ACA SOLO CODIGO DEL CRUD DE EQUIPOS
+  const [UserFilter,setUserFilter] = useState('');
+  const [NewEquipo,setNewEquipo] = useState({
+    Nombre_equipo:'',
+    Lider:'',
+  })
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      if (token && UserCargo === 'Administrador') {
+        try {
+          const resUsuarios = await axios.get(`http://localhost:8000/users/`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const FiltrarUsuarios = resUsuarios.data.filter(Usuario => Usuario.Fk_equipo_asignado_id == null);
+          setUserFilter(FiltrarUsuarios)
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        Navigate('/login');
+      }
+    };
+    fetchData();
+  }, []);
+  
+
+  const handleChangeEquipo = (event) => {
+    setNewEquipo({
+      ...NewEquipo,
+      [event.target.name]: event.target.value
+    });
+  }
+
+  const CrearEquipo = (event) =>{
+    event.preventDefault();
+    if(NewEquipo.Lider == 'null'){
+      NewEquipo.Lider = ''
+    }
+    
+    try {
+      const resUsuarios = axios.post(`http://127.0.0.1:8000/api/equipo/`,NewEquipo, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      console.log("Se ha creado un nuevo equipo!")
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
   return (
     <div>
       <h1>Gestionador proyectos y equipos</h1>
@@ -188,8 +255,20 @@ export function GestionProyectos() {
       <hr />
       <div>
         <h2>CRUD equipos </h2>
-        <form>
-        </form>
+
+                <h1>Crear equipo</h1>
+        {UserFilter && (<form id='formCrearProyecto' key={formKey}>
+          <input type='text' name='Nombre_equipo' onChange={handleChangeEquipo} placeholder='Nombre del equipo...'/>
+          <select name='Lider' onChange={handleChangeEquipo}>
+              <option defaultChecked key=''>Seleccionar...</option>
+              <option key='null' value='null'>Sin Lider</option>
+              {UserFilter.map(Usuario => (
+                <option key={Usuario.idUsuario} value={Usuario.idUsuario}>{Usuario.Nombre}</option>
+              ))}
+            </select>
+          <button onClick={CrearEquipo}>Crear Equipo</button>
+        </form>)}
+
       </div>
     </div>
   );

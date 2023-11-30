@@ -11,7 +11,7 @@ class ProyectoSerializer(serializers.ModelSerializer):
 class EquipoSerializer(serializers.ModelSerializer):
     class Meta:
         model = equipo
-        fields = ['idEquipo','Nombre_equipo','Lider','Fk_proyecto_asignado_id']
+        fields = '__all__'
 
 
 

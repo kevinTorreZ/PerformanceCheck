@@ -1,8 +1,3 @@
-<<<<<<< Updated upstream
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-=======
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -28,7 +23,6 @@ import bluePurple from "../img/blue-purple-1.svg";
 import Greendots from "../img/greenl.png";
 import { EyeFilledIcon } from "../assets/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "../assets/EyeSlashFilledIcon";
->>>>>>> Stashed changes
 
 export function GestionUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
@@ -70,18 +64,6 @@ export function GestionUsuarios() {
     } else {
       Navigate("/login");
     }
-<<<<<<< Updated upstream
- 
-    useEffect(() => {
-        cargarProyectos(equipoSelected);
-    }, [equipoSelected]);
-
-
-    const handleClickListaUsuario = (usuario) => {
-        setUserModi(usuario);
-        setEquipoSelected(usuario.Fk_equipo_asignado_id)
-        setUsuarioSelected(usuario);
-=======
   };
   useEffect(BuscarUsuarios, [Navigate]);
 
@@ -98,7 +80,6 @@ export function GestionUsuarios() {
           setEquipos(response.data);
         })
         .catch((error) => {});
->>>>>>> Stashed changes
     }
   }, [Navigate]);
 
@@ -178,13 +159,11 @@ export function GestionUsuarios() {
   };
 
   useEffect(() => {
-    if (equipo) {
+    if (equipos) {
       const token = localStorage.getItem("token");
       axios
         .get(
-          `http://localhost:8000/api/proyectos/${
-            equipos[equipo - 1].Fk_proyecto_asignado_id
-          }`,
+          `http://localhost:8000/api/proyectos`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -193,7 +172,7 @@ export function GestionUsuarios() {
         )
         .then((response) => {
           if (response.data) {
-            setProyectos([response.data]);
+            setProyectos(response.data);
           } else {
             console.error("La API no devolvió un objeto");
           }
@@ -205,6 +184,7 @@ export function GestionUsuarios() {
       setProyectos([]);
     }
   }, [equipo]);
+  
 
   const handleModificarUsuario = async (event) => {
     const rutRegex = /^[0-9]+-[0-9kK]{1}$/;
@@ -324,33 +304,47 @@ export function GestionUsuarios() {
       setError("Debe escoger un Cargo");
       return console.error(error);
     }
+    if(Cargo != "Administrador"){
+        var idEquipoEspecifico = equipo; // reemplaza esto con el id que estás buscando
+        var Filterequipo = equipos.filter(equipo => equipo.idEquipo == idEquipoEspecifico);
+        var idProyectoEspecifico = Filterequipo[0].Fk_proyecto_asignado;
+        var Filterproyecto = proyectos.filter(proyecto => proyecto.idProyecto == idProyectoEspecifico);
+        if(Filterproyecto.length > 0){
+            setProyecto(Filterproyecto[0].idProyecto)
+        }else{
+            setProyecto('')
+        }
+        setEquipo(Filterequipo[0].Fk_proyecto_asignado)
+        
+    }
     const userData = {
       Rut: rut,
       Nombre: nombre,
       email: email,
       password: password,
       Cargo: Cargo,
-      Fk_proyecto_asignado_id: proyecto,
-      Fk_equipo_asignado_id: equipo,
+      Fk_proyecto_asignado: proyecto,
+      Fk_equipo_asignado: equipo,
     };
-    const token = localStorage.getItem("token");
-    const formulario = document.getElementById("formularioCrearUsuario");
-    try {
-      await axios.post("http://127.0.0.1:8000/api/register", userData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      formulario.submit();
-      BuscarUsuarios();
-      document.getElementById("MensajeEstado").innerHTML =
-        "Se ha creado el usuario.";
-    } catch (error) {
-      console.log(error);
-      setError(error);
-      document.getElementById("MensajeEstado").innerHTML =
-        "Se ha producido un error.";
-    }
+    console.log(userData)
+    // const token = localStorage.getItem("token");
+    // const formulario = document.getElementById("formularioCrearUsuario");
+    // try {
+    //   await axios.post("http://127.0.0.1:8000/api/register", userData, {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   });
+    //   formulario.submit();
+    //   BuscarUsuarios();
+    //   document.getElementById("MensajeEstado").innerHTML =
+    //     "Se ha creado el usuario.";
+    // } catch (error) {
+    //   console.log(error);
+    //   setError(error);
+    //   document.getElementById("MensajeEstado").innerHTML =
+    //     "Se ha producido un error.";
+    // }
   };
   const manejarCambio = (evento) => {
     let valorEntrada = evento.target.value;
@@ -375,6 +369,9 @@ export function GestionUsuarios() {
       handleClickListaUsuario(usuarios[0]);
     }
   }, [usuarios]);
+  const handleChange = (event) => {
+    setCargo(event.target.value);
+  }
 
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
@@ -541,42 +538,6 @@ export function GestionUsuarios() {
                     )}
                   </select>
                 </label> */}
-
-                  <Select
-                    isRequired
-                    label="Proyecto"
-                    placeholder="Selecciona el proyecto"
-                    className="max-w-xs mt-2"
-                    onChange={(e) => setProyectoSelected(e.target.value)}
-                    id="SelectorProyecto"
-                  >
-                    {!equipoSelected && (
-                      <SelectItem value="Seleccionar">Seleccionar</SelectItem>
-                    )}
-                    {proyectosSelected &&
-                      proyectosSelected.map((proyecto, index) => (
-                        <SelectItem key={index} value={proyecto.idProyecto}>
-                          {proyecto.Nombre}
-                        </SelectItem>
-                      ))}
-                  </Select>
-                  {/* <label>
-                  Proyecto:
-                  <select
-                    onChange={(e) => setProyectoSelected(e.target.value)}
-                    id="SelectorProyecto"
-                  >
-                    {!equipoSelected && (
-                      <option value="Seleccionar">Seleccionar</option>
-                    )}
-                    {proyectosSelected &&
-                      proyectosSelected.map((proyecto, index) => (
-                        <option key={index} value={proyecto.idProyecto}>
-                          {proyecto.Nombre}
-                        </option>
-                      ))}
-                  </select>
-                </label> */}
                   {ErrorModiUser && <p>{ErrorModiUser}</p>}
                   <Button
                     type="submit"
@@ -682,19 +643,20 @@ export function GestionUsuarios() {
                   ))}
                 </select>
               </label> */}
-              <Select
-                onChange={(e) => setCargo(e.target.value)}
+                <Select
+                onChange={handleChange}
+                value={Cargo}
                 isRequired
                 label="Cargo"
                 placeholder="Selecciona el cargo"
                 className="max-w-xs mt-2"
-              >
-                {equipo && <SelectItem>Miembro</SelectItem>}
+                >
+                {equipo && <SelectItem key="Miembro">Miembro</SelectItem>}
                 {equipo && !tieneLider(equipo) && (
-                  <SelectItem>Lider</SelectItem>
+                    <SelectItem key="Lider">Lider</SelectItem>
                 )}
-                {!equipo && <SelectItem>Administrador</SelectItem>}
-              </Select>
+                {!equipo && <SelectItem key="Administrador">Administrador</SelectItem>}
+                </Select>
 
               {/* <label>
                 Cargo:
@@ -707,22 +669,6 @@ export function GestionUsuarios() {
                   {!equipo && <option>Administrador</option>}
                 </select>
               </label> */}
-
-              <Select
-                onChange={(e) => setProyecto(e.target.value)}
-                isRequired
-                label="Proyecto"
-                placeholder="Selecciona el proyecto"
-                className="max-w-xs mt-2"
-              >
-                {proyectos &&
-                  Array.isArray(proyectos) &&
-                  proyectos.map((proyecto, index) => (
-                    <SelectItem key={index} value={proyecto.idProyecto}>
-                      {proyecto.Nombre}
-                    </SelectItem>
-                  ))}
-              </Select>
               {/* <label>
                 Proyecto:
                 <select onChange={(e) => setProyecto(e.target.value)}>
