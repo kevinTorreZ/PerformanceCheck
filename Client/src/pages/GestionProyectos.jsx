@@ -248,6 +248,7 @@ export function GestionProyectos() {
       );
       setFormKey((prevKey) => prevKey + 1);
       console.log("Se ha creado un nuevo equipo!");
+      window.location.reload();
     } catch (error) {
       console.error(error);
     }
