@@ -1,18 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
+class equipo(models.Model):
+    idEquipo = models.AutoField(primary_key=True, unique=True)
+    Nombre_equipo = models.CharField(max_length=30, blank=None)
+    Lider = models.IntegerField(default=None, null=True)
+
 class proyecto(models.Model):
     idProyecto = models.AutoField(primary_key=True, unique=True)
     Nombre = models.CharField(max_length=30, blank=None)
     Descripcion = models.TextField(blank=None)
     FechaInicio = models.DateTimeField()
     FechaTermino = models.DateTimeField()
-
-class equipo(models.Model):
-    idEquipo = models.AutoField(primary_key=True, unique=True)
-    Nombre_equipo = models.CharField(max_length=30, blank=None)
-    Lider = models.IntegerField(default=None, null=True)
-    Fk_proyecto_asignado = models.ForeignKey(proyecto, on_delete=models.CASCADE)
+    Fk_equipo_asignado = models.ForeignKey(equipo, on_delete=models.CASCADE)
 
 
 class UsuarioManager(BaseUserManager):
