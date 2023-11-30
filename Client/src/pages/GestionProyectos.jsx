@@ -58,6 +58,8 @@ export function GestionProyectos() {
     fetchData();
     
   }, []);
+
+  
   
   useEffect(() => {
     var filterEquipo = equipos.filter(equipo => equipo.Fk_proyecto_asignado_id == ProyectoSelected.idProyecto);

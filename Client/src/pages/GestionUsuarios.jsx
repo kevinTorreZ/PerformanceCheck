@@ -35,6 +35,7 @@ export function GestionUsuarios() {
   const [equipo, setEquipo] = useState(null);
   const [UserModi, setUserModi] = useState("");
   const [proyecto, setProyecto] = useState("");
+  const [EquiposConProyecto, setEquiposConProyecto] = useState([]);
   const [equipos, setEquipos] = useState([]);
   const [proyectos, setProyectos] = useState([]);
   const [ErrorModiUser, setErrorModiUser] = useState("");
@@ -70,18 +71,34 @@ export function GestionUsuarios() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token && Cargo != "Administrador") {
-      axios
-        .get(`http://localhost:8000/api/equipos`, {
+      Promise.all([
+        axios.get(`http://localhost:8000/api/equipos`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            'Authorization': `Bearer ${token}`,
+          },
+        }),
+        axios.get(`http://localhost:8000/api/proyectos`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
           },
         })
-        .then((response) => {
-          setEquipos(response.data);
-        })
-        .catch((error) => {});
+      ])
+      .then(([resEquipos, resProyectos]) => {
+        setEquipos(resEquipos.data);
+        // Crear un conjunto de todos los IDs de equipo que están asignados a un proyecto
+        const equiposConProyecto = new Set(resProyectos.data.map(proyecto => proyecto.Fk_equipo_asignado));
+
+        // Filtrar los equipos para incluir solo aquellos que están en el conjunto equiposConProyecto
+        const equiposConProyectoArray = resEquipos.data.filter(equipo => equiposConProyecto.has(equipo.idEquipo));
+        console.log(equiposConProyectoArray)
+        setEquiposConProyecto(equiposConProyectoArray);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
     }
   }, [Navigate]);
+  
 
   const tieneLider = (equipoId) => {
     if (
@@ -305,16 +322,14 @@ export function GestionUsuarios() {
       return console.error(error);
     }
     if(Cargo != "Administrador"){
-        var idEquipoEspecifico = equipo; // reemplaza esto con el id que estás buscando
-        var Filterequipo = equipos.filter(equipo => equipo.idEquipo == idEquipoEspecifico);
-        var idProyectoEspecifico = Filterequipo[0].Fk_proyecto_asignado;
-        var Filterproyecto = proyectos.filter(proyecto => proyecto.idProyecto == idProyectoEspecifico);
-        if(Filterproyecto.length > 0){
-            setProyecto(Filterproyecto[0].idProyecto)
-        }else{
-            setProyecto('')
-        }
-        setEquipo(Filterequipo[0].Fk_proyecto_asignado)
+        var idProyectoEspecifico =  equipo
+        var Filterproyecto = proyectos.filter(proyecto => proyecto.Fk_equipo_asignado == idProyectoEspecifico);
+        console.log(proyectos[0])
+        if (Filterproyecto.length > 0) {
+            setProyecto(Filterproyecto[0].idProyecto);
+          } else {
+            console.log('No se encontró ningún proyecto con el id de equipo especificado');
+          }
         
     }
     const userData = {
@@ -323,27 +338,28 @@ export function GestionUsuarios() {
       email: email,
       password: password,
       Cargo: Cargo,
-      Fk_proyecto_asignado: proyecto,
-      Fk_equipo_asignado: equipo,
+      Fk_proyecto_asignado_id: 1,
+      Fk_equipo_asignado_id: 1,
     };
-    console.log(userData)
-    const token = localStorage.getItem("token");
-    const formulario = document.getElementById("formularioCrearUsuario");
-    try {
-      await axios.post("http://127.0.0.1:8000/api/register", userData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      formulario.submit();
-      BuscarUsuarios();
-      document.getElementById("MensajeEstado").innerHTML =
-        "Se ha creado el usuario.";
-    } catch (error) {
-      console.log(error);
-      setError(error);
-      document.getElementById("MensajeEstado").innerHTML =
-        "Se ha producido un error.";
+    if(userData.Fk_proyecto_asignado != ''){
+        const token = localStorage.getItem("token");
+        const formulario = document.getElementById("formularioCrearUsuario");
+        try {
+        await axios.post("http://127.0.0.1:8000/api/register", userData, {
+            headers: {
+            Authorization: `Bearer ${token}`,
+            },
+        });
+        formulario.submit();
+        BuscarUsuarios();
+        document.getElementById("MensajeEstado").innerHTML =
+            "Se ha creado el usuario.";
+        } catch (error) {
+        console.log(error);
+        setError(error);
+        document.getElementById("MensajeEstado").innerHTML =
+            "Se ha producido un error.";
+        }
     }
   };
   const manejarCambio = (evento) => {
@@ -472,7 +488,7 @@ export function GestionUsuarios() {
                     onChange={(e) => setEquipoSelected(Number(e.target.value))}
                     id="selectEquipo"
                   >
-                    {equipos.map((equipo) => (
+                    {EquiposConProyecto.map((equipo) => (
                       <SelectItem key={equipo.idEquipo} value={equipo.idEquipo}>
                         {equipo.Nombre_equipo}
                       </SelectItem>
@@ -624,7 +640,7 @@ export function GestionUsuarios() {
                 placeholder="Selecciona el equipo"
                 className="max-w-xs mt-2"
               >
-                {equipos.map((equipo) => (
+                {EquiposConProyecto.map((equipo) => (
                   <SelectItem key={equipo.idEquipo} value={equipo.idEquipo}>
                     {equipo.Nombre_equipo}
                   </SelectItem>

@@ -19,7 +19,7 @@ User = get_user_model()
 
 class UserRegister(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = usuario
         fields = ('email','password','Cargo','Rut','Nombre','Fk_equipo_asignado_id','Fk_proyecto_asignado_id')
         extra_kwargs = {'password': {'write_only': True}}
 
@@ -27,14 +27,34 @@ class UserRegister(serializers.ModelSerializer):
         email = validated_data.get('email')
         if User.objects.filter(email=email).exists():
             raise serializers.ValidationError("Un usuario con ese email ya existe")
+        
+        # Extrae los IDs de los proyectos y equipos
+        proyecto_id = validated_data.pop('Fk_proyecto_asignado_id', None)
+        equipo_id = validated_data.pop('Fk_equipo_asignado_id', None)
+
+        # Crea el usuario
         user = User.objects.create_user(**validated_data)
+
+        # Si se proporcionaron los IDs, obtén los objetos correspondientes y asígnalos al usuario
+        if proyecto_id is not None:
+            proyecto = Proyecto.objects.get(id=proyecto_id)
+            user.Fk_proyecto_asignado = proyecto
+
+        if equipo_id is not None:
+            equipo = Equipo.objects.get(id=equipo_id)
+            user.Fk_equipo_asignado = equipo
+
+        # Guarda el usuario con las claves foráneas asignadas
+        user.save()
+
         return user
 
 
 
+
 class UserSerializer(serializers.ModelSerializer):
-    Fk_equipo_asignado_id = serializers.PrimaryKeyRelatedField(queryset=equipo.objects.all(), allow_null=True)
-    Fk_proyecto_asignado_id = serializers.PrimaryKeyRelatedField(queryset=proyecto.objects.all(), allow_null=True)
+    Fk_equipo_asignado_id = serializers.PrimaryKeyRelatedField(queryset=equipo.objects.all())
+    Fk_proyecto_asignado_id = serializers.PrimaryKeyRelatedField(queryset=proyecto.objects.all())
 
     class Meta:
         model = usuario
