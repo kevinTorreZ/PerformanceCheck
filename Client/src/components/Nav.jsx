@@ -193,22 +193,22 @@ export function Nav() {
           )}
           {isLoggedIn && (rol === "Lider" || rol === "Miembro") && (
             <NavbarItem>
-              <Link href={"/"}>Proyecto</Link>
+              <Link color="foreground" href={"/"}>Proyecto</Link>
             </NavbarItem>
           )}
           {isLoggedIn && (rol === "Lider" || rol === "Miembro") && (
             <NavbarItem>
-              <Link href={"/"}>Proyecto</Link>
+              <Link color="foreground" href={"/Snapshots"}>Snapshots</Link>
             </NavbarItem>
           )}
           {isLoggedIn && (rol === "Lider" || rol === "Miembro") && (
             <NavbarItem>
-              <Link href={"/LineaTiempo"}>Linea de tiempo</Link>
+              <Link href={"/Reportes"} color="foreground">Reportes</Link>
             </NavbarItem>
           )}
           {isLoggedIn && (rol === "Lider" || rol === "Miembro") && (
             <NavbarItem>
-              <Link href={"/Perfil"}>Perfil</Link>
+              <Link color="foreground" href={"/Perfil"}>Perfil</Link>
             </NavbarItem>
           )}
           <NavbarItem>
