@@ -327,24 +327,24 @@ export function GestionUsuarios() {
       Fk_equipo_asignado: equipo,
     };
     console.log(userData)
-    // const token = localStorage.getItem("token");
-    // const formulario = document.getElementById("formularioCrearUsuario");
-    // try {
-    //   await axios.post("http://127.0.0.1:8000/api/register", userData, {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   });
-    //   formulario.submit();
-    //   BuscarUsuarios();
-    //   document.getElementById("MensajeEstado").innerHTML =
-    //     "Se ha creado el usuario.";
-    // } catch (error) {
-    //   console.log(error);
-    //   setError(error);
-    //   document.getElementById("MensajeEstado").innerHTML =
-    //     "Se ha producido un error.";
-    // }
+    const token = localStorage.getItem("token");
+    const formulario = document.getElementById("formularioCrearUsuario");
+    try {
+      await axios.post("http://127.0.0.1:8000/api/register", userData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      formulario.submit();
+      BuscarUsuarios();
+      document.getElementById("MensajeEstado").innerHTML =
+        "Se ha creado el usuario.";
+    } catch (error) {
+      console.log(error);
+      setError(error);
+      document.getElementById("MensajeEstado").innerHTML =
+        "Se ha producido un error.";
+    }
   };
   const manejarCambio = (evento) => {
     let valorEntrada = evento.target.value;
