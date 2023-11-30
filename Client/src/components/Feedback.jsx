@@ -4,11 +4,11 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import { Card, CardBody } from "@nextui-org/react";
+import { Card} from "@nextui-org/react";
 
 const Feedback = () => {
   return (
-    <section className="funcDiv h-[500px] masDiv ">
+    <section className="funcDiv">
       <div className="flex flex-col justify-center items-center mt-40">
         <h1 className="mt-72 mb-4 text-5xl text-center">
           Solicitud de{" "}

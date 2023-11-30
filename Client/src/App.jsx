@@ -12,6 +12,7 @@ import { Snapshosts } from "./pages/Snpashots";
 import { Perfil } from "./pages/Perfil"
 import { LineaTiempo } from './pages/LineaTiempo';
 import { NotFoundPage }  from "./pages/NotFoundPage";
+import Footer from './components/Footer';
 
 function App() {
   const AuthenticatedGestionUsuarios = withAuth(GestionUsuarios);
@@ -34,9 +35,9 @@ function App() {
           <Route path="*" element={<NotFoundPage/>}/>
 
         </Routes>
+        <Footer/>
       </BrowserRouter>
     </AuthProvider>
-
   )
 }
 export default App;

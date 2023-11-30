@@ -3,7 +3,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { useAuth } from "./verificador";
 import { useNavigate } from "react-router-dom";
-import Logo from "../img/Logo.png"
+import Logo from "../assets/LOGO.png"
 import {
   Navbar,
   NavbarBrand,
@@ -17,14 +17,37 @@ import {
   NavbarMenuItem,
   NavbarMenu,
 } from "@nextui-org/react";
+import Cookies from "js-cookie";
+import { MoonIcon } from "../assets/MoonIcon";
+import { SunIcon } from "../assets/SunIcon";
+import { useTheme } from "next-themes";
+
+
+
 export function Nav() {
   const { isLoggedIn, logout } = useAuth();
   const [rol, setRol] = useState("");
   const Navigate = useNavigate();
-
+  const { theme, setTheme } = useTheme();
   const handleLogout = () => {
     Navigate("/Logout");
   };
+
+  const [checked, setChecked] = useState(
+    Cookies.get("checked") === "true" ? true : false
+  );
+
+  const toggleTheme = () => {
+    const newChecked = !checked;
+    setChecked(newChecked);
+    Cookies.set("checked", newChecked.toString());
+    if (newChecked) {
+      setTheme("light");
+    } else {
+      setTheme("dark");
+    }
+  };
+
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -122,11 +145,26 @@ export function Nav() {
 
         <NavbarContent className="hidden sm:flex gap-4" justify="end">
           <NavbarBrand>
+            <Link href="/">
             <Image
-              width={40}
+              width={80}
               src={Logo}
             />
+            </Link>
           </NavbarBrand>
+          <NavbarItem>
+            <Switch
+              defaultSelected={checked}
+              onChange={toggleTheme}
+              thumbIcon={({ isSelected, className }) =>
+                isSelected ? (
+                  <SunIcon className={className} />
+                ) : (
+                  <MoonIcon className={className} />
+                )
+              }
+            />
+          </NavbarItem>
           {isLoggedIn && rol === "Lider" && (
             <NavbarItem>
               <Link href={"/SolicitudGrupal"}>Solitud Grupal</Link>
@@ -148,7 +186,7 @@ export function Nav() {
           )}
           {isLoggedIn && rol === "Administrador" && (
             <NavbarItem>
-              <Link color="foreground" href={"/GestionUsuarios"}>
+              <Link color="foreground" href={"/Perfil"}>
                 Perfil
               </Link>
             </NavbarItem>

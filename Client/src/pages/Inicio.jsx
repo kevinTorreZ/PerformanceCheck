@@ -34,10 +34,10 @@ export function Inicio() {
 
   return (
     <div>
-      <div className="fixed hidden 3xl:-top-[30%] 3xl:-right-[40%] dark:md:block dark:opacity-100 -top-[80%] -right-[60%] 2xl:-top-[60%] 2xl:-right-[45%] -z-10 rotate-12">
+      <div className="fixed hidden 3xl:-top-[30%] 3xl:-right-[40%] md:block opacity-100  -top-[80%] -right-[60%] 2xl:-top-[60%] 2xl:-right-[45%] -z-10 rotate-12">
         <img src={docsRight} />
       </div>
-      <div className="fixed hidden 3xl:-bottom-[20%] 3xl:-left-[20%] dark:md:block dark:opacity-100 -bottom-[40%] -left-[20%] -z-10">
+      <div className="fixed hidden 3xl:-bottom-[20%] 3xl:-left-[20%] md:block opacity-100  -bottom-[40%] -left-[20%] -z-10">
         <img src={bluePurple} />
       </div>
       <div className="fixed hidden dark:3xl:block 3xl:opacity-100 dark:md:block dark:lg:block dark:xs:block dark:opacity-40 -bottom-[20%] left-[20%] -z-10">
@@ -52,14 +52,14 @@ export function Inicio() {
         </div>
         <div className="flex mt-5 flex-row justify-center align-middle flex-wrap  max-w-[1280px] heroDiv ">
           <div className="max-w-[640px] w-[100%] textsHero flex flex-col justify-center align-middle">
-            <h1 className="font-bold text-6xl text-white">Performance Check</h1>
-            <p className="text-lg mt-5">
+            <h1 className="font-bold text-6xl dark:text-white light:text-[#11181c] ">Performance Check</h1>
+            <p className="text-lg mt-5 dark:text-[#ccc] light:text-[#11181c]">
               Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sequi ut
               asperiores, molestiae pariatur dicta incidunt veritatis ipsum
               nesciunt, non error sint excepturi velit. Harum doloremque eius
               quo cupiditate. Atque, modi.
             </p>
-            <Button className="mt-8 w-[150px] h-11 text-lg bg-gradient-to-r from-[#5594d6] to-[#d21b9a] font-bold ">
+            <Button className="mt-8 w-[150px] h-11 btnVer text-lg bg-gradient-to-r from-[#5594d6] to-[#d21b9a] font-bold ">
               Ver más
             </Button>
           </div>
@@ -79,7 +79,7 @@ export function Inicio() {
             <img src={Greendots} />
           </div>
           <Statscards h1="70%" p="Desempeño laboral" duration={500} />
-          <Statscards h1="65%" p="Rendimiento de empleados" duration={500} />
+          <Statscards h1="65%" p="Independencia del empleado" duration={500} />
           <Statscards h1="70%" p="Satisfacción de empleados" duration={530} />
           <Statscards h1="80%" p="Motivación de empleados" duration={580} />
         </div>

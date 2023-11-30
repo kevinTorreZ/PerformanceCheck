@@ -17,8 +17,12 @@
     margin: 0 auto;
 }
 
-.textsHero p{
-    color: #ccc;
+.mainGestion{
+    font-family: 'Poppins', sans-serif;
+}
+
+.divCenter{
+    margin: 0 auto;
 }
 
 .perfText{
@@ -36,6 +40,9 @@
     width: 100%;
     max-width: 1280px;
 }
+.btnVer{
+    color: white;
+}
 
 .funcDiv{
     margin: 0 auto;
@@ -50,7 +57,14 @@
 
 
 .css-1u23akw-MuiButtonBase-root-MuiPickersDay-root{
-    color: white!important;
+    color: rgb(133, 133, 133)!important;
     
+}
+
+
+.formCenter{
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: 'Gilroy-bold', sans-serif;
 }
 

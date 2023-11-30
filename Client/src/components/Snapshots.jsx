@@ -3,9 +3,8 @@ import { Card, CardBody } from "@nextui-org/react";
 
 const Snapshots = () => {
   return (
-    <section className="funcDiv h-[500px] masDiv ">
+    <section className="funcDiv">
       <div className="flex flex-col justify-center items-center mt-4">
-       
         <h1 className="mt-72 mb-4 text-5xl text-center">
           Solicitud de{" "}
           <span className="bg-clip-text text-transparent text-center bg-gradient-to-b from-[#5EA2EF] to-[#0072F5] text-5xl lg:text-5xl">
