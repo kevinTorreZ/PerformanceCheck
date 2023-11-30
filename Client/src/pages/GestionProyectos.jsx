@@ -19,7 +19,7 @@ export function GestionProyectos() {
     descripcion: '',
     fechaInicio: '',
     fechaTermino: '',
-    equipo: ''
+    Fk_equipo_asignado: ''
   });
 
   useEffect(() => {
@@ -37,10 +37,17 @@ export function GestionProyectos() {
               'Authorization': `Bearer ${token}`
             }
           });
-          const equiposSinProyecto = resEquipos.data.filter(equipo => equipo.Fk_proyecto_asignado_id == 0);
-          setEquiposSinProyecto(equiposSinProyecto)
-          setEquipos(resEquipos.data)
-          setProyectos(resProyectos.data)
+    
+          // Crear un conjunto de todos los IDs de equipo que están asignados a un proyecto
+          const equiposConProyecto = new Set(resProyectos.data.map(proyecto => proyecto.Fk_equipo_asignado));
+          console.log(equiposConProyecto)
+          // Filtrar los equipos para incluir solo aquellos que no están en el conjunto equiposConProyecto
+          const equiposSinProyecto = resEquipos.data.filter(equipo => !equiposConProyecto.has(equipo.idEquipo));
+    
+          setEquiposSinProyecto(equiposSinProyecto);
+          setEquipos(equiposSinProyecto);
+          setProyectos(resProyectos.data);
+          console.log(equiposSinProyecto)
         } catch (error) {
           console.error(error);
         }
@@ -49,6 +56,7 @@ export function GestionProyectos() {
       }
     };
     fetchData();
+    
   }, []);
   
   useEffect(() => {
@@ -60,7 +68,8 @@ export function GestionProyectos() {
     }
   }, [ProyectoSelected]);
   const validarProyecto = (nombre, descripcion, fechaInicio, fechaTermino, equipo, proyectos) => {
-    if (!nombre || !descripcion || !fechaInicio || !fechaTermino || equipo === '' || equipo === 'Seleccionar...') {
+    console.log(equipo)
+    if (!nombre || !descripcion || !fechaInicio || !fechaTermino || equipo === '' || equipo === 'Seleccionar...' || equipo == undefined) {
       throw new Error('Todos los campos son obligatorios');
     }
     if (proyectos.some(objeto => objeto.Nombre.toLowerCase().replace(/ /g, '') === nombre.toLowerCase().replace(/ /g, ''))) {
@@ -70,7 +79,6 @@ export function GestionProyectos() {
       throw new Error('La fecha de inicio no puede ser posterior a la fecha de término.');
     }
   };
-
   const CrearProyecto = (event) => {
     event.preventDefault();
     const { nombre, descripcion, fechaInicio, fechaTermino, equipo } = proyecto;
@@ -78,8 +86,10 @@ export function GestionProyectos() {
       Nombre: nombre,
       Descripcion: descripcion,
       FechaInicio: fechaInicio,
-      FechaTermino: fechaTermino
+      FechaTermino: fechaTermino,
+      Fk_equipo_asignado: equipo,
     }
+
     try {
       validarProyecto(nombre, descripcion, fechaInicio, fechaTermino, equipo, proyectos);
       axios.post('http://127.0.0.1:8000/api/proyectos', jsonProyecto, {
@@ -131,6 +141,11 @@ export function GestionProyectos() {
     Nombre_equipo:'',
     Lider:'',
   })
+  const ValidarEquipo = (Nombre_equipo,Lider) =>{
+    if (Nombre_equipo == '' || Lider == '') {
+      throw new Error('Todos los campos son obligatorios');
+    }
+  }
 
   useEffect(() => {
 
@@ -169,11 +184,13 @@ export function GestionProyectos() {
     }
     
     try {
+      ValidarEquipo(NewEquipo.Nombre_equipo,NewEquipo.Lider)
       const resUsuarios = axios.post(`http://127.0.0.1:8000/api/equipo/`,NewEquipo, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+      setFormKey(prevKey => prevKey + 1);
       console.log("Se ha creado un nuevo equipo!")
     } catch (error) {
       console.error(error);
@@ -218,7 +235,6 @@ export function GestionProyectos() {
               <label>
                 Asignar equipo:
                 <select name='equipo' onChange={handleSelectChange} value={selectedEquipo}>
-                  <option key='0' value='0'>Sin equipo</option>
                   {equipos.map(equipo => ( 
                     <option key={equipo.idEquipo} value={equipo.idEquipo}>{equipo.Nombre_equipo}</option>
                   ))}
@@ -243,7 +259,6 @@ export function GestionProyectos() {
             Asignar equipo:
             <select name='equipo' onChange={handleChange2}>
               <option defaultChecked key=''>Seleccionar...</option>
-              <option key='0' value='0'>Sin equipo</option>
               {equiposSinProyecto.map(equipo => (
                 <option key={equipo.idEquipo} value={equipo.idEquipo}>{equipo.Nombre_equipo}</option>
               ))}
@@ -258,8 +273,8 @@ export function GestionProyectos() {
 
                 <h1>Crear equipo</h1>
         {UserFilter && (<form id='formCrearProyecto' key={formKey}>
-          <input type='text' name='Nombre_equipo' onChange={handleChangeEquipo} placeholder='Nombre del equipo...'/>
-          <select name='Lider' onChange={handleChangeEquipo}>
+          <input type='text' name='Nombre_equipo' onChange={handleChangeEquipo} placeholder='Nombre del equipo...' required/>
+          <select name='Lider' onChange={handleChangeEquipo} required>
               <option defaultChecked key=''>Seleccionar...</option>
               <option key='null' value='null'>Sin Lider</option>
               {UserFilter.map(Usuario => (
