@@ -2,8 +2,8 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework import viewsets,status
-from .serializers import UserSerializer, UserRegister,EquipoSerializer,ProyectoSerializer,CustomTokenObtainPairSerializer
-from .models import usuario, equipo,proyecto
+from .serializers import UserSerializer, UserRegister,EquipoSerializer,ProyectoSerializer,CustomTokenObtainPairSerializer,SnapshotSerializer
+from .models import usuario, equipo,proyecto,Snapshot
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
@@ -65,6 +65,13 @@ class ObtenerEquipos(APIView):
         serializer = EquipoSerializer(queryset, many=True)
         return Response(serializer.data)
 
+    def post(self, request, format=None):
+        serializer = EquipoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class ObtenerEquipo(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -76,13 +83,6 @@ class ObtenerEquipo(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = EquipoSerializer(equipo_obj)
         return Response(serializer.data)
-
-    def post(self, request):
-        serializer = EquipoSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, id_equipo):
         try:
@@ -150,3 +150,20 @@ class obtenerTodosLosProyectos(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class SnapshotView(APIView):
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        Snapshots = Snapshot.objects.all()
+        serializer = SnapshotSerializer(Snapshots, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = SnapshotSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

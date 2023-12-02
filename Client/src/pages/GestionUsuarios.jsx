@@ -37,8 +37,8 @@ export function GestionUsuarios() {
   const [equipoSelected, setEquipoSelected] = useState(null);
   const [proyectoSelected, setProyectoSelected] = useState(null);
   const [proyectosSelected, setProyectosSelected] = useState(null);
+  const [formKey, setFormKey] = useState(0);
   const [cargoSelected, setCargoSelected] = useState(null);
-
   const Navigate = useNavigate();
 
   const BuscarUsuarios = () => {
@@ -77,35 +77,35 @@ export function GestionUsuarios() {
           },
         })
       ])
-      .then(([resEquipos, resProyectos]) => {
-        setEquipos(resEquipos.data);
-        // Crear un conjunto de todos los IDs de equipo que están asignados a un proyecto
-        const equiposConProyecto = new Set(resProyectos.data.map(proyecto => proyecto.Fk_equipo_asignado));
+        .then(([resEquipos, resProyectos]) => {
+          setEquipos(resEquipos.data);
+          // Crear un conjunto de todos los IDs de equipo que están asignados a un proyecto
+          const equiposConProyecto = new Set(resProyectos.data.map(proyecto => proyecto.Fk_equipo_asignado));
 
-        // Filtrar los equipos para incluir solo aquellos que están en el conjunto equiposConProyecto
-        const equiposConProyectoArray = resEquipos.data.filter(equipo => equiposConProyecto.has(equipo.idEquipo));
-        console.log(equiposConProyectoArray)
-        setEquiposConProyecto(equiposConProyectoArray);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+          // Filtrar los equipos para incluir solo aquellos que están en el conjunto equiposConProyecto
+          const equiposConProyectoArray = resEquipos.data.filter(equipo => equiposConProyecto.has(equipo.idEquipo));
+          setEquiposConProyecto(equiposConProyectoArray);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
   }, [Navigate]);
-  
+
 
   const tieneLider = (equipoId) => {
+    const tim = equipos.find(equipo => equipo.idEquipo === parseInt(equipoId));
     if (
-      equipos[equipoId] &&
-      equipos[equipoId].Lider !== undefined &&
-      equipos[equipoId].Lider !== null
+      tim &&
+      (tim.Lider === undefined ||
+        tim.Lider === null ||
+        tim.Lider === 0)
     ) {
       return true;
     } else {
       return false;
     }
   };
-
   const handleRutChange = (evento) => {
     let valorEntrada = evento.target.value;
     valorEntrada = valorEntrada.replace(/\D|-/g, "");
@@ -135,8 +135,7 @@ export function GestionUsuarios() {
       const token = localStorage.getItem("token");
       axios
         .get(
-          `http://localhost:8000/api/proyecto/${
-            equipos.find((e) => e.idEquipo === equipoId).Fk_proyecto_asignado_id
+          `http://localhost:8000/api/proyecto/${equipos.find((e) => e.idEquipo === equipoId).Fk_proyecto_asignado_id
           }`,
           {
             headers: {
@@ -287,7 +286,8 @@ export function GestionUsuarios() {
       }
     }
   };
-  const handleCrearUsuario = async () => {
+  const handleCrearUsuario = async (event) => {
+    event.preventDefault();
     setError();
     const rutRegex = /^[0-9]+-[0-9kK]{1}$/;
     const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{8,}$/;
@@ -311,182 +311,216 @@ export function GestionUsuarios() {
       setError("Debe escoger un Cargo");
       return console.error(error);
     }
-    if(Cargo != "Administrador"){
-        var idProyectoEspecifico =  equipo
-        var Filterproyecto = proyectos.filter(proyecto => proyecto.Fk_equipo_asignado == idProyectoEspecifico);
-        console.log(proyectos[0])
-        if (Filterproyecto.length > 0) {
-            setProyecto(Filterproyecto[0].idProyecto);
-          } else {
-            console.log('No se encontró ningún proyecto con el id de equipo especificado');
-          }
-        
+    if (Cargo != "Administrador") {
+      var idProyectoEspecifico = equipo
+      var Filterproyecto = proyectos.filter(proyecto => proyecto.Fk_equipo_asignado == idProyectoEspecifico);
+      if (Filterproyecto.length > 0) {
+        setProyecto(Filterproyecto[0].idProyecto);
+      } else {
+        console.log('No se encontró ningún proyecto con el id de equipo especificado');
+      }
+
     }
+    const objEquipo = equipos.find(equipe => equipe.idEquipo === parseInt(equipo))
+    const objProject = proyectos.find(proyecto => proyecto.Fk_equipo_asignado === parseInt(equipo))
+    console.log(objEquipo,objProject)
     const userData = {
       Rut: rut,
       Nombre: nombre,
       email: email,
       password: password,
       Cargo: Cargo,
-      Fk_proyecto_asignado_id: 1,
-      Fk_equipo_asignado_id: 1,
+      Fk_proyecto_asignado: objProject.idProyecto,
+      Fk_equipo_asignado: objEquipo.idEquipo,
     };
-    if(userData.Fk_proyecto_asignado != ''){
-        const token = localStorage.getItem("token");
-        const formulario = document.getElementById("formularioCrearUsuario");
-        try {
-        await axios.post("http://127.0.0.1:8000/api/register", userData, {
-            headers: {
+    console.log(userData)
+    if (userData.Fk_proyecto_asignado != '') {
+      const token = localStorage.getItem("token");
+      const formulario = document.getElementById("formularioCrearUsuario");
+      try {
+        const response = await axios.post("http://127.0.0.1:8000/api/register", userData, {
+          headers: {
             Authorization: `Bearer ${token}`,
-            },
+          },
         });
-        formulario.submit();
-        BuscarUsuarios();
-        document.getElementById("MensajeEstado").innerHTML =
-            "Se ha creado el usuario.";
-        } catch (error) {
-        console.log(error);
-        setError(error);
-        document.getElementById("MensajeEstado").innerHTML =
-            "Se ha producido un error.";
+        const idUser = response.data.idUsuario; // Asume que el ID del usuario viene en la propiedad 'id' de la respuesta
+        if (userData.Cargo === 'Lider') {
+          var equipoId = parseInt(equipo);
+          if (isNaN(equipoId)) {
+            console.error('equipo is not a number:', equipo);
+            return;
+          }
+          var equipoChange = equipos.find(equipo => equipo.idEquipo === equipoId);
+          if (!equipoChange) {
+            console.error('No team found with idEquipo:', equipoId);
+            return;
+          }
+          equipoChange.Lider = idUser;
+          const dataModify = {
+            Nombre_equipo:equipoChange.Nombre_equipo,
+            Lider:idUser
+          };
+          console.log(dataModify)
+          try {
+            const response = await axios.put("http://127.0.0.1:8000/api/equipo/" + equipoChange.idEquipo + '/', dataModify, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            setFormKey((prevKey) => prevKey + 1);
+          } catch (error) {
+            setError(error.message);
+            return;
+          }
         }
+        setFormKey((prevKey) => prevKey + 1);
+        setRut('')
+        setNombre('')
+        setCargo(0)
+        setEquipo(0)
+        setPassword('')
+        setEmail('')
+        BuscarUsuarios();
+      }catch(error){
+        setError(error.message)
+      }
     }
-  };
-  const manejarCambio = (evento) => {
-    let valorEntrada = evento.target.value;
-    valorEntrada = valorEntrada.replace(/\D|-/g, "");
-    valorEntrada = valorEntrada.substring(0, 9);
-    if (
-      valorEntrada.length >= 8 &&
-      valorEntrada[valorEntrada.length - 1] !== "-"
-    ) {
-      valorEntrada =
-        valorEntrada.substring(0, 8) + "-" + valorEntrada.substring(8);
-    }
+}
+    const manejarCambio = (evento) => {
+      let valorEntrada = evento.target.value;
+      valorEntrada = valorEntrada.replace(/\D|-/g, "");
+      valorEntrada = valorEntrada.substring(0, 9);
+      if (
+        valorEntrada.length >= 8 &&
+        valorEntrada[valorEntrada.length - 1] !== "-"
+      ) {
+        valorEntrada =
+          valorEntrada.substring(0, 8) + "-" + valorEntrada.substring(8);
+      }
 
-    setUsuarioSelected({ ...usuarioSelected, Rut: valorEntrada });
-  };
+      setUsuarioSelected({ ...usuarioSelected, Rut: valorEntrada });
+    };
 
-  const [defaultKey, setDefaultKey] = useState([]);
+    const [defaultKey, setDefaultKey] = useState([]);
 
-  useEffect(() => {
-    if (usuarios.length > 0) {
-      setDefaultKey([usuarios[0].idUsuario]);
-      handleClickListaUsuario(usuarios[0]);
-    }
-  }, [usuarios]);
-  const handleChange = (event) => {
-    setCargo(event.target.value);
-  };
+    useEffect(() => {
+      if (usuarios.length > 0) {
+        setDefaultKey([usuarios[0].idUsuario]);
+        handleClickListaUsuario(usuarios[0]);
+      }
+    }, [usuarios]);
+    const handleChange = (event) => {
+      setCargo(event.target.value);
+    };
 
-  const [isVisible, setIsVisible] = useState(false);
-  const toggleVisibility = () => setIsVisible(!isVisible);
-  return (
-    <div className="max-w-[1280px] divCenter">
-      <div className="fixed hidden 3xl:-top-[30%] 3xl:-right-[40%] md:block opacity-100  -top-[80%] -right-[60%] 2xl:-top-[60%] 2xl:-right-[45%] -z-10 rotate-12">
-        <img src={docsRight} />
-      </div>
-      <div className="fixed hidden 3xl:-bottom-[20%] 3xl:-left-[20%] md:block opacity-100 -bottom-[40%] -left-[20%] -z-10">
-        <img src={bluePurple} />
-      </div>
-      <div className="fixed hidden 3xl:block 3xl:opacity-100 md:block lg:block xs:block dark:opacity-40 -bottom-[20%] left-[20%] -z-10">
-        <img src={Greendots} />
-      </div>
+    const [isVisible, setIsVisible] = useState(false);
+    const toggleVisibility = () => setIsVisible(!isVisible);
+    return (
+      <div className="max-w-[1280px] divCenter">
+        <div className="fixed hidden 3xl:-top-[30%] 3xl:-right-[40%] md:block opacity-100  -top-[80%] -right-[60%] 2xl:-top-[60%] 2xl:-right-[45%] -z-10 rotate-12">
+          <img src={docsRight} />
+        </div>
+        <div className="fixed hidden 3xl:-bottom-[20%] 3xl:-left-[20%] md:block opacity-100 -bottom-[40%] -left-[20%] -z-10">
+          <img src={bluePurple} />
+        </div>
+        <div className="fixed hidden 3xl:block 3xl:opacity-100 md:block lg:block xs:block dark:opacity-40 -bottom-[20%] left-[20%] -z-10">
+          <img src={Greendots} />
+        </div>
 
-      <h1 className="text-center text-4xl mt-12">
-        Gestionador de{" "}
-        <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#5594d6] to-[#d21b9a]">
-          Usuarios
-        </span>
-      </h1>
+        <h1 className="text-center text-4xl mt-12">
+          Gestionador de{" "}
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#5594d6] to-[#d21b9a]">
+            Usuarios
+          </span>
+        </h1>
 
-      {/* LISTA DE USUARIOS TOTAL */}
-      <div className="ListaUsuarios">
-        <Select
-          isRequired
-          label="Lista de usuarios"
-          placeholder="Selecciona al usuario"
-          className="max-w-xs"
-          defaultSelectedKeys={defaultKey}
-        >
-          {usuarios.map((usuario) => (
-            <SelectItem
-              key={usuario.idUsuario}
-              value={usuarios[0]}
-              onClick={() => handleClickListaUsuario(usuario)}
-            >
-              {usuario.email}
-            </SelectItem>
-          ))}
-        </Select>
-      </div>
-      <div className="flex flex-row lg:flex-nowrap md:flex-wrap sm:flex-wrap xs:flex-wrap gap-3 h-[65vh] w-[100%] max-w-[1280px] mainGestion mb-16">
-        <div className="xl:w-[50%] md:w-[100%] sm:w-[100%] xs:w-[100%] ">
-          {/* SELECCIONAR USUARIO Y MODIFICARLO O ELIMINARLO */}
-          {usuarioSelected && (
-            <Card className="mt-4 max-h-[600px] h-[100%] dark:bg-default-100/60 bg-background/100">
-              <CardBody>
-                <h1 className="text-center mb-4 text-xl">
-                  Modificar o eliminar el usuario
-                  <br />
-                  <span className="text-red-500">
-                    {" "}
-                    {usuarioSelected.email}{" "}
-                  </span>
-                </h1>
-                <form
-                  onSubmit={handleModificarUsuario}
-                  className="flex flex-col"
-                >
-                  <Input
-                    type="text"
-                    label="Email"
-                    value={usuarioSelected.email}
-                    isRequired={true}
-                    onChange={(e) =>
-                      setUsuarioSelected({
-                        ...usuarioSelected,
-                        email: e.target.value,
-                      })
-                    }
-                  ></Input>
-                  <Input
-                    type="text"
-                    label="Nombre"
-                    value={usuarioSelected.Nombre}
-                    className="mt-2"
-                    isRequired={true}
-                    onChange={(e) =>
-                      setUsuarioSelected({
-                        ...usuarioSelected,
-                        Nombre: e.target.value,
-                      })
-                    }
-                  ></Input>
-                  <Input
-                    type="text"
-                    label="Rut"
-                    value={usuarioSelected.Rut}
-                    onChange={manejarCambio}
-                    placeholder="RUT"
-                    className="mt-2"
-                    isRequired={true}
-                  ></Input>
-                  <Select
-                    isRequired
-                    label="Equipo"
-                    placeholder="Selecciona el equipo"
-                    className="max-w-xs mt-2"
-                    onChange={(e) => setEquipoSelected(Number(e.target.value))}
-                    id="selectEquipo"
+        {/* LISTA DE USUARIOS TOTAL */}
+        <div className="ListaUsuarios">
+          <Select
+            isRequired
+            label="Lista de usuarios"
+            placeholder="Selecciona al usuario"
+            className="max-w-xs"
+            defaultSelectedKeys={defaultKey}
+          >
+            {usuarios.map((usuario) => (
+              <SelectItem
+                key={usuario.idUsuario}
+                value={usuarios[0]}
+                onClick={() => handleClickListaUsuario(usuario)}
+              >
+                {usuario.email}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
+        <div className="flex flex-row lg:flex-nowrap md:flex-wrap sm:flex-wrap xs:flex-wrap gap-3 h-[65vh] w-[100%] max-w-[1280px] mainGestion mb-16">
+          <div className="xl:w-[50%] md:w-[100%] sm:w-[100%] xs:w-[100%] ">
+            {/* SELECCIONAR USUARIO Y MODIFICARLO O ELIMINARLO */}
+            {usuarioSelected && (
+              <Card className="mt-4 max-h-[600px] h-[100%] dark:bg-default-100/60 bg-background/100">
+                <CardBody>
+                  <h1 className="text-center mb-4 text-xl">
+                    Modificar o eliminar el usuario
+                    <br />
+                    <span className="text-red-500">
+                      {" "}
+                      {usuarioSelected.email}{" "}
+                    </span>
+                  </h1>
+                  <form
+                    onSubmit={handleModificarUsuario}
+                    className="flex flex-col"
                   >
-                    {EquiposConProyecto.map((equipo) => (
-                      <SelectItem key={equipo.idEquipo} value={equipo.idEquipo}>
-                        {equipo.Nombre_equipo}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                  {/* <label>
+                    <Input
+                      type="text"
+                      label="Email"
+                      value={usuarioSelected.email}
+                      isRequired={true}
+                      onChange={(e) =>
+                        setUsuarioSelected({
+                          ...usuarioSelected,
+                          email: e.target.value,
+                        })
+                      }
+                    ></Input>
+                    <Input
+                      type="text"
+                      label="Nombre"
+                      value={usuarioSelected.Nombre}
+                      className="mt-2"
+                      isRequired={true}
+                      onChange={(e) =>
+                        setUsuarioSelected({
+                          ...usuarioSelected,
+                          Nombre: e.target.value,
+                        })
+                      }
+                    ></Input>
+                    <Input
+                      type="text"
+                      label="Rut"
+                      value={usuarioSelected.Rut}
+                      onChange={manejarCambio}
+                      placeholder="RUT"
+                      className="mt-2"
+                      isRequired={true}
+                    ></Input>
+                    <Select
+                      isRequired
+                      label="Equipo"
+                      placeholder="Selecciona el equipo"
+                      className="max-w-xs mt-2"
+                      onChange={(e) => setEquipoSelected(Number(e.target.value))}
+                      id="selectEquipo"
+                    >
+                      {EquiposConProyecto.map((equipo) => (
+                        <SelectItem key={equipo.idEquipo} value={equipo.idEquipo}>
+                          {equipo.Nombre_equipo}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                    {/* <label>
                   Equipo:
                   <select
                     value={equipoSelected}
@@ -507,29 +541,29 @@ export function GestionUsuarios() {
                     ))}
                   </select>
                 </label> */}
-                  <Select
-                    isRequired
-                    label="Cargo"
-                    placeholder="Selecciona el cargo"
-                    className="max-w-xs mt-2"
-                    value={cargoSelected}
-                    defaultSelectedKeys={cargoSelected}
-                    onChange={(e) => setCargoSelected(e.target.value)}
-                    id="SelectorCargo"
-                  >
-                    {equipoSelected && <SelectItem>Miembro</SelectItem>}
-                    {(usuarioSelected.Cargo === "Lider" ||
-                      (equipoSelected && !tieneLider(equipoSelected))) && (
-                      <SelectItem>Lider</SelectItem>
-                    )}
-                    {!equipoSelected && (
-                      <SelectItem value="Administrador">
-                        Administrador
-                      </SelectItem>
-                    )}
-                    {equipoSelected && <SelectItem>Miembro</SelectItem>}
-                  </Select>
-                  {/* <label>
+                    <Select
+                      isRequired
+                      label="Cargo"
+                      placeholder="Selecciona el cargo"
+                      className="max-w-xs mt-2"
+                      value={cargoSelected}
+                      defaultSelectedKeys={cargoSelected}
+                      onChange={(e) => setCargoSelected(e.target.value)}
+                      id="SelectorCargo"
+                    >
+                      {equipoSelected && <SelectItem>Miembro</SelectItem>}
+                      {(usuarioSelected.Cargo === "Lider" ||
+                        (equipoSelected && !tieneLider(equipoSelected))) && (
+                          <SelectItem>Lider</SelectItem>
+                        )}
+                      {!equipoSelected && (
+                        <SelectItem value="Administrador">
+                          Administrador
+                        </SelectItem>
+                      )}
+                      {equipoSelected && <SelectItem>Miembro</SelectItem>}
+                    </Select>
+                    {/* <label>
                   Cargo:
                   <select
                     value={cargoSelected}
@@ -546,96 +580,96 @@ export function GestionUsuarios() {
                     )}
                   </select>
                 </label> */}
-                  {ErrorModiUser && <p>{ErrorModiUser}</p>}
-                  <Button
-                    type="submit"
-                    color="success"
-                    className=" mt-2 text-white"
-                  >
-                    Guardar Cambios
-                  </Button>
-                  <Button
-                    type="button"
-                    color="danger"
-                    onClick={handleEliminarUsuario}
-                    className=" mt-2"
-                  >
-                    Eliminar usuario
-                  </Button>
-                </form>
-              </CardBody>
-            </Card>
-          )}
-        </div>
+                    {ErrorModiUser && <p>{ErrorModiUser}</p>}
+                    <Button
+                      type="submit"
+                      color="success"
+                      className=" mt-2 text-white"
+                    >
+                      Guardar Cambios
+                    </Button>
+                    <Button
+                      type="button"
+                      color="danger"
+                      onClick={handleEliminarUsuario}
+                      className=" mt-2"
+                    >
+                      Eliminar usuario
+                    </Button>
+                  </form>
+                </CardBody>
+              </Card>
+            )}
+          </div>
 
-        {/* FORMULARIO CREAR USUARIO */}
-        <Card className="mt-4 xl:w-[50%] md:w-[100%] sm:w-[100%] xs:w-[100%] max-h-[600px] h-[100%] dark:bg-default-100/60 bg-background/100">
-          <CardBody>
-            <form id="formularioCrearUsuario" className="flex flex-col">
-              <h1 className="text-center mb-4 text-xl">Crear usuario</h1>
-              <Input
-                type="text"
-                label="Nombre"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                placeholder="Ingresa el nombre"
-                isRequired={true}
-              ></Input>
-              <Input
-                type="text"
-                label="Rut"
-                value={rut}
-                onChange={handleRutChange}
-                placeholder="Ingresa el rut"
-                isRequired={true}
-                className="mt-2"
-              ></Input>
-              <Input
-                type="email"
-                label="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Ingresa el email"
-                isRequired={true}
-                className="mt-2"
-              ></Input>
-              <Input
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Contraseña"
-                label="Contraseña"
-                labelPlacement="inside"
-                className="mt-2"
-                isRequired={true}
-                endContent={
-                  <button
-                    className="focus:outline-none"
-                    type="button"
-                    onClick={toggleVisibility}
-                  >
-                    {isVisible ? (
-                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                    ) : (
-                      <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                    )}
-                  </button>
-                }
-                type={isVisible ? "text" : "password"}
-              ></Input>
-              <Select
-                onChange={(e) => setEquipo(e.target.value)}
-                isRequired
-                label="Equipo"
-                placeholder="Selecciona el equipo"
-                className="max-w-xs mt-2"
-              >
-                {EquiposConProyecto.map((equipo) => (
-                  <SelectItem key={equipo.idEquipo} value={equipo.idEquipo}>
-                    {equipo.Nombre_equipo}
-                  </SelectItem>
-                ))}
-              </Select>
-              {/* <label>
+          {/* FORMULARIO CREAR USUARIO */}
+          <Card className="mt-4 xl:w-[50%] md:w-[100%] sm:w-[100%] xs:w-[100%] max-h-[600px] h-[100%] dark:bg-default-100/60 bg-background/100">
+            <CardBody>
+              <form id="formularioCrearUsuario" key={formKey}>
+                <h1 className="text-center mb-4 text-xl">Crear usuario</h1>
+                <Input
+                  type="text"
+                  label="Nombre"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  placeholder="Ingresa el nombre"
+                  isRequired={true}
+                ></Input>
+                <Input
+                  type="text"
+                  label="Rut"
+                  value={rut}
+                  onChange={handleRutChange}
+                  placeholder="Ingresa el rut"
+                  isRequired={true}
+                  className="mt-2"
+                ></Input>
+                <Input
+                  type="email"
+                  label="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Ingresa el email"
+                  isRequired={true}
+                  className="mt-2"
+                ></Input>
+                <Input
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Contraseña"
+                  label="Contraseña"
+                  labelPlacement="inside"
+                  className="mt-2"
+                  isRequired={true}
+                  endContent={
+                    <button
+                      className="focus:outline-none"
+                      type="button"
+                      onClick={toggleVisibility}
+                    >
+                      {isVisible ? (
+                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      ) : (
+                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      )}
+                    </button>
+                  }
+                  type={isVisible ? "text" : "password"}
+                ></Input>
+                <Select
+                  onChange={(e) => setEquipo(e.target.value)}
+                  isRequired
+                  label="Equipo"
+                  placeholder="Selecciona el equipo"
+                  className="max-w-xs mt-2"
+                >
+                  {EquiposConProyecto.map((equipo) => (
+                    <SelectItem key={equipo.idEquipo} value={equipo.idEquipo}>
+                      {equipo.Nombre_equipo}
+                    </SelectItem>
+                  ))}
+                </Select>
+                {/* <label>
                 Equipo:
                 <select onChange={(e) => setEquipo(e.target.value)}>
                   <option defaultChecked value="">
@@ -648,24 +682,25 @@ export function GestionUsuarios() {
                   ))}
                 </select>
               </label> */}
-              <Select
-                onChange={handleChange}
-                value={Cargo}
-                isRequired
-                label="Cargo"
-                placeholder="Selecciona el cargo"
-                className="max-w-xs mt-2"
-              >
-                {equipo && <SelectItem key="Miembro">Miembro</SelectItem>}
-                {equipo && !tieneLider(equipo) && (
-                  <SelectItem key="Lider">Lider</SelectItem>
-                )}
-                {!equipo && (
-                  <SelectItem key="Administrador">Administrador</SelectItem>
-                )}
-              </Select>
+                <Select
+                  onChange={handleChange}
+                  value={Cargo}
+                  isRequired
+                  label="Cargo"
+                  placeholder="Selecciona el cargo"
+                  className="max-w-xs mt-2"
+                >
+                  {equipo && <SelectItem key="Miembro">Miembro</SelectItem>}
+                  {equipo && tieneLider(equipo) && (
 
-              {/* <label>
+                    <SelectItem key="Lider"> Lider</SelectItem>
+                  )}
+                  {!equipo && (
+                    <SelectItem key="Administrador">Administrador</SelectItem>
+                  )}
+                </Select>
+
+                {/* <label>
                 Cargo:
                 <select onChange={(e) => setCargo(e.target.value)}>
                   <option defaultChecked value="">
@@ -676,7 +711,7 @@ export function GestionUsuarios() {
                   {!equipo && <option>Administrador</option>}
                 </select>
               </label> */}
-              {/* <label>
+                {/* <label>
                 Proyecto:
                 <select onChange={(e) => setProyecto(e.target.value)}>
                   <option selected value="">
@@ -691,19 +726,19 @@ export function GestionUsuarios() {
                     ))}
                 </select>
               </label> */}
-              {error && <p>{error}</p>}
-              <Button
-                onClick={handleCrearUsuario}
-                type="button"
-                color="success"
-                className="mt-2 text-white"
-              >
-                Crear Usuario
-              </Button>
-            </form>
-          </CardBody>
-        </Card>
+                {error && <p>{error}</p>}
+                <Button
+                  onClick={handleCrearUsuario}
+                  type="button"
+                  color="success"
+                  className="mt-2 text-white"
+                >
+                  Crear Usuario
+                </Button>
+              </form>
+            </CardBody>
+          </Card>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }

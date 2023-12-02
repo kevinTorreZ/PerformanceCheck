@@ -25,7 +25,9 @@ export function GestionProyectos() {
   const [formKey, setFormKey] = useState(0);
   const [ProyectoSelected, setProyectoSelected] = useState("");
   const [equipoFromproject, setEquipoFromproject] = useState({ idEquipo: 0 });
-  
+  const [fechaInicio, setFechaInicio] = useState("");
+  const [fechaTermino, setFechaTermino] = useState("");
+
   const [selectedEquipo, setSelectedEquipo] = useState("");
   const [proyecto, setProyecto] = useState({
     nombre: "",
@@ -35,7 +37,7 @@ export function GestionProyectos() {
     Fk_equipo_asignado: "",
   });
 
-  useEffect(() => {
+  const BuscarEquiposYproyectos = () => {
     const fetchData = async () => {
       if (token && UserCargo === "Administrador") {
         try {
@@ -77,11 +79,17 @@ export function GestionProyectos() {
         Navigate("/login");
       }
     };
-    fetchData();
-  }, []);
 
-  
-  
+    // Ejecutar fetchData la primera vez
+    useEffect(() => {
+      fetchData();
+    }, []);
+
+    // Retornar fetchData para que pueda ser llamada directamente
+    return fetchData;
+  }
+  const actualizarEquiposYproyectos = BuscarEquiposYproyectos();
+
   useEffect(() => {
     var filterEquipo = equipos.filter(
       (equipo) => equipo.Fk_proyecto_asignado_id == ProyectoSelected.idProyecto
@@ -159,7 +167,10 @@ export function GestionProyectos() {
         fechaTermino: "",
         equipo: "",
       });
+      setFechaInicio('')
+      setFechaTermino('')
       setFormKey((prevKey) => prevKey + 1);
+      actualizarEquiposYproyectos()
       console.log("Se ha creado un nuevo proyecto!");
     } catch (error) {
       console.error(error.message);
@@ -189,6 +200,17 @@ export function GestionProyectos() {
       [event.target.name]: event.target.value,
     });
   };
+  
+  const handleChangeInicio = (event) => {
+    setFechaInicio(event.target.value);
+    handleChange2(event);
+  };
+
+  const handleChangeTermino = (event) => {
+    setFechaTermino(event.target.value);
+    handleChange2(event);
+  };
+
 
   // APARTIR DE ACA SOLO CODIGO DEL CRUD DE EQUIPOS
 
@@ -197,7 +219,7 @@ export function GestionProyectos() {
     Nombre_equipo: "",
     Lider: 0,
   });
-  const ValidarEquipo = async (Nombre_equipo) => {
+  const ValidarEquipo = async (Nombre_equipo, Lider) => {
     const resEquipos = await axios.get(
       `http://127.0.0.1:8000/api/equipos/`,
       {
@@ -211,9 +233,9 @@ export function GestionProyectos() {
     if (Nombre_equipo == "") {
       throw new Error("Debe ingresar un equipo");
     }
-    if(equipoExistente){
+    if (equipoExistente) {
       throw new Error("El nombre de equipo ya existe!");
-  }
+    }
   };
 
   useEffect(() => {
@@ -246,7 +268,7 @@ export function GestionProyectos() {
     });
   };
 
-  const CrearEquipo = async (event) => {
+  const CrearEquipo = (event) => {
     event.preventDefault();
     console.log(NewEquipo.Lider)
     if (NewEquipo.Lider == 0) {
@@ -254,9 +276,9 @@ export function GestionProyectos() {
     }
 
     try {
-      await ValidarEquipo(NewEquipo.Nombre_equipo);
+      ValidarEquipo(NewEquipo.Nombre_equipo);
       const resUsuarios = axios.post(
-        `http://127.0.0.1:8000/api/equipo/`,
+        `http://127.0.0.1:8000/api/equipos/`,
         NewEquipo,
         {
           headers: {
@@ -264,9 +286,9 @@ export function GestionProyectos() {
           },
         }
       );
-      // setFormKey((prevKey) => prevKey + 1);
+      setFormKey((prevKey) => prevKey + 1);
       console.log("Se ha creado un nuevo equipo!");
-      // window.location.reload();
+      setNewEquipo('')
     } catch (error) {
       console.error(error);
     }
@@ -387,7 +409,6 @@ export function GestionProyectos() {
                   <Button
                     color="success"
                     className="text-white"
-                    onClick={CrearProyecto}
                   >
                     Modificar proyecto
                   </Button>
@@ -424,8 +445,8 @@ export function GestionProyectos() {
                 label="Fecha de inicio"
                 type="datetime-local"
                 name="fechaInicio"
-                value={"31-01-2003"}
-                onChange={handleChange2}
+                value={fechaInicio}
+                onChange={handleChangeInicio}
                 className="mt-4"
                 isRequired={true}
                 min={ahora}
@@ -434,11 +455,12 @@ export function GestionProyectos() {
                 label="Fecha de termino"
                 type="datetime-local"
                 name="fechaTermino"
-                value={"31-01-2003"}
-                onChange={handleChange2}
+                value={fechaTermino}
+                onChange={handleChangeTermino}
                 className="mt-4"
                 isRequired={true}
-                min={ahora}
+                min={fechaInicio}
+                disabled={!fechaInicio}
               />
 
               <Select
@@ -490,7 +512,7 @@ export function GestionProyectos() {
                   className="mt-4"
                 ><SelectItem key={0} value={0}>
                     Sin Lider
-                </SelectItem>
+                  </SelectItem>
                   {UserFilter.map((Usuario) => (
                     <SelectItem
                       key={Usuario.idUsuario}

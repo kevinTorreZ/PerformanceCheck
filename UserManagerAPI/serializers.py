@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import usuario, equipo, proyecto
+from .models import usuario, equipo, proyecto,Snapshot
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -13,6 +13,11 @@ class EquipoSerializer(serializers.ModelSerializer):
         model = equipo
         fields = '__all__'
 
+class SnapshotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Snapshot
+        fields = ('project','team','Funcion','additionalInfo','User','Estado','startDate','endDate','idSnapshot')
+
 
 
 User = get_user_model()
@@ -20,7 +25,7 @@ User = get_user_model()
 class UserRegister(serializers.ModelSerializer):
     class Meta:
         model = usuario
-        fields = ('email','password','Cargo','Rut','Nombre','Fk_equipo_asignado_id','Fk_proyecto_asignado_id')
+        fields = ('email','password','Cargo','Rut','Nombre','Fk_equipo_asignado','Fk_proyecto_asignado','idUsuario')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -47,7 +52,8 @@ class UserRegister(serializers.ModelSerializer):
         # Guarda el usuario con las claves foráneas asignadas
         user.save()
 
-        return user
+        return user  # Devuelve el objeto de usuario completo
+
 
 
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import { Result } from 'postcss';
 
 export function Snapshosts() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -15,7 +16,53 @@ export function Snapshosts() {
   const [userProjects, setUserProjects] = useState([]);
   const [teamName, setTeamName] = useState('');
   const [teamLeader, setTeamLeader] = useState('');
+  const [MySnapshots, setMySnapshots] = useState('');
+  const [Allproyect,setAllproyect] = useState('')
+  const [AllUsers,setAllUsers] = useState('')
+  const [Allteam,setAllteam] = useState('')
+  const [UserSnap, setUserSnap] = useState('')
   const navigate = useNavigate();
+
+
+  const BuscarAll =  () => {
+    const token = localStorage.getItem('token');
+
+    const Fetch = async () =>{ 
+
+      const resUser = await axios.get(
+        `http://127.0.0.1:8000/users/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    
+      const resProyect = await axios.get(
+        `http://127.0.0.1:8000/api/proyectos`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const resTeam = await axios.get(
+        `http://127.0.0.1:8000/api/equipos/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setAllteam(resTeam.data)
+      setAllproyect(resProyect.data)
+      setAllUsers(resUser.data)
+    }
+    useEffect(() => {
+      Fetch();
+    }, []);
+  }
+  BuscarAll();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -41,6 +88,14 @@ export function Snapshosts() {
               },
             }
           );
+          const resAllSnapshots = await axios.get(
+            `http://localhost:8000/api/Snapshot/`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
           const resAllProjects = await axios.get(
             `http://localhost:8000/api/proyectos`,
             {
@@ -49,13 +104,17 @@ export function Snapshosts() {
               },
             }
           );
+          const FilterSnapshots = resAllSnapshots.data.filter(Snapshot => Snapshot.User === resUser.data.idUsuario)
+          setMySnapshots(FilterSnapshots)
           const userTeamId = resUser.data.Fk_equipo_asignado_id;
           const FilterTeamUser = resAllTeams.data.filter(Team => Team.idEquipo === resUser.data.Fk_equipo_asignado_id)
           const userProjects = resAllProjects.data.filter(project => project.Fk_equipo_asignado === userTeamId);
           setUserProjects(userProjects);
-          if(userProjects.length === 1){
+          setUserSnap(resUser.data)
+          setTeam(FilterTeamUser)
+          if (userProjects.length === 1) {
             setProjectTitle(userProjects[0].Nombre)
-           }
+          }
           const resUserSearch = await axios.get(
             `http://localhost:8000/api/users/${FilterTeamUser[0].Lider}/`,
             {
@@ -64,7 +123,6 @@ export function Snapshosts() {
               },
             }
           );
-          console.log()
           setTeamName(FilterTeamUser[0].Nombre_equipo)
           setTeamLeader(resUserSearch.data.Nombre)
         } catch (error) {
@@ -106,13 +164,55 @@ export function Snapshosts() {
       }
     }
 
+    if (step === 1 && !Funcion) {
+      alert('Por favor, ingresa una función antes de continuar.');
+      return;
+    }
+
     if (step < 3) {
       setStep(step + 1);
     } else {
-      // Aquí puedes manejar la lógica para enviar el snapshot
-      console.log('Enviar Snapshot');
+      try {
+        const Snapshotinfo = {
+          project: userProjects[0].idProyecto,
+          team: team[0].idEquipo,
+          Funcion: Funcion,
+          additionalInfo: additionalInfo,
+          User: UserSnap.idUsuario,
+          startDate: startDate,
+          endDate: endDate,
+          Estado: 'En revisión',
+        }
+        console.log(Snapshotinfo)
+        axios.post(
+          `http://localhost:8000/api/Snapshot/`, Snapshotinfo,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
+        );
+        setStep(4);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
+
+  const BuscarLiderProyecto = (Buscar,idwhere,where) => {
+    if(where == 'team'){
+      if(Buscar == 'Lider'){
+        const filterteam = Allteam.filter(team => team.idEquipo === idwhere)
+        const searchFilter = AllUsers.filter(User => User.idUsuario === filterteam[0].Lider)
+        return searchFilter[0].Nombre
+      }
+    }else if(where == 'proyecto'){
+      if(Buscar == 'Proyecto'){
+        const Filterproject = Allproyect.filter(Proyecto => Proyecto.idProyecto === idwhere)
+        return Filterproject[0].Nombre
+      }
+    }
+  }
 
   if (!isLoggedIn) {
     return null;
@@ -138,7 +238,7 @@ export function Snapshosts() {
           </label>
           <label>
             Funcion
-            <input type="text" placeholder='Ingrese la función...' value={Funcion} onChange={handleFunctionChange} />
+            <input type="text" placeholder='Ingrese la función...' value={Funcion} onChange={handleFunctionChange} required />
           </label>
           <textarea value={additionalInfo} onChange={(e) => setAdditionalInfo(e.target.value)} placeholder="Información adicional (opcional)" />
         </div>
@@ -163,8 +263,43 @@ export function Snapshosts() {
           <p>Tiempo: {startDate} - {endDate}</p>
         </div>
       )}
+      {step === 4 && (
+        <div>
+          <h1>¡Gracias!</h1>
+          <p>El snapshot se ha enviado a tu lider de equipo.</p>
+        </div>
+      )}
 
-      <button onClick={handleNext}>{step < 3 ? 'Siguiente' : 'Enviar Snapshot'}</button>
+      {step < 4 && (
+        <button onClick={handleNext}>{step < 3 ? 'Siguiente' : 'Enviar Snapshot'}</button>
+      )}
+
+      {MySnapshots && (
+        <div>
+          <h1>Mis snapshots</h1>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Líder de equipo</th>
+                <th>Proyecto</th>
+                <th>Fecha solicitada</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {MySnapshots.map((snapshot) => (
+                <tr key={snapshot.idSnapshot}>
+                  <td>{BuscarLiderProyecto('Lider',snapshot.team,'team')}</td>
+                  <td>{BuscarLiderProyecto('Proyecto',snapshot.project,'proyecto')}</td>
+                  <td>{snapshot.startDate}</td>
+                  <td>{snapshot.Estado}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
