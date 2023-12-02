@@ -52,12 +52,15 @@ export function Inicio() {
         </div>
         <div className="flex mt-5 flex-row justify-center align-middle flex-wrap  max-w-[1280px] heroDiv ">
           <div className="max-w-[640px] w-[100%] textsHero flex flex-col justify-center align-middle">
-            <h1 className="font-bold text-6xl dark:text-white light:text-[#11181c] ">Performance Check</h1>
+            <h1 className="font-bold text-6xl dark:text-white light:text-[#11181c] ">
+              Performance Check
+            </h1>
             <p className="text-lg mt-5 dark:text-[#ccc] light:text-[#11181c]">
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sequi ut
-              asperiores, molestiae pariatur dicta incidunt veritatis ipsum
-              nesciunt, non error sint excepturi velit. Harum doloremque eius
-              quo cupiditate. Atque, modi.
+              El objetivo de la gestión del desempeño de empleados está
+              relacionado con la misión y los objetivos generales de una
+              organización y con la forma en que un individuo puede añadir valor
+              a la misma. Proporciona retroalimentación, responsabilidad y
+              documentación para el desempeño de los individuos.
             </p>
             <Button className="mt-8 w-[150px] h-11 btnVer text-lg bg-gradient-to-r from-[#5594d6] to-[#d21b9a] font-bold ">
               Ver más
