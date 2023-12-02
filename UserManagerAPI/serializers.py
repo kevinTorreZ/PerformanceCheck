@@ -8,15 +8,8 @@ class ProyectoSerializer(serializers.ModelSerializer):
         model = proyecto
         fields = '__all__'  # Añade aquí los campos que necesites
 
-class EquipoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = equipo
-        fields = '__all__'
 
-class SnapshotSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Snapshot
-        fields = ('project','team','Funcion','additionalInfo','User','Estado','startDate','endDate','idSnapshot')
+
 
 
 
@@ -99,3 +92,16 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['user_id'] = user.idUsuario
         token['user_rol'] = user.Cargo
         return token
+
+class EquipoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = equipo
+        fields = '__all__'
+
+class SnapshotSerializer(serializers.ModelSerializer):
+    User = UserSerializer(read_only=True)
+    project = ProyectoSerializer(read_only=True)
+    team = EquipoSerializer(read_only=True)
+    class Meta:
+        model = Snapshot
+        fields = ('project','team','Funcion','additionalInfo','User','Estado','startDate','endDate','idSnapshot')
