@@ -10,7 +10,7 @@ import { GestionUsuarios } from "./pages/GestionUsuarios";
 import { GestionProyectos } from "./pages/GestionProyectos";
 import { Snapshosts } from "./pages/Snpashots";
 import { Perfil } from "./pages/Perfil"
-import { LineaTiempo } from './pages/LineaTiempo';
+import LineaTiempo from './pages/LineaTiempo';
 import { NotFoundPage }  from "./pages/NotFoundPage";
 import Footer from './components/Footer';
 
