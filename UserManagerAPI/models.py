@@ -47,3 +47,16 @@ class usuario(AbstractBaseUser, PermissionsMixin):
                 exclude.remove('email')  # Elimina 'email' de la lista de campos excluidos
 
         super().validate_unique(exclude=exclude)
+
+class Snapshot(models.Model):
+    idSnapshot = models.AutoField(primary_key=True, unique=True)
+    Funcion = models.CharField(max_length=255)
+    startDate = models.DateField()
+    endDate = models.DateField()
+    Estado = models.CharField(max_length=50)
+    additionalInfo = models.TextField(blank=True, null=True)
+    User = models.ForeignKey(usuario, on_delete=models.CASCADE)
+    project = models.ForeignKey(proyecto, on_delete=models.CASCADE)
+    team = models.ForeignKey(equipo, on_delete=models.CASCADE)
+
+

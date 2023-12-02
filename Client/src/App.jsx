@@ -31,7 +31,7 @@ function App() {
           <Route path="LineaTiempo/" element={<LineaTiempo/>}/>
           <Route path="GestionProyectos/" element={<AuthenticatedGestionProyectos/>}/>
           <Route path="GestionUsuarios/" element={<AuthenticatedGestionUsuarios/>}/>
-          <Route path="Snapshots/" element={<AuthenticatedSnapshosts/>}/>
+          <Route path="Snapshots/" element={<Snapshosts/>}/>
           <Route path="*" element={<NotFoundPage/>}/>
 
         </Routes>

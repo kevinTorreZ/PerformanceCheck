@@ -25,6 +25,7 @@ export function GestionProyectos() {
   const [formKey, setFormKey] = useState(0);
   const [ProyectoSelected, setProyectoSelected] = useState("");
   const [equipoFromproject, setEquipoFromproject] = useState({ idEquipo: 0 });
+  
   const [selectedEquipo, setSelectedEquipo] = useState("");
   const [proyecto, setProyecto] = useState({
     nombre: "",
@@ -190,15 +191,29 @@ export function GestionProyectos() {
   };
 
   // APARTIR DE ACA SOLO CODIGO DEL CRUD DE EQUIPOS
+
   const [UserFilter, setUserFilter] = useState("");
   const [NewEquipo, setNewEquipo] = useState({
     Nombre_equipo: "",
-    Lider: "",
+    Lider: 0,
   });
-  const ValidarEquipo = (Nombre_equipo, Lider) => {
-    if (Nombre_equipo == "" || Lider == "") {
-      throw new Error("Todos los campos son obligatorios");
+  const ValidarEquipo = async (Nombre_equipo) => {
+    const resEquipos = await axios.get(
+      `http://127.0.0.1:8000/api/equipos/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const equipoExistente = resEquipos.data.find(equipo => equipo.Nombre_equipo === Nombre_equipo);
+
+    if (Nombre_equipo == "") {
+      throw new Error("Debe ingresar un equipo");
     }
+    if(equipoExistente){
+      throw new Error("El nombre de equipo ya existe!");
+  }
   };
 
   useEffect(() => {
@@ -231,14 +246,15 @@ export function GestionProyectos() {
     });
   };
 
-  const CrearEquipo = (event) => {
+  const CrearEquipo = async (event) => {
     event.preventDefault();
-    if (NewEquipo.Lider == "null") {
-      NewEquipo.Lider = "";
+    console.log(NewEquipo.Lider)
+    if (NewEquipo.Lider == 0) {
+      delete NewEquipo.Lider
     }
 
     try {
-      ValidarEquipo(NewEquipo.Nombre_equipo, NewEquipo.Lider);
+      await ValidarEquipo(NewEquipo.Nombre_equipo);
       const resUsuarios = axios.post(
         `http://127.0.0.1:8000/api/equipo/`,
         NewEquipo,
@@ -248,9 +264,9 @@ export function GestionProyectos() {
           },
         }
       );
-      setFormKey((prevKey) => prevKey + 1);
+      // setFormKey((prevKey) => prevKey + 1);
       console.log("Se ha creado un nuevo equipo!");
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error(error);
     }
@@ -472,7 +488,9 @@ export function GestionProyectos() {
                   onChange={handleChangeEquipo}
                   isRequired={true}
                   className="mt-4"
-                >
+                ><SelectItem key={0} value={0}>
+                    Sin Lider
+                </SelectItem>
                   {UserFilter.map((Usuario) => (
                     <SelectItem
                       key={Usuario.idUsuario}
