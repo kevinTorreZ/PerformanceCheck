@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
-import { Result } from 'postcss';
 
 export function Miembro() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -17,18 +16,17 @@ export function Miembro() {
   const [teamName, setTeamName] = useState('');
   const [teamLeader, setTeamLeader] = useState('');
   const [MySnapshots, setMySnapshots] = useState('');
-  const [Allproyect,setAllproyect] = useState('')
-  const [AllUsers,setAllUsers] = useState('')
-  const [Allteam,setAllteam] = useState('')
+  const [Allproyect, setAllproyect] = useState('')
+  const [AllUsers, setAllUsers] = useState('')
+  const [Allteam, setAllteam] = useState('')
   const [UserSnap, setUserSnap] = useState('')
   const navigate = useNavigate();
 
 
-  const BuscarAll =  () => {
+  const BuscarAll = () => {
     const token = localStorage.getItem('token');
 
-    const Fetch = async () =>{ 
-
+    const Fetch = async () => {
       const resUser = await axios.get(
         `http://127.0.0.1:8000/users/`,
         {
@@ -37,7 +35,7 @@ export function Miembro() {
           },
         }
       );
-    
+
       const resProyect = await axios.get(
         `http://127.0.0.1:8000/api/proyectos`,
         {
@@ -54,15 +52,23 @@ export function Miembro() {
           },
         }
       );
-      setAllteam(resTeam.data)
-      setAllproyect(resProyect.data)
-      setAllUsers(resUser.data)
+
+      // Convertir los arrays a objetos para un acceso más rápido
+      const allProjectsObj = resProyect.data.reduce((obj, project) => ({ ...obj, [project.idProyecto]: project }), {});
+      const allTeamsObj = resTeam.data.reduce((obj, team) => ({ ...obj, [team.idEquipo]: team }), {});
+      const allUsersObj = resUser.data.reduce((obj, user) => ({ ...obj, [user.idUsuario]: user }), {});
+
+      setAllteam(allTeamsObj);
+      setAllproyect(allProjectsObj);
+      setAllUsers(allUsersObj);
     }
+
     useEffect(() => {
       Fetch();
     }, []);
   }
   BuscarAll();
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -104,8 +110,9 @@ export function Miembro() {
               },
             }
           );
-          const FilterSnapshots = resAllSnapshots.data.filter(Snapshot => Snapshot.User.idUsuario === resUser.data.idUsuario)
+          const FilterSnapshots = resAllSnapshots.data.filter(Snapshot => Snapshot.user === resUser.data.idUsuario)
           setMySnapshots(FilterSnapshots)
+          console.log(FilterSnapshots)
           const userTeamId = resUser.data.Fk_equipo_asignado_id;
           const FilterTeamUser = resAllTeams.data.filter(Team => Team.idEquipo === resUser.data.Fk_equipo_asignado_id)
           const userProjects = resAllProjects.data.filter(project => project.Fk_equipo_asignado === userTeamId);
@@ -173,36 +180,36 @@ export function Miembro() {
       setStep(step + 1);
     } else {
       try {
-        const Snapshotinfo = {
-          project: userProjects[0].idProyecto,
-          team: team[0].idEquipo,
-          Funcion: Funcion,
-          additionalInfo: additionalInfo,
-          User: UserSnap.idUsuario,
-          startDate: startDate,
-          endDate: endDate,
-          Estado: 'En revisión',
-        }
-        console.log(Snapshotinfo)
-        axios.post(
-          `http://localhost:8000/api/Snapshot/`, Snapshotinfo,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
+        if (UserSnap && UserSnap.idUsuario) {
+          const Snapshotinfo = {
+            project: userProjects[0].idProyecto,
+            team: team[0].idEquipo,
+            Funcion: Funcion,
+            additionalInfo: additionalInfo,
+            user: UserSnap.idUsuario,
+            startDate: startDate,
+            endDate: endDate,
+            Estado: 'En revisión',
           }
-        );
-        setStep(4);
+
+          console.log(Snapshotinfo)
+          axios.post(
+            `http://localhost:8000/api/Snapshot/`, Snapshotinfo,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+              },
+            }
+          )
+          setStep(4);
+        }
       } catch (error) {
         console.error(error);
       }
     }
   };
 
-  const BuscarLiderProyecto = (idLider) => {
-    const FilterUser = AllUsers.filter(user => user.idUsuario === idLider)
-    return FilterUser[0].Nombre;
-  }
+
 
   if (!isLoggedIn) {
     return null;
@@ -264,7 +271,7 @@ export function Miembro() {
         <button onClick={handleNext}>{step < 3 ? 'Siguiente' : 'Enviar Snapshot'}</button>
       )}
 
-      
+
       {MySnapshots && (
         <div>
           <h1>Mis snapshots</h1>
@@ -279,14 +286,19 @@ export function Miembro() {
               </tr>
             </thead>
             <tbody>
-              {MySnapshots.map((snapshot) => (
-                <tr key={snapshot.idSnapshot}>
-                  <td>{BuscarLiderProyecto(snapshot.team.Lider)}</td>
-                  <td>{snapshot.project.Nombre}</td>
-                  <td>{snapshot.startDate}</td>
-                  <td>{snapshot.Estado}</td>
-                </tr>
-              ))}
+              {MySnapshots.map((snapshot) => {
+                const team = Allteam[snapshot.team];
+                const project = Allproyect[snapshot.project];
+                const leader = AllUsers[team.Lider];
+                return (
+                  <tr key={snapshot.idSnapshot}>
+                    <td>{leader.Nombre}</td>
+                    <td>{project.Nombre}</td>
+                    <td>{snapshot.startDate}</td>
+                    <td>{snapshot.Estado}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

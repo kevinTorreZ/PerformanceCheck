@@ -6,6 +6,7 @@ class equipo(models.Model):
     Nombre_equipo = models.CharField(max_length=30, blank=None)
     Lider = models.IntegerField(default=None, null=True)
 
+
 class proyecto(models.Model):
     idProyecto = models.AutoField(primary_key=True, unique=True)
     Nombre = models.CharField(max_length=30, blank=None)
@@ -55,7 +56,7 @@ class Snapshot(models.Model):
     endDate = models.DateField()
     Estado = models.CharField(max_length=50)
     additionalInfo = models.TextField(blank=True, null=True)
-    User = models.ForeignKey(usuario, on_delete=models.CASCADE)
+    user = models.ForeignKey(usuario, on_delete=models.CASCADE)
     project = models.ForeignKey(proyecto, on_delete=models.CASCADE)
     team = models.ForeignKey(equipo, on_delete=models.CASCADE)
 

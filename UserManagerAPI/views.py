@@ -152,18 +152,40 @@ class obtenerTodosLosProyectos(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class SnapshotView(APIView):
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    serializer_class = SnapshotSerializer
+    queryset = Snapshot.objects.all()
 
     def get(self, request):
-        Snapshots = Snapshot.objects.all()
-        serializer = SnapshotSerializer(Snapshots, many=True)
+        # Obtiene todos los snapshots
+        snapshots = Snapshot.objects.all()
+
+        # Serializa los snapshots
+        serializer = self.serializer_class(snapshots, many=True)
+
+        # Devuelve los snapshots serializados
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = SnapshotSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        # Crea un nuevo serializer con los datos de la solicitud
+        serializer = self.serializer_class(data=request.data)
+
+        # Valida los datos de la solicitud
+        if serializer.is_valid(raise_exception=True):
+            # Crea el snapshot
+            snapshot = serializer.save()
+
+            # Devuelve el snapshot creado
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+
+
+
+
 

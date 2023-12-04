@@ -99,9 +99,11 @@ class EquipoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SnapshotSerializer(serializers.ModelSerializer):
-    User = UserSerializer(read_only=True)
-    project = ProyectoSerializer(read_only=True)
-    team = EquipoSerializer(read_only=True)
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    project = serializers.PrimaryKeyRelatedField(queryset=proyecto.objects.all())
+    team = serializers.PrimaryKeyRelatedField(queryset=equipo.objects.all())
+
     class Meta:
         model = Snapshot
-        fields = ('project','team','Funcion','additionalInfo','User','Estado','startDate','endDate','idSnapshot')
+        fields = ('project', 'team', 'Funcion', 'additionalInfo', 'user', 'Estado', 'startDate', 'endDate', 'idSnapshot')
+    
