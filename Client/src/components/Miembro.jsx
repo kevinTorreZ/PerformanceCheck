@@ -69,6 +69,19 @@ export function Miembro() {
   }
   BuscarAll();
 
+  const RefreshSnapshots = async () =>{
+      const resAllSnapshots = await axios.get(
+        `http://localhost:8000/api/Snapshot/`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      const FilterSnapshots = resAllSnapshots.data.filter(Snapshot => Snapshot.user === UserSnap.idUsuario)
+      setMySnapshots(FilterSnapshots)
+  }
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -163,7 +176,7 @@ export function Miembro() {
     setFuncion(e.target.value);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (step === 2) {
       if (!startDate || !endDate || new Date(startDate) > new Date(endDate)) {
         alert('Por favor, selecciona un rango de fechas válido');
@@ -189,11 +202,9 @@ export function Miembro() {
             user: UserSnap.idUsuario,
             startDate: startDate,
             endDate: endDate,
-            Estado: 'En revisión',
+            Estado: 'Pendiente',
           }
-
-          console.log(Snapshotinfo)
-          axios.post(
+          await axios.post(
             `http://localhost:8000/api/Snapshot/`, Snapshotinfo,
             {
               headers: {
@@ -201,6 +212,7 @@ export function Miembro() {
               },
             }
           )
+          RefreshSnapshots();
           setStep(4);
         }
       } catch (error) {

@@ -10,6 +10,9 @@ export function Lider({ handleCompletarSnapshot }) { // Añade handleCompletarSn
   const [Allproyect, setAllproyect] = useState('')
   const [AllUsers, setAllUsers] = useState('')
   const [Allteam, setAllteam] = useState('')
+  const [idUser,setidUser] = useState('')
+  const [idSnap,setidSnap] = useState('')
+  const [idLider,setidLider] = useState('')
 
   useEffect(() => {
     const decodedToken = jwt_decode(token);
@@ -65,8 +68,11 @@ export function Lider({ handleCompletarSnapshot }) { // Añade handleCompletarSn
     fetch();
   }, []);
 
-  const handleCompletarSnapshotClick = () => {
+  const handleCompletarSnapshotClick = (idUser,idSnap,idLider) => {
     handleCompletarSnapshot();
+    setidSnap(idSnap);
+    setidLider(idLider);
+    setidUser(idUser);
     setShowCompletarSnapshot(true);
   };
   const handleCancelarClick = () => {
@@ -74,7 +80,7 @@ export function Lider({ handleCompletarSnapshot }) { // Añade handleCompletarSn
     handleCompletarSnapshot();
   };
   if (showCompletarSnapshot) {
-    return <CompletarSnapshot handleCancelarClick={handleCancelarClick} />;
+    return <CompletarSnapshot handleCancelarClick={handleCancelarClick} info={{idSnapshot:idSnap,idLider:idUser,idUserSnap:idLider}}/>;
   }
 
   return (
@@ -105,7 +111,7 @@ export function Lider({ handleCompletarSnapshot }) { // Añade handleCompletarSn
                 <td>{snapshot.startDate}</td>
                 <td>
                   {snapshot.Estado === 'Pendiente' ?
-                    <button onClick={handleCompletarSnapshotClick}>
+                    <button onClick={handleCompletarSnapshotClick(user.idUsuario,snapshot.idSnapshot,team.lider)}>
                       Completar Snapshot
                     </button>
                     :

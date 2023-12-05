@@ -30,6 +30,7 @@ class UsuarioManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
+
 class usuario(AbstractBaseUser, PermissionsMixin):
     idUsuario = models.AutoField(primary_key=True, unique=True)
     Nombre = models.CharField(max_length=30, blank=None)
@@ -60,4 +61,29 @@ class Snapshot(models.Model):
     project = models.ForeignKey(proyecto, on_delete=models.CASCADE)
     team = models.ForeignKey(equipo, on_delete=models.CASCADE)
 
+from django.db import models
+
+class Evaluacion(models.Model):
+    RESPUESTAS = [
+        ('totalmenteEnDesacuerdo', 'Totalmente en desacuerdo'),
+        ('enDesacuerdo', 'En desacuerdo'),
+        ('neutral', 'Neutral'),
+        ('deAcuerdo', 'De acuerdo'),
+        ('totalmenteDeAcuerdo', 'Totalmente de acuerdo'),
+    ]
+    SI_NO = [
+        ('si', 'Sí'),
+        ('no', 'No'),
+    ]
+    idEvaluacion = models.AutoField(primary_key=True, unique=True)
+    pregunta1 = models.CharField(max_length=22, choices=RESPUESTAS)
+    pregunta2 = models.CharField(max_length=22, choices=RESPUESTAS)
+    pregunta3 = models.CharField(max_length=22, choices=RESPUESTAS)
+    pregunta4 = models.CharField(max_length=2, choices=SI_NO)
+    justificacion4 = models.TextField()
+    pregunta5 = models.CharField(max_length=2, choices=SI_NO)
+    justificacion5 = models.TextField()
+    Evaluador = models.ForeignKey(usuario, on_delete=models.CASCADE, related_name='evaluaciones_como_evaluador')
+    Evaluado = models.ForeignKey(usuario, on_delete=models.CASCADE, related_name='evaluaciones_como_evaluado')
+    Snapshot = models.ForeignKey(Snapshot, on_delete=models.CASCADE)
 
