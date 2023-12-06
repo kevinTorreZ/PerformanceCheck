@@ -10,77 +10,79 @@ export function Lider({ handleCompletarSnapshot }) { // Añade handleCompletarSn
   const [Allproyect, setAllproyect] = useState('')
   const [AllUsers, setAllUsers] = useState('')
   const [Allteam, setAllteam] = useState('')
-  const [idUser,setidUser] = useState('')
-  const [idSnap,setidSnap] = useState('')
-  const [idLider,setidLider] = useState('')
+  const [idUser, setidUser] = useState('')
+  const [idSnap, setidSnap] = useState('')
+  const [idLider, setidLider] = useState('')
+  const decodedToken = jwt_decode(token);
+  const userId = decodedToken.user_id;
+
+  const fetch = async () => {
+    const resSnapshot = await axios.get(
+      `http://localhost:8000/api/Snapshot/`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }
+    ); const resUser = await axios.get(
+      `http://127.0.0.1:8000/users/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const resProyect = await axios.get(
+      `http://127.0.0.1:8000/api/proyectos`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const resTeam = await axios.get(
+      `http://127.0.0.1:8000/api/equipos/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const allProjectsObj = resProyect.data.reduce((obj, project) => ({ ...obj, [project.idProyecto]: project }), {});
+    const allTeamsObj = resTeam.data.reduce((obj, team) => ({ ...obj, [team.idEquipo]: team }), {});
+    const allUsersObj = resUser.data.reduce((obj, user) => ({ ...obj, [user.idUsuario]: user }), {});
+
+    setAllteam(allTeamsObj);
+    setAllproyect(allProjectsObj);
+    setAllUsers(allUsersObj);
+    const FilterTeams = resTeam.data.filter(team => team.Lider === userId)
+    console.log(FilterTeams)
+    const FilterSnapshots = resSnapshot.data.filter(snapshot => snapshot.team === FilterTeams[0].idEquipo)
+    setAllSnapshots(FilterSnapshots)
+    console.log(FilterSnapshots)
+  };
 
   useEffect(() => {
-    const decodedToken = jwt_decode(token);
-    const userId = decodedToken.user_id;
-
-    const fetch = async () => {
-      const resSnapshot = await axios.get(
-        `http://localhost:8000/api/Snapshot/`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      ); const resUser = await axios.get(
-        `http://127.0.0.1:8000/users/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const resProyect = await axios.get(
-        `http://127.0.0.1:8000/api/proyectos`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const resTeam = await axios.get(
-        `http://127.0.0.1:8000/api/equipos/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const allProjectsObj = resProyect.data.reduce((obj, project) => ({ ...obj, [project.idProyecto]: project }), {});
-      const allTeamsObj = resTeam.data.reduce((obj, team) => ({ ...obj, [team.idEquipo]: team }), {});
-      const allUsersObj = resUser.data.reduce((obj, user) => ({ ...obj, [user.idUsuario]: user }), {});
-
-      setAllteam(allTeamsObj);
-      setAllproyect(allProjectsObj);
-      setAllUsers(allUsersObj);
-      const FilterTeams = resTeam.data.filter(team => team.Lider === userId)
-      console.log(FilterTeams)
-      const FilterSnapshots = resSnapshot.data.filter(snapshot => snapshot.team === FilterTeams[0].idEquipo)
-      setAllSnapshots(FilterSnapshots)
-      console.log(FilterSnapshots)
-    };
     fetch();
   }, []);
 
-  const handleCompletarSnapshotClick = (idUser,idSnap,idLider) => {
-    handleCompletarSnapshot();
+  const handleCompletarSnapshotClick = (idUser, idSnap, idLider) => {
     setidSnap(idSnap);
     setidLider(idLider);
-    setidUser(idUser);
+    setidUser(idUser)
+    console.log(idLider)
+    handleCompletarSnapshot();
     setShowCompletarSnapshot(true);
   };
   const handleCancelarClick = () => {
     setShowCompletarSnapshot(false);
     handleCompletarSnapshot();
+    fetch(); 
   };
   if (showCompletarSnapshot) {
-    return <CompletarSnapshot handleCancelarClick={handleCancelarClick} info={{idSnapshot:idSnap,idLider:idUser,idUserSnap:idLider}}/>;
+    return <CompletarSnapshot handleCancelarClick={handleCancelarClick} info={{ idSnapshot: idSnap, idLider: idLider, idUserSnap: idUser }} />;
   }
 
   return (
@@ -111,7 +113,8 @@ export function Lider({ handleCompletarSnapshot }) { // Añade handleCompletarSn
                 <td>{snapshot.startDate}</td>
                 <td>
                   {snapshot.Estado === 'Pendiente' ?
-                    <button onClick={handleCompletarSnapshotClick(user.idUsuario,snapshot.idSnapshot,team.lider)}>
+                    <button disabled={snapshot.Estado === 'Completado'} onClick={() => handleCompletarSnapshotClick(user.idUsuario,snapshot.idSnapshot , team.Lider)}
+                    >
                       Completar Snapshot
                     </button>
                     :

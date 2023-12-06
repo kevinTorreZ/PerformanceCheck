@@ -17,7 +17,7 @@ Including another URLconf
 from django.urls import path, include
 from rest_framework.documentation import include_docs_urls
 from rest_framework.routers import DefaultRouter
-from UserManagerAPI.views import UserViewSet,user_detail,LoginView,RegisterView,ObtenerEquipos,obtenerProyecto,obtenerTodosLosProyectos,ObtenerEquipo,SnapshotView
+from UserManagerAPI.views import UserViewSet,user_detail,LoginView,RegisterView,ObtenerEquipos,obtenerProyecto,obtenerTodosLosProyectos,ObtenerEquipo,AllSnapshotView,EvaluacionViewSet,SnapshotView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -25,6 +25,8 @@ from rest_framework_simplejwt.views import (
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
+router.register(r'evaluaciones', EvaluacionViewSet)
+
 urlpatterns = [
     path('', include(router.urls)),
     path('api/login', LoginView.as_view()),
@@ -35,7 +37,8 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/equipos/',ObtenerEquipos.as_view()),
-    path('api/Snapshot/',SnapshotView.as_view()),
+    path('api/Snapshot/',AllSnapshotView.as_view()),
+    path('api/Snapshot/<int:id_snap>/',SnapshotView.as_view()),
     path('api/equipo/<int:id_equipo>/',ObtenerEquipo.as_view()),
     path('api/docs/', include_docs_urls())
 ]

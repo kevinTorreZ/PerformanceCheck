@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import usuario, equipo, proyecto,Snapshot
+from .models import usuario, equipo, proyecto,Snapshot,Evaluacion
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -107,3 +107,9 @@ class SnapshotSerializer(serializers.ModelSerializer):
         model = Snapshot
         fields = ('project', 'team', 'Funcion', 'additionalInfo', 'user', 'Estado', 'startDate', 'endDate', 'idSnapshot')
     
+
+
+class EvaluacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Evaluacion
+        fields = ['idEvaluacion', 'pregunta1', 'pregunta2', 'pregunta3', 'pregunta4', 'justificacion4', 'pregunta5', 'justificacion5', 'Evaluador', 'Evaluado', 'Snapshot']

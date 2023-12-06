@@ -2,8 +2,8 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework import viewsets,status
-from .serializers import UserSerializer, UserRegister,EquipoSerializer,ProyectoSerializer,CustomTokenObtainPairSerializer,SnapshotSerializer
-from .models import usuario, equipo,proyecto,Snapshot
+from .serializers import UserSerializer, UserRegister,EquipoSerializer,ProyectoSerializer,CustomTokenObtainPairSerializer,SnapshotSerializer,EvaluacionSerializer
+from .models import usuario, equipo,proyecto,Snapshot,Evaluacion
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
@@ -151,7 +151,7 @@ class obtenerTodosLosProyectos(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class SnapshotView(APIView):
+class AllSnapshotView(APIView):
     serializer_class = SnapshotSerializer
     queryset = Snapshot.objects.all()
 
@@ -179,9 +179,61 @@ class SnapshotView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request, pk=None):
+        # Obtiene el snapshot que se quiere actualizar
+        snapshot = self.get_object(pk)
+
+        # Crea un nuevo serializer con los datos de la solicitud y el snapshot existente
+        serializer = self.serializer_class(snapshot, data=request.data)
+
+        # Valida los datos de la solicitud
+        if serializer.is_valid(raise_exception=True):
+            # Actualiza el snapshot
+            serializer.save()
+
+            # Devuelve el snapshot actualizado
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class SnapshotView(APIView):
+    serializer_class = SnapshotSerializer
+    queryset = Snapshot.objects.all()
 
+    def put(self, request, id_snap=None):
+        # Obtiene el snapshot que se quiere actualizar
+        snapshot = Snapshot.objects.get(idSnapshot=id_snap)
+
+        # Crea un nuevo serializer con los datos de la solicitud y el snapshot existente
+        serializer = self.serializer_class(snapshot, data=request.data)
+
+        # Valida los datos de la solicitud
+        if serializer.is_valid(raise_exception=True):
+            # Actualiza el snapshot
+            serializer.save()
+
+            # Devuelve el snapshot actualizado
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, id_snap=None):
+        # Si se proporcionó id_snap, obtiene el snapshot específico
+        if id_snap is not None:
+            snapshot = Snapshot.objects.get(idSnapshot=id_snap)
+            serializer = self.serializer_class(snapshot)
+        else:
+            # Si no se proporcionó id_snap, obtiene todos los snapshots
+            snapshots = Snapshot.objects.all()
+            serializer = self.serializer_class(snapshots, many=True)
+
+        # Devuelve los datos serializados
+        return Response(serializer.data)
+
+
+class EvaluacionViewSet(viewsets.ModelViewSet):
+    queryset = Evaluacion.objects.all()
+    serializer_class = EvaluacionSerializer
 
 
 
