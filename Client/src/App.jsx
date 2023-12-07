@@ -14,6 +14,7 @@ import { Perfil } from "./pages/Perfil"
 import LineaTiempo from './pages/LineaTiempo';
 import { NotFoundPage }  from "./pages/NotFoundPage";
 import Footer from './components/Footer';
+import { HomeUsuario } from './pages/Home';
 
 function App() {
   const AuthenticatedGestionUsuarios = withAuth(GestionUsuarios);
@@ -34,8 +35,9 @@ function App() {
           <Route path="GestionUsuarios/" element={<AuthenticatedGestionUsuarios/>}/>
           <Route path="Snapshots/" element={<Snapshosts/>}/>
           <Route path="Reportes/" element={<Reportes/>}/>
+          <Route path="HomeUsuario/" element={<HomeUsuario/>}/>
           <Route path="*" element={<NotFoundPage/>}/>
-
+        
         </Routes>
         <Footer/>
       </BrowserRouter>
