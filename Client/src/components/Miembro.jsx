@@ -1,9 +1,14 @@
+// Importaciones necesarias
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
+// Componente Miembro
 export function Miembro() {
+  // Definición de estados
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [step, setStep] = useState(1);
   const [Funcion, setFuncion] = useState('');
@@ -15,74 +20,10 @@ export function Miembro() {
   const [userProjects, setUserProjects] = useState([]);
   const [teamName, setTeamName] = useState('');
   const [teamLeader, setTeamLeader] = useState('');
-  const [MySnapshots, setMySnapshots] = useState('');
-  const [Allproyect, setAllproyect] = useState('')
-  const [AllUsers, setAllUsers] = useState('')
-  const [Allteam, setAllteam] = useState('')
   const [UserSnap, setUserSnap] = useState('')
   const navigate = useNavigate();
 
-
-  const BuscarAll = () => {
-    const token = localStorage.getItem('token');
-
-    const Fetch = async () => {
-      const resUser = await axios.get(
-        `http://127.0.0.1:8000/users/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const resProyect = await axios.get(
-        `http://127.0.0.1:8000/api/proyectos`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const resTeam = await axios.get(
-        `http://127.0.0.1:8000/api/equipos/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      // Convertir los arrays a objetos para un acceso más rápido
-      const allProjectsObj = resProyect.data.reduce((obj, project) => ({ ...obj, [project.idProyecto]: project }), {});
-      const allTeamsObj = resTeam.data.reduce((obj, team) => ({ ...obj, [team.idEquipo]: team }), {});
-      const allUsersObj = resUser.data.reduce((obj, user) => ({ ...obj, [user.idUsuario]: user }), {});
-
-      setAllteam(allTeamsObj);
-      setAllproyect(allProjectsObj);
-      setAllUsers(allUsersObj);
-    }
-
-    useEffect(() => {
-      Fetch();
-    }, []);
-  }
-  BuscarAll();
-
-  const RefreshSnapshots = async () =>{
-      const resAllSnapshots = await axios.get(
-        `http://localhost:8000/api/Snapshot/`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      );
-      const FilterSnapshots = resAllSnapshots.data.filter(Snapshot => Snapshot.user === UserSnap.idUsuario)
-      setMySnapshots(FilterSnapshots)
-  }
-
-
+  // Efecto para manejar el inicio de sesión y la navegación
   useEffect(() => {
     const token = localStorage.getItem('token');
     const decodedToken = jwt_decode(token);
@@ -123,9 +64,6 @@ export function Miembro() {
               },
             }
           );
-          const FilterSnapshots = resAllSnapshots.data.filter(Snapshot => Snapshot.user === resUser.data.idUsuario)
-          setMySnapshots(FilterSnapshots)
-          console.log(FilterSnapshots)
           const userTeamId = resUser.data.Fk_equipo_asignado_id;
           const FilterTeamUser = resAllTeams.data.filter(Team => Team.idEquipo === resUser.data.Fk_equipo_asignado_id)
           const userProjects = resAllProjects.data.filter(project => project.Fk_equipo_asignado === userTeamId);
@@ -155,6 +93,7 @@ export function Miembro() {
     }
   }, []);
 
+  // Función para manejar el cambio de proyecto
   const handleProjectChange = async (e) => {
     setProjectTitle(e.target.value);
     try {
@@ -172,10 +111,12 @@ export function Miembro() {
     }
   };
 
+  // Función para manejar el cambio de función
   const handleFunctionChange = (e) => {
     setFuncion(e.target.value);
   };
 
+  // Función para manejar el siguiente paso
   const handleNext = async () => {
     if (step === 2) {
       if (!startDate || !endDate || new Date(startDate) > new Date(endDate)) {
@@ -212,7 +153,6 @@ export function Miembro() {
               },
             }
           )
-          RefreshSnapshots();
           setStep(4);
         }
       } catch (error) {
@@ -221,14 +161,15 @@ export function Miembro() {
     }
   };
 
-
-
+  // Si el usuario no está logueado, no se devuelve nada
   if (!isLoggedIn) {
     return null;
   }
 
+  // Renderizado del componente
   return (
     <div>
+      {/* Paso 1: Se muestra un formulario para seleccionar el proyecto, el equipo, la función y la información adicional. */}
       {step === 1 && (
         <div>
           <label>
@@ -253,6 +194,7 @@ export function Miembro() {
         </div>
       )}
 
+      {/* Paso 2: Se muestran dos campos de entrada para seleccionar las fechas de inicio y fin. */}
       {step === 2 && (
         <div>
           <h1>Tiempo</h1>
@@ -261,6 +203,7 @@ export function Miembro() {
         </div>
       )}
 
+      {/* Paso 3: Se muestra un resumen de la información del snapshot. */}
       {step === 3 && (
         <div>
           <h1>Información del Snapshot</h1>
@@ -272,6 +215,8 @@ export function Miembro() {
           <p>Tiempo: {startDate} - {endDate}</p>
         </div>
       )}
+
+      {/* Paso 4: Se muestra un mensaje de agradecimiento indicando que el snapshot ha sido enviado al líder del equipo. */}
       {step === 4 && (
         <div>
           <h1>¡Gracias!</h1>
@@ -279,42 +224,11 @@ export function Miembro() {
         </div>
       )}
 
+      {/* Si el paso es menor que 4, se muestra un botón para avanzar al siguiente paso o enviar el snapshot. */}
       {step < 4 && (
         <button onClick={handleNext}>{step < 3 ? 'Siguiente' : 'Enviar Snapshot'}</button>
       )}
 
-
-      {MySnapshots && (
-        <div>
-          <h1>Mis snapshots</h1>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Líder de equipo</th>
-                <th>Proyecto</th>
-                <th>Fecha solicitada</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {MySnapshots.map((snapshot) => {
-                const team = Allteam[snapshot.team];
-                const project = Allproyect[snapshot.project];
-                const leader = AllUsers[team.Lider];
-                return (
-                  <tr key={snapshot.idSnapshot}>
-                    <td>{leader.Nombre}</td>
-                    <td>{project.Nombre}</td>
-                    <td>{snapshot.startDate}</td>
-                    <td>{snapshot.Estado}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
 }

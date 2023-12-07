@@ -19,6 +19,8 @@
     "dayjs": "^1.11.10",
     "framer-motion": "^10.16.5",
     "js-cookie": "^3.0.5",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.0",
     "jwt-decode": "^3.1.2",
     "next-themes": "^0.2.1",
     "react": "^18.2.0",

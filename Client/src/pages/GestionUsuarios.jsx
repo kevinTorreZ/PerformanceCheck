@@ -43,6 +43,8 @@ export function GestionUsuarios() {
 
   const BuscarUsuarios = () => {
     const token = localStorage.getItem("token");
+    const decodedToken = jwt_decode(token);
+    const userId = decodedToken.user_id;
     if (token) {
       axios
         .get(`http://localhost:8000/users/`, {
@@ -52,6 +54,15 @@ export function GestionUsuarios() {
         })
         .then((response) => {
           setUsuarios(response.data);
+          const usuario = response.data.find(user => user.idUsuario === userId);
+          if (usuario) {
+            console.log(usuario)
+            setCargoSelected(usuario.Cargo)
+            setEquipoSelected(usuario.Fk_equipo_asignado)
+            if (usuario.Fk_equipo_asignado_id != null && usuario.Fk_proyecto_asignado_id != null) {
+              setEquipoSelected(usuario.Fk_equipo_asignado_id)
+            }
+          }
         })
         .catch((error) => {
           console.error(error);
@@ -121,11 +132,13 @@ export function GestionUsuarios() {
   };
 
   useEffect(() => {
-    if (usuarioSelected && usuarioSelected.Fk_equipo_asignado_id) {
+    if (usuarioSelected) {
       setProyectoSelected(usuarioSelected.Fk_proyecto_asignado_id);
       setEquipoSelected(usuarioSelected.Fk_equipo_asignado_id);
+
     }
   }, [usuarioSelected]);
+
 
   const cargarProyectos = (equipoId) => {
     if (
@@ -158,14 +171,31 @@ export function GestionUsuarios() {
     }
   };
 
+  // useEffect(() => {
+  //   setDefaultKey2([cargoSelected])
+  //   console.log("asd")
+  // }, [cargoSelected]);
+
   useEffect(() => {
     cargarProyectos(equipoSelected);
   }, [equipoSelected]);
 
   const handleClickListaUsuario = (usuario) => {
     setUserModi(usuario);
-    setEquipoSelected(usuario.Fk_equipo_asignado_id);
+    setkey2(usuario.Fk_equipo_asignado_id);
     setUsuarioSelected(usuario);
+    if (usuario.Cargo === "Administrador") {
+      setkey1(["Administrador"])
+    }
+    if (usuario.Cargo === "Lider") {
+      setkey1(["Lider"])
+    }
+    if (usuario.Cargo === "Miembro") {
+      setkey1(["Miembro"])
+    }
+    if (equipoSelected) {
+      setkey2(["1"])
+    }
   };
 
   useEffect(() => {
@@ -323,7 +353,7 @@ export function GestionUsuarios() {
     }
     const objEquipo = equipos.find(equipe => equipe.idEquipo === parseInt(equipo))
     const objProject = proyectos.find(proyecto => proyecto.Fk_equipo_asignado === parseInt(equipo))
-    console.log(objEquipo,objProject)
+    console.log(objEquipo, objProject)
     const userData = {
       Rut: rut,
       Nombre: nombre,
@@ -357,8 +387,8 @@ export function GestionUsuarios() {
           }
           equipoChange.Lider = idUser;
           const dataModify = {
-            Nombre_equipo:equipoChange.Nombre_equipo,
-            Lider:idUser
+            Nombre_equipo: equipoChange.Nombre_equipo,
+            Lider: idUser
           };
           console.log(dataModify)
           try {
@@ -381,146 +411,150 @@ export function GestionUsuarios() {
         setPassword('')
         setEmail('')
         BuscarUsuarios();
-      }catch(error){
+      } catch (error) {
         setError(error.message)
       }
     }
-}
-    const manejarCambio = (evento) => {
-      let valorEntrada = evento.target.value;
-      valorEntrada = valorEntrada.replace(/\D|-/g, "");
-      valorEntrada = valorEntrada.substring(0, 9);
-      if (
-        valorEntrada.length >= 8 &&
-        valorEntrada[valorEntrada.length - 1] !== "-"
-      ) {
-        valorEntrada =
-          valorEntrada.substring(0, 8) + "-" + valorEntrada.substring(8);
-      }
+  }
+  const manejarCambio = (evento) => {
+    let valorEntrada = evento.target.value;
+    valorEntrada = valorEntrada.replace(/\D|-/g, "");
+    valorEntrada = valorEntrada.substring(0, 9);
+    if (
+      valorEntrada.length >= 8 &&
+      valorEntrada[valorEntrada.length - 1] !== "-"
+    ) {
+      valorEntrada =
+        valorEntrada.substring(0, 8) + "-" + valorEntrada.substring(8);
+    }
 
-      setUsuarioSelected({ ...usuarioSelected, Rut: valorEntrada });
-    };
+    setUsuarioSelected({ ...usuarioSelected, Rut: valorEntrada });
+  };
 
-    const [defaultKey, setDefaultKey] = useState([]);
+  const [defaultKey, setDefaultKey] = useState([]);
+  const [key1, setkey1] = useState([]);
+  const [key2, setkey2] = useState([]);
+  const [defaultKey2, setDefaultKey2] = useState([]);
 
-    useEffect(() => {
-      if (usuarios.length > 0) {
-        setDefaultKey([usuarios[0].idUsuario]);
-        handleClickListaUsuario(usuarios[0]);
-      }
-    }, [usuarios]);
-    const handleChange = (event) => {
-      setCargo(event.target.value);
-    };
+  useEffect(() => {
+    if (usuarios.length > 0) {
+      setDefaultKey([usuarios[0].idUsuario]);
+      handleClickListaUsuario(usuarios[0]);
+    }
+  }, [usuarios]);
+  const handleChange = (event) => {
+    setCargo(event.target.value);
+  };
 
-    const [isVisible, setIsVisible] = useState(false);
-    const toggleVisibility = () => setIsVisible(!isVisible);
-    return (
-      <div className="max-w-[1280px] divCenter">
-        <div className="fixed hidden 3xl:-top-[30%] 3xl:-right-[40%] md:block opacity-100  -top-[80%] -right-[60%] 2xl:-top-[60%] 2xl:-right-[45%] -z-10 rotate-12">
-          <img src={docsRight} />
-        </div>
-        <div className="fixed hidden 3xl:-bottom-[20%] 3xl:-left-[20%] md:block opacity-100 -bottom-[40%] -left-[20%] -z-10">
-          <img src={bluePurple} />
-        </div>
-        <div className="fixed hidden 3xl:block 3xl:opacity-100 md:block lg:block xs:block dark:opacity-40 -bottom-[20%] left-[20%] -z-10">
-          <img src={Greendots} />
-        </div>
+  const [isVisible, setIsVisible] = useState(false);
+  const toggleVisibility = () => setIsVisible(!isVisible);
+  return (
+    <div className="max-w-[1280px] divCenter">
+      <div className="fixed hidden 3xl:-top-[30%] 3xl:-right-[40%] md:block opacity-100  -top-[80%] -right-[60%] 2xl:-top-[60%] 2xl:-right-[45%] -z-10 rotate-12">
+        <img src={docsRight} />
+      </div>
+      <div className="fixed hidden 3xl:-bottom-[20%] 3xl:-left-[20%] md:block opacity-100 -bottom-[40%] -left-[20%] -z-10">
+        <img src={bluePurple} />
+      </div>
+      <div className="fixed hidden 3xl:block 3xl:opacity-100 md:block lg:block xs:block dark:opacity-40 -bottom-[20%] left-[20%] -z-10">
+        <img src={Greendots} />
+      </div>
 
-        <h1 className="text-center text-4xl mt-12">
-          Gestionador de{" "}
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#5594d6] to-[#d21b9a]">
-            Usuarios
-          </span>
-        </h1>
+      <h1 className="text-center text-4xl mt-12">
+        Gestionador de{" "}
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#5594d6] to-[#d21b9a]">
+          Usuarios
+        </span>
+      </h1>
 
-        {/* LISTA DE USUARIOS TOTAL */}
-        <div className="ListaUsuarios">
-          <Select
-            isRequired
-            label="Lista de usuarios"
-            placeholder="Selecciona al usuario"
-            className="max-w-xs"
-            defaultSelectedKeys={defaultKey}
-          >
-            {usuarios.map((usuario) => (
-              <SelectItem
-                key={usuario.idUsuario}
-                value={usuarios[0]}
-                onClick={() => handleClickListaUsuario(usuario)}
-              >
-                {usuario.email}
-              </SelectItem>
-            ))}
-          </Select>
-        </div>
-        <div className="flex flex-row lg:flex-nowrap md:flex-wrap sm:flex-wrap xs:flex-wrap gap-3 h-[65vh] w-[100%] max-w-[1280px] mainGestion mb-16">
-          <div className="xl:w-[50%] md:w-[100%] sm:w-[100%] xs:w-[100%] ">
-            {/* SELECCIONAR USUARIO Y MODIFICARLO O ELIMINARLO */}
-            {usuarioSelected && (
-              <Card className="mt-4 max-h-[600px] h-[100%] dark:bg-default-100/60 bg-background/100">
-                <CardBody>
-                  <h1 className="text-center mb-4 text-xl">
-                    Modificar o eliminar el usuario
-                    <br />
-                    <span className="text-red-500">
-                      {" "}
-                      {usuarioSelected.email}{" "}
-                    </span>
-                  </h1>
-                  <form
-                    onSubmit={handleModificarUsuario}
-                    className="flex flex-col"
+      {/* LISTA DE USUARIOS TOTAL */}
+      <div className="ListaUsuarios">
+        <Select
+          isRequired
+          label="Lista de usuarios"
+          placeholder="Selecciona al usuario"
+          className="max-w-xs"
+          defaultSelectedKeys={defaultKey}
+        >
+          {usuarios.map((usuario) => (
+            <SelectItem
+              key={usuario.idUsuario}
+              value={usuarios[0]}
+              onClick={() => handleClickListaUsuario(usuario)}
+            >
+              {usuario.email}
+            </SelectItem>
+          ))}
+        </Select>
+      </div>
+      <div className="flex flex-row lg:flex-nowrap md:flex-wrap sm:flex-wrap xs:flex-wrap gap-3 h-[65vh] w-[100%] max-w-[1280px] mainGestion mb-16">
+        <div className="xl:w-[50%] md:w-[100%] sm:w-[100%] xs:w-[100%] ">
+          {/* SELECCIONAR USUARIO Y MODIFICARLO O ELIMINARLO */}
+          {usuarioSelected && (
+            <Card className="mt-4 max-h-[600px] h-[100%] dark:bg-default-100/60 bg-background/100">
+              <CardBody>
+                <h1 className="text-center mb-4 text-xl">
+                  Modificar o eliminar el usuario
+                  <br />
+                  <span className="text-red-500">
+                    {usuarioSelected.email}
+                  </span>
+                </h1>
+                <form
+                  onSubmit={handleModificarUsuario}
+                  className="flex flex-col"
+                >
+                  <Input
+                    type="text"
+                    label="Email"
+                    value={usuarioSelected.email}
+                    isRequired={true}
+                    onChange={(e) =>
+                      setUsuarioSelected({
+                        ...usuarioSelected,
+                        email: e.target.value,
+                      })
+                    }
+                  ></Input>
+                  <Input
+                    type="text"
+                    label="Nombre"
+                    value={usuarioSelected.Nombre}
+                    className="mt-2"
+                    isRequired={true}
+                    onChange={(e) =>
+                      setUsuarioSelected({
+                        ...usuarioSelected,
+                        Nombre: e.target.value,
+                      })
+                    }
+                  ></Input>
+                  <Input
+                    type="text"
+                    label="Rut"
+                    value={usuarioSelected.Rut}
+                    onChange={manejarCambio}
+                    placeholder="RUT"
+                    className="mt-2"
+                    isRequired={true}
+                  ></Input>
+                  <Select
+                    isRequired
+                    label="Equipo"
+                    value={equipoSelected}
+                    selectedKeys={equipoSelected ? [equipoSelected.toString()] : []}
+                    placeholder="Selecciona el equipo"
+                    className="max-w-xs mt-2"
+                    onChange={(e) => setEquipoSelected(e.target.value)}
+                    id="selectEquipo"
                   >
-                    <Input
-                      type="text"
-                      label="Email"
-                      value={usuarioSelected.email}
-                      isRequired={true}
-                      onChange={(e) =>
-                        setUsuarioSelected({
-                          ...usuarioSelected,
-                          email: e.target.value,
-                        })
-                      }
-                    ></Input>
-                    <Input
-                      type="text"
-                      label="Nombre"
-                      value={usuarioSelected.Nombre}
-                      className="mt-2"
-                      isRequired={true}
-                      onChange={(e) =>
-                        setUsuarioSelected({
-                          ...usuarioSelected,
-                          Nombre: e.target.value,
-                        })
-                      }
-                    ></Input>
-                    <Input
-                      type="text"
-                      label="Rut"
-                      value={usuarioSelected.Rut}
-                      onChange={manejarCambio}
-                      placeholder="RUT"
-                      className="mt-2"
-                      isRequired={true}
-                    ></Input>
-                    <Select
-                      isRequired
-                      label="Equipo"
-                      placeholder="Selecciona el equipo"
-                      className="max-w-xs mt-2"
-                      onChange={(e) => setEquipoSelected(Number(e.target.value))}
-                      id="selectEquipo"
-                    >
-                      {EquiposConProyecto.map((equipo) => (
-                        <SelectItem key={equipo.idEquipo} value={equipo.idEquipo}>
-                          {equipo.Nombre_equipo}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                    {/* <label>
+                    {EquiposConProyecto.map((equipo) => (
+                      <SelectItem key={equipo.idEquipo} value={equipo.idEquipo}>
+                        {equipo.Nombre_equipo}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  {/* <label>
                   Equipo:
                   <select
                     value={equipoSelected}
@@ -541,29 +575,35 @@ export function GestionUsuarios() {
                     ))}
                   </select>
                 </label> */}
-                    <Select
-                      isRequired
-                      label="Cargo"
-                      placeholder="Selecciona el cargo"
-                      className="max-w-xs mt-2"
-                      value={cargoSelected}
-                      defaultSelectedKeys={cargoSelected}
-                      onChange={(e) => setCargoSelected(e.target.value)}
-                      id="SelectorCargo"
-                    >
-                      {equipoSelected && <SelectItem>Miembro</SelectItem>}
-                      {(usuarioSelected.Cargo === "Lider" ||
-                        (equipoSelected && !tieneLider(equipoSelected))) && (
-                          <SelectItem>Lider</SelectItem>
-                        )}
-                      {!equipoSelected && (
-                        <SelectItem value="Administrador">
-                          Administrador
-                        </SelectItem>
+                  {console.log(defaultKey2)}
+                  <Select
+                    isRequired
+                    label="Cargo"
+                    placeholder="Selecciona el cargo"
+                    className="max-w-xs mt-2"
+                    value={cargoSelected}
+                    onChange={(e) => setCargoSelected(e.target.value)}
+                    id="SelectorCargo"
+                    defaultSelectedKeys={defaultKey2}
+                    selectedKeys={key1}
+
+                  >
+                    {equipoSelected && <SelectItem value="Miembro" key={"Miembro"} defaultSelectedKeys>Miembro</SelectItem>}
+                    {(usuarioSelected.Cargo === "Lider" ||
+                      (equipoSelected && !tieneLider(equipoSelected))) && (
+                        <SelectItem value="Lider" key={"Lider"}>Lider</SelectItem>
                       )}
-                      {equipoSelected && <SelectItem>Miembro</SelectItem>}
-                    </Select>
-                    {/* <label>
+                    {!equipoSelected && (
+                      <SelectItem value="Administrador" key={"Administrador"}>
+                        Administrador
+                      </SelectItem>
+                    )}
+                  </Select>
+
+
+
+
+                  {/* <label>
                   Cargo:
                   <select
                     value={cargoSelected}
@@ -580,96 +620,96 @@ export function GestionUsuarios() {
                     )}
                   </select>
                 </label> */}
-                    {ErrorModiUser && <p>{ErrorModiUser}</p>}
-                    <Button
-                      type="submit"
-                      color="success"
-                      className=" mt-2 text-white"
-                    >
-                      Guardar Cambios
-                    </Button>
-                    <Button
-                      type="button"
-                      color="danger"
-                      onClick={handleEliminarUsuario}
-                      className=" mt-2"
-                    >
-                      Eliminar usuario
-                    </Button>
-                  </form>
-                </CardBody>
-              </Card>
-            )}
-          </div>
+                  {ErrorModiUser && <p>{ErrorModiUser}</p>}
+                  <Button
+                    type="submit"
+                    color="success"
+                    className=" mt-2 text-white"
+                  >
+                    Guardar Cambios
+                  </Button>
+                  <Button
+                    type="button"
+                    color="danger"
+                    onClick={handleEliminarUsuario}
+                    className=" mt-2"
+                  >
+                    Eliminar usuario
+                  </Button>
+                </form>
+              </CardBody>
+            </Card>
+          )}
+        </div>
 
-          {/* FORMULARIO CREAR USUARIO */}
-          <Card className="mt-4 xl:w-[50%] md:w-[100%] sm:w-[100%] xs:w-[100%] max-h-[600px] h-[100%] dark:bg-default-100/60 bg-background/100">
-            <CardBody>
-              <form id="formularioCrearUsuario" key={formKey}>
-                <h1 className="text-center mb-4 text-xl">Crear usuario</h1>
-                <Input
-                  type="text"
-                  label="Nombre"
-                  value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
-                  placeholder="Ingresa el nombre"
-                  isRequired={true}
-                ></Input>
-                <Input
-                  type="text"
-                  label="Rut"
-                  value={rut}
-                  onChange={handleRutChange}
-                  placeholder="Ingresa el rut"
-                  isRequired={true}
-                  className="mt-2"
-                ></Input>
-                <Input
-                  type="email"
-                  label="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Ingresa el email"
-                  isRequired={true}
-                  className="mt-2"
-                ></Input>
-                <Input
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Contraseña"
-                  label="Contraseña"
-                  labelPlacement="inside"
-                  className="mt-2"
-                  isRequired={true}
-                  endContent={
-                    <button
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={toggleVisibility}
-                    >
-                      {isVisible ? (
-                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                      ) : (
-                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                      )}
-                    </button>
-                  }
-                  type={isVisible ? "text" : "password"}
-                ></Input>
-                <Select
-                  onChange={(e) => setEquipo(e.target.value)}
-                  isRequired
-                  label="Equipo"
-                  placeholder="Selecciona el equipo"
-                  className="max-w-xs mt-2"
-                >
-                  {EquiposConProyecto.map((equipo) => (
-                    <SelectItem key={equipo.idEquipo} value={equipo.idEquipo}>
-                      {equipo.Nombre_equipo}
-                    </SelectItem>
-                  ))}
-                </Select>
-                {/* <label>
+        {/* FORMULARIO CREAR USUARIO */}
+        <Card className="mt-4 xl:w-[50%] md:w-[100%] sm:w-[100%] xs:w-[100%] max-h-[600px] h-[100%] dark:bg-default-100/60 bg-background/100">
+          <CardBody>
+            <form id="formularioCrearUsuario" key={formKey}>
+              <h1 className="text-center mb-4 text-xl">Crear usuario</h1>
+              <Input
+                type="text"
+                label="Nombre"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                placeholder="Ingresa el nombre"
+                isRequired={true}
+              ></Input>
+              <Input
+                type="text"
+                label="Rut"
+                value={rut}
+                onChange={handleRutChange}
+                placeholder="Ingresa el rut"
+                isRequired={true}
+                className="mt-2"
+              ></Input>
+              <Input
+                type="email"
+                label="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Ingresa el email"
+                isRequired={true}
+                className="mt-2"
+              ></Input>
+              <Input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Contraseña"
+                label="Contraseña"
+                labelPlacement="inside"
+                className="mt-2"
+                isRequired={true}
+                endContent={
+                  <button
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={toggleVisibility}
+                  >
+                    {isVisible ? (
+                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                    ) : (
+                      <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                    )}
+                  </button>
+                }
+                type={isVisible ? "text" : "password"}
+              ></Input>
+              <Select
+                onChange={(e) => setEquipo(e.target.value)}
+                isRequired
+                label="Equipo"
+                placeholder="Selecciona el equipo"
+                className="max-w-xs mt-2"
+              >
+                {EquiposConProyecto.map((equipo) => (
+                  <SelectItem key={equipo.idEquipo} value={equipo.idEquipo}>
+                    {equipo.Nombre_equipo}
+                  </SelectItem>
+                ))}
+              </Select>
+              {/* <label>
                 Equipo:
                 <select onChange={(e) => setEquipo(e.target.value)}>
                   <option defaultChecked value="">
@@ -682,25 +722,25 @@ export function GestionUsuarios() {
                   ))}
                 </select>
               </label> */}
-                <Select
-                  onChange={handleChange}
-                  value={Cargo}
-                  isRequired
-                  label="Cargo"
-                  placeholder="Selecciona el cargo"
-                  className="max-w-xs mt-2"
-                >
-                  {equipo && <SelectItem key="Miembro">Miembro</SelectItem>}
-                  {equipo && tieneLider(equipo) && (
+              <Select
+                onChange={handleChange}
+                value={Cargo}
+                isRequired
+                label="Cargo"
+                placeholder="Selecciona el cargo"
+                className="max-w-xs mt-2"
+              >
+                {equipo && <SelectItem key="Miembro">Miembro</SelectItem>}
+                {equipo && tieneLider(equipo) && (
 
-                    <SelectItem key="Lider"> Lider</SelectItem>
-                  )}
-                  {!equipo && (
-                    <SelectItem key="Administrador">Administrador</SelectItem>
-                  )}
-                </Select>
+                  <SelectItem key="Lider"> Lider</SelectItem>
+                )}
+                {!equipo && (
+                  <SelectItem key="Administrador">Administrador</SelectItem>
+                )}
+              </Select>
 
-                {/* <label>
+              {/* <label>
                 Cargo:
                 <select onChange={(e) => setCargo(e.target.value)}>
                   <option defaultChecked value="">
@@ -711,7 +751,7 @@ export function GestionUsuarios() {
                   {!equipo && <option>Administrador</option>}
                 </select>
               </label> */}
-                {/* <label>
+              {/* <label>
                 Proyecto:
                 <select onChange={(e) => setProyecto(e.target.value)}>
                   <option selected value="">
@@ -726,19 +766,19 @@ export function GestionUsuarios() {
                     ))}
                 </select>
               </label> */}
-                {error && <p>{error}</p>}
-                <Button
-                  onClick={handleCrearUsuario}
-                  type="button"
-                  color="success"
-                  className="mt-2 text-white"
-                >
-                  Crear Usuario
-                </Button>
-              </form>
-            </CardBody>
-          </Card>
-        </div>
+              {error && <p>{error}</p>}
+              <Button
+                onClick={handleCrearUsuario}
+                type="button"
+                color="success"
+                className="mt-2 text-white"
+              >
+                Crear Usuario
+              </Button>
+            </form>
+          </CardBody>
+        </Card>
       </div>
-    );
-  }
+    </div>
+  );
+}
