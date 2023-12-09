@@ -35,7 +35,9 @@ const LineaTiempo = () => {
             );
 
             const FilterTeams = resTeam.data.filter(team => team.Lider === userId)
-            const FilterSnapshots = resSnapshot.data.filter(snapshot => snapshot.team === FilterTeams[0].idEquipo)
+            
+            const FilterSnapshots = resSnapshot.data.filter(snapshot => snapshot.user === userId)
+            console.log(resSnapshot.data,userId)
             setAllSnapshots(FilterSnapshots)
         };
 
