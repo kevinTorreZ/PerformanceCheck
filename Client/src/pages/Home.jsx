@@ -20,6 +20,7 @@ import {
   Tab,
 } from "@nextui-org/react";
 import jwt_decode from "jwt-decode";
+import { Snapshosts } from "./Snpashots";
 
 
 
@@ -51,7 +52,7 @@ export function HomeUsuario() {
   }, [navigate]);
 
   return (
-    <div className="h-[80vh] flex flex-col items-center mb-10">
+    <div className=" flex flex-col items-center mb-10">
       <h1 className="text-center text-4xl mt-10 mb-10 ">
         Perfil de{" "}
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#5594d6] to-[#d21b9a]">
@@ -66,10 +67,10 @@ export function HomeUsuario() {
       </div>
 
       <Card
-        className="homeMain max-w-[1280px] w-[100%] h-[650px] py-5 px-5 mb-10 mt-10"
+        className="homeMain max-w-[1280px] w-[100%] h-[660px] py-5 px-5 mb-10 mt-10"
         shadow="lg"
       >
-        <CardBody className="homeMain max-w-[1280px] w-[100%]">
+        <CardBody className="homeMain max-w-[1280px] w-[100%] overflow-hidden">
           <section className="flex flex-col max-w-[1280px] w-[100%] max-h-[700px] h-[700px]">
             <Tabs className="max-w-[1280px] w-[100%]  justify-center">
               <Tab key="Perfil" title="Perfil">
@@ -168,51 +169,12 @@ export function HomeUsuario() {
               </Tab>
               <Tab
                 key="Snapshot"
-                title="Snapshots"
-                className="justify-center items-center flex flex-col w-full h-full"
+                title="Crear snapshot"
+                className="justify-center items-center flex flex-col"
               >
                 
-                <div className="w-full h-full justify-center items-center flex flex-row flex-wrap gap-10 ">
-                  <Card
-                    isBlurred={true}
-                    isPressable={true}
-                    className="max-w-[350px] w-[100%] h-[250px] bg-background/100 dark:bg-default-100/30"
-                  >
-                    <CardBody className="flex items-center justify-center px-4 py-4">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="48"
-                        height="48"
-                        fill="currentColor"
-                        className="bi bi-plus-circle mb-3"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                      </svg>
-                      <h1 className="text-xl">Pide un snapshot</h1>
-                    </CardBody>
-                  </Card>
-                  <Card
-                    isBlurred={true}
-                    isPressable={true}
-                    className="max-w-[350px] w-[100%] h-[250px] bg-background/100 dark:bg-default-100/30 "
-                  >
-                    <CardBody className="flex items-center px-4 py-4 justify-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="48"
-                        height="48"
-                        fill="currentColor"
-                        class="bi bi-file-earmark-text mb-3"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z" />
-                        <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
-                      </svg>
-                      <h1 className="text-xl">Revisa tu reporte</h1>
-                    </CardBody>
-                  </Card>
+                <div className="w-full h-full justify-center items-center flex flex-row flex-wrap ">
+                  <Snapshosts/>
                 </div>
               </Tab>
             </Tabs>
