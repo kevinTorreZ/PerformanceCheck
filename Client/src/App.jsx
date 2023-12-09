@@ -35,7 +35,7 @@ function App() {
           <Route path="GestionUsuarios/" element={<AuthenticatedGestionUsuarios/>}/>
           <Route path="Snapshots/" element={<Snapshosts/>}/>
           <Route path="Reportes/" element={<Reportes/>}/>
-          <Route path="HomeUsuario/" element={<HomeUsuario/>}/>
+          <Route path="Home/" element={<HomeUsuario/>}/>
           <Route path="*" element={<NotFoundPage/>}/>
         
         </Routes>

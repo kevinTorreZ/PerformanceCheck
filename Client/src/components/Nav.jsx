@@ -3,7 +3,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { useAuth } from "./verificador";
 import { useNavigate } from "react-router-dom";
-import Logo from "../assets/LOGO.png"
+import Logo from "../assets/LOGO.png";
 import {
   Navbar,
   NavbarBrand,
@@ -21,8 +21,6 @@ import Cookies from "js-cookie";
 import { MoonIcon } from "../assets/MoonIcon";
 import { SunIcon } from "../assets/SunIcon";
 import { useTheme } from "next-themes";
-
-
 
 export function Nav() {
   const { isLoggedIn, logout } = useAuth();
@@ -47,7 +45,6 @@ export function Nav() {
       setTheme("dark");
     }
   };
-
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -146,10 +143,7 @@ export function Nav() {
         <NavbarContent className="hidden sm:flex gap-4" justify="end">
           <NavbarBrand>
             <Link href="/">
-            <Image
-              width={80}
-              src={Logo}
-            />
+              <Image width={80} src={Logo} />
             </Link>
           </NavbarBrand>
           <NavbarItem>
@@ -184,33 +178,41 @@ export function Nav() {
               </Link>
             </NavbarItem>
           )}
-          {isLoggedIn && rol === "Administrador" && (
+          {isLoggedIn && (rol === "Lider" || rol === "Miembro") && (
             <NavbarItem>
-              <Link color="foreground" href={"/Perfil"}>
-                Perfil
+              <Link color="foreground" href={"/Snapshots"}>
+                Snapshots
               </Link>
             </NavbarItem>
           )}
           {isLoggedIn && (rol === "Lider" || rol === "Miembro") && (
             <NavbarItem>
-              <Link color="foreground" href={"/Snapshots"}>Snapshots</Link>
+              <Link href={"/Reportes"} color="foreground">
+                Reportes
+              </Link>
             </NavbarItem>
           )}
-          {isLoggedIn && (rol === "Lider" || rol === "Miembro") && (
+          {isLoggedIn ? (
+            rol === "Lider" || rol === "Miembro" ? (
+              <NavbarItem>
+                <Link color="foreground" href={"/Home"}>
+                  Inicio
+                </Link>
+              </NavbarItem>
+            ) : (
+              <NavbarItem>
+                <Link color="foreground" href={"/"}>
+                  Inicio
+                </Link>
+              </NavbarItem>
+            )
+          ) : (
             <NavbarItem>
-              <Link href={"/Reportes"} color="foreground">Reportes</Link>
+              <Link color="foreground" href={"/"}>
+                Inicio
+              </Link>
             </NavbarItem>
           )}
-          {isLoggedIn && (rol === "Lider" || rol === "Miembro") && (
-            <NavbarItem>
-              <Link color="foreground" href={"/Perfil"}>Perfil</Link>
-            </NavbarItem>
-          )}
-          <NavbarItem>
-            <Link color="foreground" href={"/"}>
-              Inicio
-            </Link>
-          </NavbarItem>
           <NavbarItem>
             {isLoggedIn ? (
               <Link color="foreground" href={"/logout"} onClick={handleLogout}>

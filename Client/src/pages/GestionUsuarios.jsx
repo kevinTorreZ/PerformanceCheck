@@ -645,7 +645,7 @@ export function GestionUsuarios() {
         {/* FORMULARIO CREAR USUARIO */}
         <Card className="mt-4 xl:w-[50%] md:w-[100%] sm:w-[100%] xs:w-[100%] max-h-[600px] h-[100%] dark:bg-default-100/60 bg-background/100">
           <CardBody>
-            <form id="formularioCrearUsuario" key={formKey}>
+            <form id="formularioCrearUsuario" className="h-full flex flex-col" key={formKey}>
               <h1 className="text-center mb-4 text-xl">Crear usuario</h1>
               <Input
                 type="text"
@@ -771,7 +771,7 @@ export function GestionUsuarios() {
                 onClick={handleCrearUsuario}
                 type="button"
                 color="success"
-                className="mt-2 text-white"
+                className="mt-5 text-white"
               >
                 Crear Usuario
               </Button>

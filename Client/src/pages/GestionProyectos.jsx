@@ -87,7 +87,7 @@ export function GestionProyectos() {
 
     // Retornar fetchData para que pueda ser llamada directamente
     return fetchData;
-  }
+  };
   const actualizarEquiposYproyectos = BuscarEquiposYproyectos();
 
   useEffect(() => {
@@ -167,10 +167,10 @@ export function GestionProyectos() {
         fechaTermino: "",
         equipo: "",
       });
-      setFechaInicio('')
-      setFechaTermino('')
+      setFechaInicio("");
+      setFechaTermino("");
       setFormKey((prevKey) => prevKey + 1);
-      actualizarEquiposYproyectos()
+      actualizarEquiposYproyectos();
       console.log("Se ha creado un nuevo proyecto!");
     } catch (error) {
       console.error(error.message);
@@ -200,7 +200,7 @@ export function GestionProyectos() {
       [event.target.name]: event.target.value,
     });
   };
-  
+
   const handleChangeInicio = (event) => {
     setFechaInicio(event.target.value);
     handleChange2(event);
@@ -211,7 +211,6 @@ export function GestionProyectos() {
     handleChange2(event);
   };
 
-
   // APARTIR DE ACA SOLO CODIGO DEL CRUD DE EQUIPOS
 
   const [UserFilter, setUserFilter] = useState("");
@@ -220,15 +219,14 @@ export function GestionProyectos() {
     Lider: 0,
   });
   const ValidarEquipo = async (Nombre_equipo, Lider) => {
-    const resEquipos = await axios.get(
-      `http://127.0.0.1:8000/api/equipos/`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+    const resEquipos = await axios.get(`http://127.0.0.1:8000/api/equipos/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const equipoExistente = resEquipos.data.find(
+      (equipo) => equipo.Nombre_equipo === Nombre_equipo
     );
-    const equipoExistente = resEquipos.data.find(equipo => equipo.Nombre_equipo === Nombre_equipo);
 
     if (Nombre_equipo == "") {
       throw new Error("Debe ingresar un equipo");
@@ -270,9 +268,9 @@ export function GestionProyectos() {
 
   const CrearEquipo = (event) => {
     event.preventDefault();
-    console.log(NewEquipo.Lider)
+    console.log(NewEquipo.Lider);
     if (NewEquipo.Lider == 0) {
-      delete NewEquipo.Lider
+      delete NewEquipo.Lider;
     }
 
     try {
@@ -288,7 +286,7 @@ export function GestionProyectos() {
       );
       setFormKey((prevKey) => prevKey + 1);
       console.log("Se ha creado un nuevo equipo!");
-      setNewEquipo('')
+      setNewEquipo("");
     } catch (error) {
       console.error(error);
     }
@@ -347,7 +345,7 @@ export function GestionProyectos() {
       <div>
         <Card className="mt-4 dark:bg-default-100/60 bg-background/100">
           <CardBody className="flex flex-col">
-            {ProyectoSelected && (
+            {ProyectoSelected ? (
               <form id="formCrearProyecto" key={formKey}>
                 {console.log(ProyectoSelected.FechaInicio)}
                 <Input
@@ -406,14 +404,15 @@ export function GestionProyectos() {
                   ))}
                 </Select>
                 <div className="flex justify-center w-full h-full mt-4">
-                  <Button
-                    color="success"
-                    className="text-white"
-                  >
+                  <Button color="success" className="text-white">
                     Modificar proyecto
                   </Button>
                 </div>
               </form>
+            ) : (
+              <div className="flex items-center justify-center">
+                <h1>No hay proyectos disponibles</h1>
+              </div>
             )}
           </CardBody>
         </Card>
@@ -510,7 +509,8 @@ export function GestionProyectos() {
                   onChange={handleChangeEquipo}
                   isRequired={true}
                   className="mt-4"
-                ><SelectItem key={0} value={0}>
+                >
+                  <SelectItem key={0} value={0}>
                     Sin Lider
                   </SelectItem>
                   {UserFilter.map((Usuario) => (
