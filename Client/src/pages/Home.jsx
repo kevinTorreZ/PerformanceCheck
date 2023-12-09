@@ -21,6 +21,7 @@ import {
 } from "@nextui-org/react";
 import jwt_decode from "jwt-decode";
 import { Snapshosts } from "./Snpashots";
+import LineaTiempo from "./LineaTiempo";
 
 
 
@@ -165,7 +166,7 @@ export function HomeUsuario() {
                 </Card>
               </Tab>
               <Tab key="LineaTiempo" title="Linea de tiempo">
-                
+                <LineaTiempo/>
               </Tab>
               <Tab
                 key="Snapshot"

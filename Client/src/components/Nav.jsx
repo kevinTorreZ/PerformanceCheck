@@ -178,20 +178,6 @@ export function Nav() {
               </Link>
             </NavbarItem>
           )}
-          {isLoggedIn && (rol === "Lider" || rol === "Miembro") && (
-            <NavbarItem>
-              <Link color="foreground" href={"/Snapshots"}>
-                Snapshots
-              </Link>
-            </NavbarItem>
-          )}
-          {isLoggedIn && (rol === "Lider" || rol === "Miembro") && (
-            <NavbarItem>
-              <Link href={"/Reportes"} color="foreground">
-                Reportes
-              </Link>
-            </NavbarItem>
-          )}
           {isLoggedIn ? (
             rol === "Lider" || rol === "Miembro" ? (
               <NavbarItem>
