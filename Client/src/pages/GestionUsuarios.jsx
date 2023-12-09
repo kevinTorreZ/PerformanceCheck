@@ -58,7 +58,7 @@ export function GestionUsuarios() {
           if (usuario) {
             console.log(usuario)
             setCargoSelected(usuario.Cargo)
-            setEquipoSelected(usuario.Fk_equipo_asignado)
+            setEquipoSelected(usuario.Fk_proyecto_asignado)
             if (usuario.Fk_equipo_asignado_id != null && usuario.Fk_proyecto_asignado_id != null) {
               setEquipoSelected(usuario.Fk_equipo_asignado_id)
             }

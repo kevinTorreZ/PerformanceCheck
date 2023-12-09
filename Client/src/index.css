@@ -75,3 +75,16 @@
 .user{
     font-family: 'Gilroy-bold', sans-serif;
 }
+
+.nameUser{
+    font-size: 24px;
+}
+
+.descUser{
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.letras{
+    font-family: 'Poppins', sans-serif;
+}
