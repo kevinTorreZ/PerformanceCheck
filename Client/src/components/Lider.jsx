@@ -58,10 +58,8 @@ export function Lider({ handleCompletarSnapshot }) { // Añade handleCompletarSn
     setAllproyect(allProjectsObj);
     setAllUsers(allUsersObj);
     const FilterTeams = resTeam.data.filter(team => team.Lider === userId)
-    console.log(FilterTeams)
     const FilterSnapshots = resSnapshot.data.filter(snapshot => snapshot.team === FilterTeams[0].idEquipo)
     setAllSnapshots(FilterSnapshots)
-    console.log(FilterSnapshots)
   };
 
   useEffect(() => {
@@ -72,13 +70,10 @@ export function Lider({ handleCompletarSnapshot }) { // Añade handleCompletarSn
     setidSnap(idSnap);
     setidLider(idLider);
     setidUser(idUser)
-    console.log(idLider)
-    handleCompletarSnapshot();
     setShowCompletarSnapshot(true);
   };
   const handleCancelarClick = () => {
     setShowCompletarSnapshot(false);
-    handleCompletarSnapshot();
     fetch(); 
   };
   if (showCompletarSnapshot) {
