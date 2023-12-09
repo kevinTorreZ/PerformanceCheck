@@ -732,8 +732,7 @@ export function GestionUsuarios() {
               >
                 {equipo && <SelectItem key="Miembro">Miembro</SelectItem>}
                 {equipo && tieneLider(equipo) && (
-
-                  <SelectItem key="Lider"> Lider</SelectItem>
+                  <SelectItem key="Lider">Lider</SelectItem>
                 )}
                 {!equipo && (
                   <SelectItem key="Administrador">Administrador</SelectItem>
