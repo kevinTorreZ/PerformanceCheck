@@ -21,6 +21,8 @@ import {
 } from "@nextui-org/react";
 import jwt_decode from "jwt-decode";
 
+
+
 export function HomeUsuario() {
   const [user, setUser] = useState(null);
 
@@ -162,7 +164,7 @@ export function HomeUsuario() {
                 </Card>
               </Tab>
               <Tab key="LineaTiempo" title="Linea de tiempo">
-                <h1>Full sexo jeje</h1>
+                
               </Tab>
               <Tab
                 key="Snapshot"
