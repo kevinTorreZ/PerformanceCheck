@@ -22,8 +22,7 @@ import {
 import jwt_decode from "jwt-decode";
 import { Snapshosts } from "./Snpashots";
 import LineaTiempo from "./LineaTiempo";
-
-
+import { Reportes } from "./Reportes";
 
 export function HomeUsuario() {
   const [user, setUser] = useState(null);
@@ -53,7 +52,7 @@ export function HomeUsuario() {
   }, [navigate]);
 
   return (
-    <div className=" flex flex-col items-center mb-10">
+    <div className="flex flex-col items-center mb-10 h-[80vh] w-full">
       <h1 className="text-center text-4xl mt-10 mb-10 ">
         Perfil de{" "}
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#5594d6] to-[#d21b9a]">
@@ -68,10 +67,10 @@ export function HomeUsuario() {
       </div>
 
       <Card
-        className="homeMain max-w-[1280px] w-[100%] h-[660px] py-5 px-5 mb-10 mt-10"
+        className="homeMain max-w-[1280px] w-[100%] max-h-[660px] h-[660px] py-5 px-5 mb-10 mt-10"
         shadow="lg"
       >
-        <CardBody className="homeMain max-w-[1280px] w-[100%] overflow-hidden">
+        <CardBody className="homeMain max-w-[1280px] w-[100%] overflow-x-hidden">
           <section className="flex flex-col max-w-[1280px] w-[100%] max-h-[700px] h-[700px]">
             <Tabs className="max-w-[1280px] w-[100%]  justify-center">
               <Tab key="Perfil" title="Perfil">
@@ -166,17 +165,23 @@ export function HomeUsuario() {
                 </Card>
               </Tab>
               <Tab key="LineaTiempo" title="Linea de tiempo">
-                <LineaTiempo/>
+                <LineaTiempo />
               </Tab>
               <Tab
                 key="Snapshot"
                 title="Crear snapshot"
                 className="justify-center items-center flex flex-col"
               >
-                
                 <div className="w-full h-full justify-center items-center flex flex-row flex-wrap ">
-                  <Snapshosts/>
+                  <Snapshosts />
                 </div>
+              </Tab>
+              <Tab
+                key="Reporte"
+                title="Ver reportes"
+                className="justify-center items-center flex flex-col"
+              >
+                <Reportes />
               </Tab>
             </Tabs>
           </section>
