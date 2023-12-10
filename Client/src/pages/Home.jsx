@@ -136,30 +136,6 @@ export function HomeUsuario() {
                           </CardBody>
                         )}
                       </Card>
-                      <Card
-                        className="h-[auto] w-[80%] mt-2 py-2 px-2 border-gray-800 border-1 bg-background/0 dark:bg-default-100/0"
-                        shadow="sm"
-                      >
-                        {user && (
-                          <CardBody className="flex justify-start items-start letras">
-                            <h1 className="text-lg">Información proyecto</h1>
-                            <div className="flex flex-row h-full w-full ">
-                              <section className="h-full w-[300px] ">
-                                <h1 className="text-lg mt-3 descletras">
-                                  Proyecto asignado:{" "}
-                                </h1>
-                                <h1 className="text-lg descletras">
-                                  Equipo asignado:{" "}
-                                </h1>
-                              </section>
-                              <section className="w-full">
-                                <h1 className="text-lg mt-3 descletras"></h1>
-                                <h1 className="text-lg descletras"></h1>
-                              </section>
-                            </div>
-                          </CardBody>
-                        )}
-                      </Card>
                     </div>
                   </CardBody>
                 </Card>
@@ -176,13 +152,15 @@ export function HomeUsuario() {
                   <Snapshosts />
                 </div>
               </Tab>
-              <Tab
-                key="Reporte"
-                title="Ver reportes"
-                className="justify-center items-center flex flex-col"
-              >
-                <Reportes />
-              </Tab>
+              {user && user.Cargo === "Miembro" && (
+                <Tab
+                  key="Reporte"
+                  title="Ver reportes"
+                  className="justify-center items-center flex flex-col"
+                >
+                  <Reportes />
+                </Tab>
+              )}
             </Tabs>
           </section>
         </CardBody>
