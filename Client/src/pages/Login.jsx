@@ -47,7 +47,7 @@ export function Login() {
       if (userObjt && userObjt.Cargo) {
         localStorage.setItem("refreshToken", tokens.refresh);
         localStorage.setItem("UserData", userObjt.Cargo);
-        window.location.href = "/";
+        window.location.href = "/Home";
       } else {
         throw new Error("No se pudo obtener el cargo del usuario");
       }

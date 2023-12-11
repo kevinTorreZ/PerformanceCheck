@@ -80,7 +80,7 @@ return (
                 const left = `${startMonthIndex / months.length * 50}%`;
                 const width = `${(endMonthIndex - startMonthIndex + 1) / months.length * 100}%`;
                 return (
-                    <div key={i} style={{ position: 'relative', left, width, backgroundColor: getColor(snapshot.Estado), height: '10px', margin: '20px 0', borderRadius: '100%' }}>
+                    <div key={i} style={{ position: 'relative', left, width, backgroundColor: getColor(snapshot.Estado), height: '10px', margin: '20px 0', borderRadius: '20%' }}>
                         <div style={{ position: 'absolute', left: '10%', width: '80%', backgroundColor: getColor(snapshot.Estado), height: '10px'}}></div>
                     </div>
                 );

@@ -159,11 +159,6 @@ export function Nav() {
               }
             />
           </NavbarItem>
-          {isLoggedIn && rol === "Lider" && (
-            <NavbarItem>
-              <Link href={"/SolicitudGrupal"}>Solitud Grupal</Link>
-            </NavbarItem>
-          )}
           {isLoggedIn && rol === "Administrador" && (
             <NavbarItem>
               <Link color="foreground" href={"/GestionUsuarios"}>
